@@ -1,28 +1,31 @@
 'use client'
 
 import { supabase } from '@/utils/supabase'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 export default function Page() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const router = useRouter()
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) =>{
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email, 
+    const { error } = await supabase.auth.signUp({
+      email,
       password,
+      options: {
+        emailRedirectTo: `http://localhost:3001/login`,
+      },
     })
-
     if (error) {
-      alert('ログインに失敗しました')
+      alert('登録に失敗しました')
     } else {
-      router.replace('/user/timeline')
+      setEmail('')
+      setPassword('')
+      alert('確認メールを送信しました')
     }
   }
+
   return (
     <div className="flex justify-center pt-[240px]">
       <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-[400px]">
@@ -31,7 +34,7 @@ export default function Page() {
             htmlFor="email"
             className="block mb-2 text-sm font-medium text-gray-900"
           >
-            メールアドレス
+            ここはタイムラインの仮ページです
           </label>
           <input
             type="email"
@@ -41,6 +44,7 @@ export default function Page() {
             placeholder="name@company.com"
             required
             onChange={(e) => setEmail(e.target.value)}
+            value={email}
           />
         </div>
         <div>
@@ -58,6 +62,7 @@ export default function Page() {
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             required
             onChange={(e) => setPassword(e.target.value)}
+            value={password}
           />
         </div>
 
@@ -66,11 +71,10 @@ export default function Page() {
             type="submit"
             className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
           >
-            ログイン
+            登録
           </button>
         </div>
       </form>
     </div>
   )
 }
-
