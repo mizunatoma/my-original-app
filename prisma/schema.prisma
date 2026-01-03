@@ -33,12 +33,12 @@ model Profile {
 
 model Activity {
   id        String  @id @default(cuid())
-  profileId String
-  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId String?
+  profile   Profile? @relation(fields: [profileId], references: [id])
 
   name       String
-  colorToken String
-  sortOrder  Int
+  colorToken String?
+  sortOrder  Int?
 
   deletedAt DateTime?
   createdAt DateTime  @default(now())
