@@ -1,34 +1,22 @@
 // /api/timeline/start
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from '@/utils/prisma' ;
-import { supabase } from '@/utils/supabase' 
+import { verifyAuth } from "@/utils/verifyAuth";
 
+// ===============================
 // POST
+// ===============================
 export const POST = async (request: NextRequest ) => {
-  // Authorization ヘッダー取得
-  const authHeader = request.headers.get("authorization")
-  if (!authHeader) {
-    return NextResponse.json(
-      { error: "Unauthorized" },
-      { status: 401 },
-    );
-  }
-
-  // token 抽出
-  const token = authHeader.replace("Bearer ", "")
-
-  // token 検証
-  const { data, error } = await supabase.auth.getUser(token)
-  if (error || !data.user) {
-    return NextResponse.json(
-      { error: "Unauthorized" },
-      { status: 401},
-    );
-  }
+  // verifyAuthユーティリティ
+  const authResult = await verifyAuth(request);
+  // 失敗 authResult = NextResponse(401など)
+  if (authResult instanceof NextResponse) return authResult;
+  // 成功 authResult = { user }
+  const userId = authResult.user.id;
 
   // profile 取得
   const profile = await prisma.profile.findUnique({
-    where: { userId: data.user.id },
+    where: { userId },
   })
 
   if (!profile) {

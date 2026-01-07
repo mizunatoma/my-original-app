@@ -1,10 +1,10 @@
 // /api/timeline/activities
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from '@/utils/prisma' ;
 
-const prisma = new PrismaClient()
-
+// ===============================
 // GET
+// ===============================
 export const GET = async (request: NextRequest) => {
   try {
     const activities = await prisma.activity.findMany({
@@ -28,9 +28,9 @@ export const GET = async (request: NextRequest) => {
   }
 }
 
-
-
+// ===============================
 // POST
+// ===============================
 export interface CreateActivityRequwstBody {
   name: string
   profileId: string

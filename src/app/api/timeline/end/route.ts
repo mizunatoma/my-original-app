@@ -1,7 +1,16 @@
 // /api/timeline/end
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from '@/utils/prisma' ;
+import { verifyAuth } from "@/utils/verifyAuth";
+import { request } from "http";
 
-const prisma = new PrismaClient()
-
+// ===============================
 // POST
+// ===============================
+export const POST = async (request: NextRequest) => {
+
+
+
+
+  
+}

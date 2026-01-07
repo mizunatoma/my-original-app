@@ -1,39 +1,18 @@
 // /api/profile
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from '@/utils/prisma';
-import { supabase } from '@/utils/supabase'
+import { verifyAuth } from "@/utils/verifyAuth";
 
-export async function POST(request: NextRequest) {  // function 宣言 の記法
-  console.log("Profile API: Start") // デバッグ用ログ
-
-  // Authorization ヘッダー取得
-  const authHeader = request.headers.get("authorization")
-  console.log("authHeader:", authHeader)
-
-  if (!authHeader) {
-    console.log("Error: No Auth Header")
-    return NextResponse.json(
-      { error: "Unauthorized" }, { status: 401 },
-    );
-  }
-
-  // token 抽出
-  const token = authHeader.replace("Bearer ", "")
-  console.log("token extracted")
-
-  // token 検証
-  const { data, error } = await supabase.auth.getUser(token)
-
-  if (error || !data.user) {
-    console.log("Supabase Auth Error:", error)
-    return NextResponse.json(
-      { error: "Unauthorized" }, { status: 401 }
-    )
-  }
-
-  // ここで userId が確定する
-  const userId = data.user.id
-  console.log("User ID:", userId)
+// ===============================
+// POST
+// ===============================
+export const POST = async (request: NextRequest) => {  
+  // verifyAuthユーティリティ
+  const authResult = await verifyAuth(request);
+  // 失敗 authResult = NextResponse(401など)
+  if (authResult instanceof NextResponse) return authResult;
+  // 成功 authResult = { user }
+  const userId = authResult.user.id;
 
   // AuthUser を作成・更新しておく (FK制約回避)
   console.log("Upserting AuthUser...")
@@ -42,19 +21,64 @@ export async function POST(request: NextRequest) {  // function 宣言 の記法
     update: {},
     create: { id: userId }
   })
-  console.log("AuthUser Upserted")
+  console.log("AuthUser Upserted") // デバッグ用ログ
 
-  console.log("Upserting Profile...")
+  console.log("Upserting Profile...") // デバッグ用ログ
   const profile = await prisma.profile.upsert({
-    where: { userId: userId },
+    where: { id: userId },
     update: {}, // あればなにもしない
     create: {   // なければ新規作成 
       userId: userId // displayName などは後で足す
     },
   });
-  console.log("Profile Upserted:", profile)
+  console.log("Profile Upserted:", profile) // デバッグ用ログ
 
   return NextResponse.json(
     { profile }, { status: 200 }
   )
 }
+  
+// ===============================
+// GET
+// ===============================
+export const GET = async (request: NextRequest) => {
+  const authResult = await verifyAuth(request);
+  if (authResult instanceof NextResponse) return authResult;
+  const userId = authResult.user.id;
+
+  const profile = await prisma.profile.findUnique({
+    where: { userId },
+  });
+
+  return NextResponse.json(
+    { profile }, { status: 200 }
+  )
+}
+
+// ===============================
+// PUT
+// ===============================
+export const PUT = async (request: NextRequest) => {
+  // ヘッダー tokenで認証 → userIdを受け取る
+  const authResult = await verifyAuth(request);
+  if (authResult instanceof NextResponse) return authResult;
+  const userId = authResult.user.id;
+
+  // request.body から displayName を取り出す
+  const body = await request.json();
+  const { displayName } = body;
+
+  // profile を update する
+  const profile = await prisma.profile.update({
+    where: { userId },
+    data: { displayName },
+    },
+  );
+
+  return NextResponse.json(
+    { profile }, { status: 200 }
+  );
+}
+
+
+

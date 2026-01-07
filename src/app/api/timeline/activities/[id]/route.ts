@@ -1,10 +1,10 @@
 // /api/timeline/activities/[id]
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from '@/utils/prisma' ;
 
-const prisma = new PrismaClient;
-
+// ===============================
 // PUT
+// ===============================
 export const PUT = async (
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -31,8 +31,9 @@ export const PUT = async (
   };
 }
 
-
+// ===============================
 // DELETE
+// ===============================
 export const DELETE = async (
   request: NextRequest,
   { params }: { params: { id: string } }
