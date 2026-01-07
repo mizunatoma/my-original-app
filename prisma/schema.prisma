@@ -20,8 +20,8 @@ model Profile {
   userId String   @unique
   user   AuthUser @relation(fields: [userId], references: [id])
 
-  displayName String
-  avatarUrl   String
+  displayName String?
+  avatarUrl   String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -52,7 +52,7 @@ model TimeLog {
   activity   Activity @relation(fields: [activityId], references: [id])
 
   startAt DateTime
-  endAt   DateTime
+  endAt   DateTime?
   memo    String?
 
   createdAt DateTime @default(now())
