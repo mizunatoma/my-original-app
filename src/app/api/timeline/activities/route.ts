@@ -1,6 +1,6 @@
 // /api/timeline/activities
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from '@/utils/prisma' ;
+import { prisma } from '@/app/_utils/prisma' ;
 
 // ===============================
 // GET

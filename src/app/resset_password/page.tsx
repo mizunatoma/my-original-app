@@ -1,6 +1,6 @@
 'use client'
 
-import { supabase } from '@/utils/supabase'
+import { supabase } from '@/app/_utils/supabase'
 import { useState } from 'react'
 
 export default function Page() {

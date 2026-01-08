@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import React from 'react'
 import { useSupabaseSession } from '../_hooks/useSupabsaeSession'
-import { supabase } from '@/utils/supabase'
+import { supabase } from '@/app/_utils/supabase'
 
 export const Header: React.FC = () => {
   const handleLogout = async () => {

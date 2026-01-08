@@ -1,7 +1,7 @@
 // /api/profile
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from '@/utils/prisma';
-import { verifyAuth } from "@/utils/verifyAuth";
+import { prisma } from '@/app/_utils/prisma';
+import { verifyAuth } from "@/app/_utils/verifyAuth";
 
 // ===============================
 // POST

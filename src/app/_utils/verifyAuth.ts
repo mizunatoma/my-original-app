@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from '@/utils/supabase' 
+import { supabase } from '@/app/_utils/supabase' 
 
 export const verifyAuth = async (request: NextRequest) => {
 
