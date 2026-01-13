@@ -6,7 +6,7 @@ import { verifyAuth } from "@/app/_utils/verifyAuth";
 // ===============================
 // POST
 // ===============================
-export const POST = async (request: NextRequest) => {  
+export const POST = async (request: NextRequest) => {
   // verifyAuthユーティリティ
   const authResult = await verifyAuth(request);
   // 失敗 authResult = NextResponse(401など)
@@ -25,7 +25,7 @@ export const POST = async (request: NextRequest) => {
 
   console.log("Upserting Profile...") // デバッグ用ログ
   const profile = await prisma.profile.upsert({
-    where: { id: userId },
+    where: { userId: userId },
     update: {}, // あればなにもしない
     create: {   // なければ新規作成 
       userId: userId // displayName などは後で足す
@@ -37,7 +37,7 @@ export const POST = async (request: NextRequest) => {
     { profile }, { status: 200 }
   )
 }
-  
+
 // ===============================
 // GET
 // ===============================
@@ -72,7 +72,7 @@ export const PUT = async (request: NextRequest) => {
   const profile = await prisma.profile.update({
     where: { userId },
     data: { displayName },
-    },
+  },
   );
 
   return NextResponse.json(

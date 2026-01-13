@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from '@/app/_utils/supabase' 
+import { supabaseServer } from '@/app/_utils/supabaseServer' 
 
 export const verifyAuth = async (request: NextRequest) => {
 
@@ -15,12 +15,14 @@ export const verifyAuth = async (request: NextRequest) => {
   const token = authHeader.replace("Bearer ", "")
 
   // token 検証
-  const { data, error } = await supabase.auth.getUser(token)
+  const { data, error } = await supabaseServer.auth.getUser(token)
   if (error || !data.user) {
     return NextResponse.json(
       { error: "Unauthorized" }, { status: 401},
     );
   }
+
+  console.log("supabase auth error:", error);
 
   return { user: data.user };
 }
