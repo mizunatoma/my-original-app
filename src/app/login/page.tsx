@@ -1,6 +1,6 @@
 'use client'
 
-import { supabase } from '@/app/_utils/supabase'
+import { supabaseBrowser } from '@/app/_utils/supabaseBrowser'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
@@ -9,11 +9,11 @@ export default function Page() {
   const [password, setPassword] = useState('')
   const router = useRouter()
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) =>{
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email, 
+    const { error } = await supabaseBrowser.auth.signInWithPassword({
+      email,
       password,
     })
 

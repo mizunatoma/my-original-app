@@ -1,6 +1,6 @@
 'use client'
 
-import { supabase } from '@/app/_utils/supabase'
+import { supabaseBrowser } from '@/app/_utils/supabaseBrowser'
 import { useState } from 'react'
 
 export default function Page() {
@@ -10,11 +10,11 @@ export default function Page() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    const { error } = await supabase.auth.signUp({
+    const { error } = await supabaseBrowser.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: `http://localhost:3001/login`,
+        emailRedirectTo: `http://localhost:3000/login`,
       },
     })
     if (error) {

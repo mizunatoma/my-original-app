@@ -3,15 +3,18 @@
 import Link from 'next/link'
 import React from 'react'
 import { useSupabaseSession } from '../_hooks/useSupabsaeSession'
-import { supabase } from '@/app/_utils/supabase'
+import { supabaseBrowser } from '@/app/_utils/supabaseBrowser'
+import { useRouter } from 'next/router'
 
 export const Header: React.FC = () => {
+  const router = useRouter;
+
   const handleLogout = async () => {
-    await supabase.auth.signOut()
-    window.location.href = '/'
+    await supabaseBrowser.auth.signOut()
+    await router.replace('/')
   }
 
-  const { session, isLoading } = useSupabseSession()
+  const { session, isLoading } = useSupabaseSession()
 
   return (
     <header className="bg-gray-800 text-white p-6 font-bold flex justify-between items-center">
