@@ -1,84 +1,95 @@
 // /api/profile
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from '@/app/_utils/prisma';
-import { verifyAuth } from "@/app/_utils/verifyAuth";
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from 'next/headers'
+
+function createSupabaseServer(cookieStore: ReturnType<typeof cookies>) {
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get: (name) => cookieStore.get(name)?.value,
+        set: (name, value, options) => cookieStore.set({ name, value, ...options }),
+        remove: (name, options) => cookieStore.set({ name, value: '', ...options }),
+      },
+    }
+  )
+}
 
 // ===============================
 // POST
 // ===============================
 export const POST = async (request: NextRequest) => {
-  // verifyAuthユーティリティ
-  const authResult = await verifyAuth(request);
-  // 失敗 authResult = NextResponse(401など)
-  if (authResult instanceof NextResponse) return authResult;
-  // 成功 authResult = { user }
-  const userId = authResult.user.id;
+  const cookieStore = cookies()
+  const supabase = createSupabaseServer(cookieStore)
+  const { data: { user } } = await supabase.auth.getUser()
 
-  // AuthUser を作成・更新しておく (FK制約回避)
-  console.log("Upserting AuthUser...")
-  await prisma.authUser.upsert({
-    where: { id: userId },
-    update: {},
-    create: { id: userId }
-  })
-  console.log("AuthUser Upserted") // デバッグ用ログ
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
 
-  console.log("Upserting Profile...") // デバッグ用ログ
-  const profile = await prisma.profile.upsert({
-    where: { userId: userId },
-    update: {}, // あればなにもしない
-    create: {   // なければ新規作成 
-      userId: userId // displayName などは後で足す
-    },
-  });
-  console.log("Profile Upserted:", profile) // デバッグ用ログ
+  try {
+    const profile = await prisma.profile.upsert({
+      where: { userId: user.id },
+      update: {},
+      create: { userId: user.id },
+    })
 
-  return NextResponse.json(
-    { profile }, { status: 200 }
-  )
+    return NextResponse.json({ profile }, { status: 200 })
+  } catch (error) {
+    console.error(error)
+    return NextResponse.json({ error: 'Profile upsert failed' }, { status: 500 })
+  }
 }
 
 // ===============================
 // GET
 // ===============================
 export const GET = async (request: NextRequest) => {
-  const authResult = await verifyAuth(request);
-  if (authResult instanceof NextResponse) return authResult;
-  const userId = authResult.user.id;
+  const cookieStore = cookies()
+  const supabase = createSupabaseServer(cookieStore)
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
 
   const profile = await prisma.profile.findUnique({
-    where: { userId },
-  });
+    where: { userId: user.id },
+  })
 
-  return NextResponse.json(
-    { profile }, { status: 200 }
-  )
+  return NextResponse.json({ profile }, { status: 200 })
 }
 
 // ===============================
 // PUT
 // ===============================
 export const PUT = async (request: NextRequest) => {
-  // ヘッダー tokenで認証 → userIdを受け取る
-  const authResult = await verifyAuth(request);
-  if (authResult instanceof NextResponse) return authResult;
-  const userId = authResult.user.id;
+  const cookieStore = cookies()
+  const supabase = createSupabaseServer(cookieStore)
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
-  // request.body から displayName を取り出す
-  const body = await request.json();
-  const { displayName } = body;
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
 
-  // profile を update する
+  const body = await request.json()
+  const { displayName } = body
+
   const profile = await prisma.profile.update({
-    where: { userId },
+    where: { userId: user.id },
     data: { displayName },
-  },
-  );
+  })
 
-  return NextResponse.json(
-    { profile }, { status: 200 }
-  );
+  return NextResponse.json({ profile }, { status: 200 })
 }
+
 
 
 
