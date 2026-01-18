@@ -1,29 +1,40 @@
 // /api/timeline/start
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from '@/app/_utils/prisma' ;
-import { verifyAuth } from "@/app/_utils/verifyAuth";
+import { prisma } from '@/app/_utils/prisma';
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from 'next/headers'
+
+function createSupabaseServer(cookieStore: ReturnType<typeof cookies>) {
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get: (name) => cookieStore.get(name)?.value,
+        set: (name, value, options) => cookieStore.set({ name, value, ...options }),
+        remove: (name, options) => cookieStore.set({ name, value: '', ...options }),
+      },
+    }
+  )
+}
 
 // ===============================
 // POST
 // ===============================
-export const POST = async (request: NextRequest ) => {
-  // verifyAuthユーティリティ
-  const authResult = await verifyAuth(request);
-  // 失敗 authResult = NextResponse(401など)
-  if (authResult instanceof NextResponse) return authResult;
-  // 成功 authResult = { user }
-  const userId = authResult.user.id;
+export const POST = async (request: NextRequest) => {
+  const cookieStore = cookies()
+  const supabase = createSupabaseServer(cookieStore)
 
-  // profile 取得
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  };
+
   const profile = await prisma.profile.findUnique({
-    where: { userId },
+    where: { userId: user.id }
   })
-
   if (!profile) {
-    return NextResponse.json(
-      { error: "Profile not found" }, 
-      { status: 400 },
-    );
+    return NextRequest.json({ error: 'profile not found' }, { status: 400 })
   }
 
   //endAt が null の timeLog を findFirst で探して、
@@ -31,22 +42,16 @@ export const POST = async (request: NextRequest ) => {
   const runningLog = await prisma.timeLog.findFirst({
     where: {
       endAt: null,
-      activity: {
-        profileId: profile.id
-      }
+      activity: { profileId: profile.id }
     }
   })
 
   if (runningLog) {
-    return NextResponse.json(
-      { error: "Already running" }, 
-      { status: 409 },
-    );
-  } 
+    return NextResponse.json({ error: "Already running" }, { status: 409 });
+  };
 
-  // body 取得
-  const body = await request.json();
-  const { activityId } = body;
+  // activityId 取得
+  const { activityId } = await request.json();
 
   // timeLog 作成
   const timeLog = await prisma.timeLog.create({
@@ -56,9 +61,6 @@ export const POST = async (request: NextRequest ) => {
     },
   });
 
-  return NextResponse.json(
-    { timeLog },
-    { status: 201}
-  );
+  return NextResponse.json({ timeLog }, { status: 201 });
 };
 
