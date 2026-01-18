@@ -7,17 +7,10 @@ datasource db {
   url      = env("DIRECT_URL")
 }
 
-// supabaseユーザテーブル
-model AuthUser {
-  id      String   @id @default(cuid())
-  profile Profile?
-}
-
 // appユーザテーブル
 model Profile {
   id     String   @id @default(cuid())
   userId String   @unique
-  user   AuthUser @relation(fields: [userId], references: [id])
 
   displayName String?
   avatarUrl   String?
