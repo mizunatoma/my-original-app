@@ -1,34 +1,15 @@
 // /api/timeline/running
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/_utils/prisma";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from 'next/headers';
-
-function createSupabaseServer(cookieStore: ReturnType<typeof cookies>) {
-  return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get: (name) => cookieStore.get(name)?.value,
-        set: (name, value, options) => cookieStore.set({ name, value, ...options }),
-        remove: (name, options) => cookieStore.set({ name, value: '', ...options }),
-      },
-    }
-  )
-}
+import { getAuthUser } from "@/app/_utils/getAuthUser";
 
 // ===============================
 // GET
 // ===============================
 export const GET = async (request: NextRequest) => {
-  const cookieStore = cookies()
-  const supabase = createSupabaseServer(cookieStore);
-
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) {
-    return NextResponse.json({ error: 'Unautorized' }, { status: 401 });
-  };
+  const auth = await getAuthUser();
+  if (auth instanceof NextResponse) return auth;
+  const user = auth.user;
 
   const profile = await prisma.profile.findUnique({
     where: { userId: user.id }
@@ -40,7 +21,10 @@ export const GET = async (request: NextRequest) => {
   const runningLog = await prisma.timeLog.findFirst({
     where: {
       endAt: null,
-      activity: { profileId: profile.id }
+      activity: {
+        profileId: profile.id,
+        deletedAt: null,
+      }
     },
     include: {
       activity: true,

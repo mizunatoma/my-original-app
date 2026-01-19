@@ -1,24 +1,7 @@
 // /api/timeline/activities/[id]
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from '@/app/_utils/prisma';
-import { cookies } from 'next/headers'
-import { createServerClient } from '@supabase/ssr'
-
-function createSupabaseServer(cookieStore: ReturnType<typeof cookies>) {
-  return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get: (name) => cookieStore.get(name)?.value,
-        set: (name, value, options) =>
-          cookieStore.set({ name, value, ...options }),
-        remove: (name, options) =>
-          cookieStore.set({ name, value: '', ...options }),
-      },
-    }
-  )
-}
+import { getAuthUser } from "@/app/_utils/getAuthUser";
 
 // ===============================
 // PUT
@@ -28,13 +11,9 @@ export const PUT = async (
   { params }: { params: { id: string } }
 ) => {
   try {
-    const cookieStore = cookies()
-    const supabase = createSupabaseServer(cookieStore);
-
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const auth = await getAuthUser();
+    if (auth instanceof NextResponse) return auth;
+    const user = auth.user;
 
     const profile = await prisma.profile.findUnique({
       where: { userId: user.id },
@@ -70,13 +49,9 @@ export const DELETE = async (
   { params }: { params: { id: string } }
 ) => {
   try {
-    const cookieStore = cookies();
-    const supabase = createSupabaseServer(cookieStore);
-
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await getAuthUser();
+    if (auth instanceof NextResponse) return auth;
+    const user = auth.user;
 
     const profile = await prisma.profile.findUnique({
       where: { userId: user.id },
@@ -92,8 +67,9 @@ export const DELETE = async (
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 
-    await prisma.activity.delete({
+    await prisma.activity.update({
       where: { id: params.id },
+      data: { deletedAt: new Date() },
     })
 
     return NextResponse.json({ status: "OK", activity }, { status: 200 });

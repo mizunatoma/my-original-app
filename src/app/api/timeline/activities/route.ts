@@ -1,37 +1,16 @@
 // /api/timeline/activities
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from '@/app/_utils/prisma';
-import { cookies } from 'next/headers'
-import { createServerClient } from '@supabase/ssr'
-
-function createSupabaseServer(cookieStore: ReturnType<typeof cookies>) {
-  return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get: (name) => cookieStore.get(name)?.value,
-        set: (name, value, options) =>
-          cookieStore.set({ name, value, ...options }),
-        remove: (name, options) =>
-          cookieStore.set({ name, value: '', ...options }),
-      },
-    }
-  )
-}
+import { getAuthUser } from "@/app/_utils/getAuthUser";
 
 // ===============================
 // GET
 // ===============================
 export const GET = async () => {
   try {
-    const cookieStore = cookies();
-    const supabase = createSupabaseServer(cookieStore);
-
-    const { data: { user }, error } = await supabase.auth.getUser();
-    if (error || !user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await getAuthUser();
+    if (auth instanceof NextResponse) return auth;
+    const user = auth.user;
 
     const profile = await prisma.profile.findUnique({
       where: { userId: user.id },
@@ -59,13 +38,9 @@ export const GET = async () => {
 // ===============================
 export const POST = async (request: NextRequest) => {
   try {
-    const cookieStore = cookies();
-    const supabase = createSupabaseServer(cookieStore);
-
-    const { data: { user }, error } = await supabase.auth.getUser();
-    if (error || !user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await getAuthUser();
+    if (auth instanceof NextResponse) return auth;
+    const user = auth.user;
 
     const profile = await prisma.profile.findUnique({
       where: { userId: user.id },

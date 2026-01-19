@@ -1,35 +1,13 @@
 // /api/timeline?date=YYYY-MM-DD
 import { NextRequest, NextResponse } from "next/server";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from 'next/headers'
-import { prisma } from "@/app/_utils/prisma";
-
-function createSupabaseServer() {
-  const cookieStore = cookies();
-
-  return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get: (name) => cookieStore.get(name)?.value,
-        set: (name, value, options) => cookieStore.set({ name, value, ...options }),
-        remove: (name, options) => cookieStore.set({ name, value: '', ...options }),
-      },
-    }
-  )
-}
+import { prisma } from '@/app/_utils/prisma';
+import { getAuthUser } from "@/app/_utils/getAuthUser";
 
 export const GET = async (request: NextRequest) => {
   try {
-    // Cookie ストアを取得（Supabase 認証用）
-    const supabase = createSupabaseServer()
-
-    // ログインユーザー取得
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await getAuthUser();
+    if (auth instanceof NextResponse) return auth;
+    const user = auth.user;
 
     // user に紐づく profile を取得
     const profile = await prisma.profile.findUnique({
