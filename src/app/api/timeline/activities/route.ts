@@ -27,9 +27,7 @@ export const GET = async () => {
     return NextResponse.json({ status: "OK", activities }, { status: 200 });
   } catch (e) {
     console.error("GET /activities error:", e);
-    return NextResponse.json(
-      { status: "NG", error: String(e) }, { status: 500 }
-    );
+    return NextResponse.json({ status: "NG", error: String(e) }, { status: 500 });
   }
 };
 
@@ -63,9 +61,7 @@ export const POST = async (request: NextRequest) => {
     );
   } catch (e) {
     console.error("POST /activities error:", e);
-    return NextResponse.json(
-      { status: "NG", error: String(e) }, { status: 500 }
-    );
+    return NextResponse.json({ status: "NG", error: String(e) }, { status: 500 });
   }
 };
 

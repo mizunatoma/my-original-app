@@ -3,6 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from '@/app/_utils/prisma';
 import { getAuthUser } from "@/app/_utils/getAuthUser";
 
+// ===============================
+// GET
+// ===============================
 export const GET = async (request: NextRequest) => {
   try {
     const auth = await getAuthUser();
@@ -59,7 +62,7 @@ export const GET = async (request: NextRequest) => {
 
     return NextResponse.json({ date, timeline }, { status: 200 })
   } catch (e) {
-    console.error(e);
+    console.error("GET /timeline?date=YYYY-MM-DD:", e);
     return NextResponse.json({ status: "NG", error: String(e) }, { status: 500 })
   };
 };

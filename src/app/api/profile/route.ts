@@ -19,9 +19,9 @@ export const POST = async (request: NextRequest) => {
     })
 
     return NextResponse.json({ profile }, { status: 200 })
-  } catch (error) {
-    console.error(error)
-    return NextResponse.json({ error: 'Profile upsert failed' }, { status: 500 })
+  } catch (e) {
+    console.error("POST /profile error:", e);
+    return NextResponse.json({ status: "NG", error: String(e) }, { status: 500 });
   }
 }
 
@@ -29,34 +29,44 @@ export const POST = async (request: NextRequest) => {
 // GET
 // ===============================
 export const GET = async (request: NextRequest) => {
-  const auth = await getAuthUser();
-  if (auth instanceof NextResponse) return auth;
-  const user = auth.user;
+  try {
+    const auth = await getAuthUser();
+    if (auth instanceof NextResponse) return auth;
+    const user = auth.user;
 
-  const profile = await prisma.profile.findUnique({
-    where: { userId: user.id },
-  })
+    const profile = await prisma.profile.findUnique({
+      where: { userId: user.id },
+    })
 
-  return NextResponse.json({ profile }, { status: 200 })
+    return NextResponse.json({ profile }, { status: 200 })
+  } catch (e) {
+    console.error("GET /profile error:", e);
+    return NextResponse.json({ status: "NG", error: String(e) }, { status: 500 });
+  }
 }
 
 // ===============================
 // PUT
 // ===============================
 export const PUT = async (request: NextRequest) => {
-  const auth = await getAuthUser();
-  if (auth instanceof NextResponse) return auth;
-  const user = auth.user;
+  try {
+    const auth = await getAuthUser();
+    if (auth instanceof NextResponse) return auth;
+    const user = auth.user;
 
-  const body = await request.json()
-  const { displayName } = body
+    const body = await request.json()
+    const { displayName } = body
 
-  const profile = await prisma.profile.update({
-    where: { userId: user.id },
-    data: { displayName },
-  })
+    const profile = await prisma.profile.update({
+      where: { userId: user.id },
+      data: { displayName },
+    })
 
-  return NextResponse.json({ profile }, { status: 200 })
+    return NextResponse.json({ profile }, { status: 200 })
+  } catch (e) {
+    console.error("PUT /profile error:", e);
+    return NextResponse.json({ status: "NG", error: String(e) }, { status: 500 });
+  }
 }
 
 

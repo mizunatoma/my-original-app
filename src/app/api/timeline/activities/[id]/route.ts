@@ -37,6 +37,7 @@ export const PUT = async (
 
     return NextResponse.json({ status: "OK", activity: updated });
   } catch (e) {
+    console.error("PUT /activities/[id] error:", e);
     return NextResponse.json({ status: "NG", error: String(e) }, { status: 500 });
   };
 }
@@ -74,7 +75,7 @@ export const DELETE = async (
 
     return NextResponse.json({ status: "OK", activity }, { status: 200 });
   } catch (e) {
-    console.error(e);
+    console.error("DELETE /activities/[id] error:", e);
     return NextResponse.json({ status: "NG", error: String(e) }, { status: 500 });
   };
 }
