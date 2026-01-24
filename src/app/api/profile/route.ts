@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from '@/app/_utils/prisma';
 import { getAuthUser } from "@/app/_utils/getAuthUser";
+import { ProfileAPI } from "@/types/api";
 
 // ===============================
 // POST
@@ -54,7 +55,7 @@ export const PUT = async (request: NextRequest) => {
     if (auth instanceof NextResponse) return auth;
     const user = auth.user;
 
-    const body = await request.json()
+    const body = (await request.json()) as ProfileAPI.Put.Request;
     const { displayName } = body
 
     const profile = await prisma.profile.update({
