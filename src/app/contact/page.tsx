@@ -18,8 +18,7 @@ export default function ContactPage() {
 
   const onSubmit = async (data: FormValues) => {
     try {
-      const res = await fetch(
-        "https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/contacts",
+      const res = await fetch("/api/contacts",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
