@@ -48,6 +48,6 @@ export const GET = async (request: NextRequest) => {
     });
   } catch (e) {
     console.error("GET /timeline/running error:", e);
-    return NextResponse.json({ status: "NG", error: String(e) }, { status: 500 });
+    return NextResponse.json({ error: String(e) }, { status: 500 });
   };
 };

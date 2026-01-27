@@ -22,7 +22,7 @@ export const POST = async (request: NextRequest) => {
     return NextResponse.json({ profile }, { status: 200 })
   } catch (e) {
     console.error("POST /profile error:", e);
-    return NextResponse.json({ status: "NG", error: String(e) }, { status: 500 });
+    return NextResponse.json({ error: String(e) }, { status: 500 });
   }
 }
 
@@ -42,7 +42,7 @@ export const GET = async (request: NextRequest) => {
     return NextResponse.json({ profile }, { status: 200 })
   } catch (e) {
     console.error("GET /profile error:", e);
-    return NextResponse.json({ status: "NG", error: String(e) }, { status: 500 });
+    return NextResponse.json({ error: String(e) }, { status: 500 });
   }
 }
 
@@ -66,7 +66,7 @@ export const PUT = async (request: NextRequest) => {
     return NextResponse.json({ profile }, { status: 200 })
   } catch (e) {
     console.error("PUT /profile error:", e);
-    return NextResponse.json({ status: "NG", error: String(e) }, { status: 500 });
+    return NextResponse.json({ error: String(e) }, { status: 500 });
   }
 }
 

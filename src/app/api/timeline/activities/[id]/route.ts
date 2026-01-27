@@ -15,10 +15,10 @@ export const PUT = async (
     if (auth instanceof NextResponse) return auth;
     const user = auth.user;
 
-    console.log("=== API HIT ===");
-    console.log("params.id:", params.id);
-    console.log("user.id:", user.id);
-    console.log("DB URL:", process.env.DATABASE_URL);
+    //console.log("=== API HIT ===");
+    //console.log("params.id:", params.id);
+    //console.log("user.id:", user.id);
+    //console.log("DB URL:", process.env.DATABASE_URL);
 
     const activity = await prisma.activity.findFirst({
       where: {
@@ -30,7 +30,7 @@ export const PUT = async (
       },
     });
     if (!activity) {
-      return NextResponse.json({ error: 'Not find' }, { status: 404 });
+      return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
 
     const { name } = await request.json();
@@ -39,10 +39,10 @@ export const PUT = async (
       data: { name },
     })
 
-    return NextResponse.json({ status: "OK", activity: updated });
+    return NextResponse.json({ activity: updated });
   } catch (e) {
     console.error("PUT /activities/[id] error:", e);
-    return NextResponse.json({ status: "NG", error: String(e) }, { status: 500 });
+    return NextResponse.json({ error: String(e) }, { status: 500 });
   };
 }
 
@@ -76,9 +76,9 @@ export const DELETE = async (
       data: { deletedAt: new Date() },
     })
 
-    return NextResponse.json({ status: "OK", activity }, { status: 200 });
+    return NextResponse.json({ activity }, { status: 200 });
   } catch (e) {
     console.error("DELETE /activities/[id] error:", e);
-    return NextResponse.json({ status: "NG", error: String(e) }, { status: 500 });
+    return NextResponse.json({ error: String(e) }, { status: 500 });
   };
 }

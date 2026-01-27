@@ -24,10 +24,10 @@ export const GET = async () => {
       select: { id: true, name: true },
     });
 
-    return NextResponse.json({ status: "OK", activities }, { status: 200 });
+    return NextResponse.json({ activities }, { status: 200 });
   } catch (e) {
     console.error("GET /activities error:", e);
-    return NextResponse.json({ status: "NG", error: String(e) }, { status: 500 });
+    return NextResponse.json({ error: String(e) }, { status: 500 });
   }
 };
 
@@ -56,12 +56,10 @@ export const POST = async (request: NextRequest) => {
       data: { name, profileId: profile.id },
     });
 
-    return NextResponse.json(
-      { status: "OK", id: data.id }, { status: 200 }
-    );
+    return NextResponse.json({ id: data.id }, { status: 200 });
   } catch (e) {
     console.error("POST /activities error:", e);
-    return NextResponse.json({ status: "NG", error: String(e) }, { status: 500 });
+    return NextResponse.json({ error: String(e) }, { status: 500 });
   }
 };
 

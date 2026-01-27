@@ -39,7 +39,7 @@ export const POST = async (request: NextRequest) => {
     return NextResponse.json({ timeLog }, { status: 200 });
   } catch (e) {
     console.error("POST /timeline/end error:", e);
-    return NextResponse.json({ status: "NG", error: String(e) }, { status: 500 });
+    return NextResponse.json({ error: String(e) }, { status: 500 });
   }
 };
 

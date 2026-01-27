@@ -63,6 +63,6 @@ export const GET = async (request: NextRequest) => {
     return NextResponse.json({ date, timeline }, { status: 200 })
   } catch (e) {
     console.error("GET /timeline?date=YYYY-MM-DD:", e);
-    return NextResponse.json({ status: "NG", error: String(e) }, { status: 500 })
+    return NextResponse.json({ error: String(e) }, { status: 500 })
   };
 };
