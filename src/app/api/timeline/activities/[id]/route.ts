@@ -15,17 +15,21 @@ export const PUT = async (
     if (auth instanceof NextResponse) return auth;
     const user = auth.user;
 
-    const profile = await prisma.profile.findUnique({
-      where: { userId: user.id },
-    });
-    if (!profile) {
-      return NextResponse.json({ error: 'Profile not find' }, { status: 400 });
-    }
+    console.log("=== API HIT ===");
+    console.log("params.id:", params.id);
+    console.log("user.id:", user.id);
+    console.log("DB URL:", process.env.DATABASE_URL);
 
-    const activity = await prisma.activity.findUnique({
-      where: { id: params.id },
+    const activity = await prisma.activity.findFirst({
+      where: {
+        id: params.id,
+        profile: {
+          userId: user.id,
+        },
+        deletedAt: null,
+      },
     });
-    if (!activity || activity.profileId !== profile.id) {
+    if (!activity) {
       return NextResponse.json({ error: 'Not find' }, { status: 404 });
     }
 
@@ -54,17 +58,16 @@ export const DELETE = async (
     if (auth instanceof NextResponse) return auth;
     const user = auth.user;
 
-    const profile = await prisma.profile.findUnique({
-      where: { userId: user.id },
+    const activity = await prisma.activity.findFirst({
+      where: {
+        id: params.id,
+        profile: {
+          userId: user.id,
+        },
+        deletedAt: null,
+      },
     });
-    if (!profile) {
-      return NextResponse.json({ error: "Profile not found" }, { status: 400 });
-    }
-
-    const activity = await prisma.activity.findUnique({
-      where: { id: params.id },
-    });
-    if (!activity || activity.profileId !== profile.id) {
+    if (!activity) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 

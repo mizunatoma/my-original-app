@@ -7,119 +7,101 @@ datasource db {
   url      = env("DIRECT_URL")
 }
 
-// appユーザテーブル
 model Profile {
-  id     String   @id @default(cuid())
-  userId String   @unique
-
+  id          String     @id @default(cuid())
+  userId      String     @unique
   displayName String?
   avatarUrl   String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  activities Activity[]
-  todoLists  TodoList[]
-  routines   Routine[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  activities  Activity[]
+  routines    Routine[]
+  todoLists   TodoList[]
 }
 
 model Activity {
-  id        String  @id @default(cuid())
-  profileId String?
-  profile   Profile? @relation(fields: [profileId], references: [id])
-
+  id         String    @id @default(cuid())
+  profileId  String?
   name       String
   colorToken String?
   sortOrder  Int?
-
-  deletedAt DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  timeLogs  TimeLog[]
+  deletedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  profile    Profile?  @relation(fields: [profileId], references: [id])
+  timeLogs   TimeLog[]
 }
 
 model TimeLog {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   activityId String
-  activity   Activity @relation(fields: [activityId], references: [id])
-
-  startAt DateTime
-  endAt   DateTime?
-  memo    String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  startAt    DateTime
+  endAt      DateTime?
+  memo       String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  activity   Activity  @relation(fields: [activityId], references: [id])
 }
 
 model TodoList {
-  id        String  @id @default(cuid())
+  id        String    @id @default(cuid())
   profileId String
-  profile   Profile @relation(fields: [profileId], references: [id])
-
   name      String
   sortOrder Int
-
   deletedAt DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   todos     Todo[]
+  profile   Profile   @relation(fields: [profileId], references: [id])
 }
 
 model Todo {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   todoListId String
-  todoList   TodoList @relation(fields: [todoListId], references: [id])
-
-  title  String
-  isDone Boolean   @default(false)
-  doneAt DateTime?
-
-  deletedAt DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  title      String
+  isDone     Boolean   @default(false)
+  doneAt     DateTime?
+  deletedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  todoList   TodoList  @relation(fields: [todoListId], references: [id])
 }
 
 model Routine {
-  id        String  @id @default(cuid())
-  profileId String
-  profile   Profile @relation(fields: [profileId], references: [id])
-
-  name       String
-  frequency  String
-  colorToken String
-  weekStart  Int
-  sortOrder  Int
-
-  deletedAt DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  state        RoutineState?
+  id           String        @id @default(cuid())
+  profileId    String
+  name         String
+  frequency    String
+  colorToken   String
+  weekStart    Int
+  sortOrder    Int
+  deletedAt    DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  profile      Profile       @relation(fields: [profileId], references: [id])
   routineItems RoutineItem[]
+  state        RoutineState?
 }
 
 model RoutineItem {
-  id        String  @id @default(cuid())
+  id        String    @id @default(cuid())
   routineId String
-  routine   Routine @relation(fields: [routineId], references: [id])
-
   title     String
   ischecked Boolean   @default(false)
   doneAt    DateTime?
   checkedAt DateTime?
   sortOrder Int
-
   deletedAt DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  routine   Routine   @relation(fields: [routineId], references: [id])
 }
 
 model RoutineState {
-  id        String  @id @default(cuid())
-  routineId String  @unique
-  routine   Routine @relation(fields: [routineId], references: [id])
-
+  id              String   @id @default(cuid())
+  routineId       String   @unique
   periodStartedAt DateTime
   lastResetAt     DateTime
   updatedAt       DateTime @updatedAt
+  routine         Routine  @relation(fields: [routineId], references: [id])
 }
