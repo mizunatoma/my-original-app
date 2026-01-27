@@ -1,20 +1,14 @@
+//「未ログインならこのページに入らせない」ためのカスタムhook
 import { useSupabaseSession } from "@/app/_hooks/useSupabsaeSession";
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
 export const useRouteGuard = () => {
   const router = useRouter()
-  const { session } = useSupabaseSession()
+  const { session, isLoading } = useSupabaseSession()
 
-  useEffect(() => { 
-    if (session === undefined) return
-
-    const fetcher = async () => {
-      if (session === null) {
-        router.replace('/login')
-      }
-    }
-
-    fetcher()
-  }, [router, session])
+  useEffect(() => {
+    if (isLoading) return
+    if (!session) router.replace("/login")
+  }, [session, isLoading, router])
 }

@@ -1,34 +1,35 @@
 'use client'
 
 import { supabaseBrowser } from '@/app/_utils/supabaseBrowser'
-import { useState } from 'react'
+import { useForm } from 'react-hook-form';
+
+type LoginForm = {
+  email: string,
+  password: string,
+}
 
 export default function Page() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const { register, handleSubmit, reset } = useForm<LoginForm>();
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const onSubmit = async (data: LoginForm) => {
+    const { email, password } = data
 
     const { error } = await supabaseBrowser.auth.signUp({
       email,
       password,
-      options: {
-        emailRedirectTo: `http://localhost:3000/login`,
-      },
     })
+
     if (error) {
       alert('登録に失敗しました')
     } else {
-      setEmail('')
-      setPassword('')
+      reset()
       alert('確認メールを送信しました')
     }
   }
 
   return (
     <div className="flex justify-center pt-[240px]">
-      <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-[400px]">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full max-w-[400px]">
         <div>
           <label
             htmlFor="email"
@@ -38,13 +39,10 @@ export default function Page() {
           </label>
           <input
             type="email"
-            name="email"
             id="email"
+            {...register('email', { required: true })}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             placeholder="name@company.com"
-            required
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
           />
         </div>
         <div>
@@ -56,13 +54,10 @@ export default function Page() {
           </label>
           <input
             type="password"
-            name="password"
             id="password"
-            placeholder="••••••••"
+            {...register('password', { required: true })}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            required
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
+            placeholder="••••••••"
           />
         </div>
 
