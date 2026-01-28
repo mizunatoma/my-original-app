@@ -1,6 +1,10 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import { FormLabel } from '../_components/form/FormLabel';
+import { FormInput } from '../_components/form/FormInput';
+import { FormButton } from '../_components/form/FormButton';
+import { FormTextarea } from "../_components/form/FormTextarea";
 
 type FormValues = {
   name: string;
@@ -40,19 +44,13 @@ export default function ContactPage() {
 
   return (
     <main className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="w-full max-w-lg space-y-6 p-6 bg-white shadow-md rounded-md"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-[400px] space-y-6 mx-auto">
         <h1 className="text-2xl font-bold text-center">お問い合わせ</h1>
-
-        {/* 名前 */}
         <div>
-          <label className="block font-medium text-gray-700">お名前</label>
-          <input
-            disabled={isSubmitting}
-            className="mt-1 block w-full border border-gray-300 rounded-md p-2
-                       focus:border-blue-500 focus:ring focus:ring-blue-200"
+          <FormLabel htmlFor='name'>お名前</FormLabel>
+          <FormInput
+            loading={isSubmitting}
+            className="focus:border-blue-500 focus:ring focus:ring-blue-200"
             {...register("name", {
               required: "名前は必須です",
               maxLength: { value: 30, message: "30文字以内で入力してください" },
@@ -64,16 +62,11 @@ export default function ContactPage() {
             </p>
           )}
         </div>
-
-        {/* メール */}
         <div>
-          <label className="block font-medium text-gray-700">
-            メールアドレス
-          </label>
-          <input
-            disabled={isSubmitting}
-            className="mt-1 block w-full border border-gray-300 rounded-md p-2
-                       focus:border-blue-500 focus:ring focus:ring-blue-200"
+          <FormLabel htmlFor='email'>メールアドレス</FormLabel>
+          <FormInput
+            loading={isSubmitting}
+            className="focus:border-blue-500 focus:ring focus:ring-blue-200"
             {...register("email", {
               required: "メールアドレスは必須です",
               pattern: {
@@ -88,44 +81,29 @@ export default function ContactPage() {
             </p>
           )}
         </div>
-
-        {/* 本文 */}
         <div>
-          <label className="block font-medium text-gray-700">本文</label>
-          <textarea
+          <FormLabel htmlFor="text">本文</FormLabel>
+          <FormTextarea
             rows={5}
-            disabled={isSubmitting}
-            className="mt-1 block w-full border border-gray-300 rounded-md p-2
-                       focus:border-blue-500 focus:ring focus:ring-blue-200"
+            loading={isSubmitting}
             {...register("message", { required: "本文は必須です" })}
           />
           {errors.message && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.message.message}
-            </p>
+            <p>{errors.message.message}</p>
           )}
         </div>
-
-        {/* ボタン */}
-        <div className="flex justify-center gap-4">
-          <button
+        <div className="flex justify-between gap-4">
+          <FormButton
             type="submit"
-            disabled={isSubmitting}
-            className="bg-blue-600 text-white px-6 py-2 rounded-md
-                       hover:bg-blue-700 disabled:bg-gray-400"
-          >
-            {isSubmitting ? "送信中..." : "送信"}
-          </button>
-
-          <button
+            loading={isSubmitting}
+            label="送信"
+          />
+          <FormButton
             type="button"
+            loading={isSubmitting}
+            label="クリア"
             onClick={() => reset()}
-            disabled={isSubmitting}
-            className="bg-gray-300 px-6 py-2 rounded-md
-                       hover:bg-gray-400 disabled:bg-gray-200"
-          >
-            クリア
-          </button>
+          />
         </div>
       </form>
     </main>

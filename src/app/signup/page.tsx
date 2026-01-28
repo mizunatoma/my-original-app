@@ -2,6 +2,9 @@
 
 import { supabaseBrowser } from '@/app/_utils/supabaseBrowser'
 import { useForm } from 'react-hook-form';
+import { FormLabel } from '../_components/form/FormLabel';
+import { FormInput } from '../_components/form/FormInput';
+import { FormButton } from '../_components/form/FormButton';
 
 type LoginForm = {
   email: string,
@@ -35,49 +38,28 @@ export default function Page() {
 
   return (
     <div className="flex justify-center pt-[240px]">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full max-w-[400px]">
+      <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-[400px] space-y-6">
         <div>
-          <label
-            htmlFor="email"
-            className="block mb-2 text-sm font-medium text-gray-900"
-          >
-            メールアドレス
-          </label>
-          <input
+          <FormLabel htmlFor="email">メールアドレス</FormLabel>
+          <FormInput
             type="email"
             id="email"
-            disabled={isSubmitting}
+            loading={isSubmitting}
             {...register('email', { required: true })}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             placeholder="name@company.com"
           />
         </div>
         <div>
-          <label
-            htmlFor="password"
-            className="block mb-2 text-sm font-medium text-gray-900"
-          >
-            パスワード
-          </label>
-          <input
+          <FormLabel htmlFor='password'>パスワード</FormLabel>
+          <FormInput
             type="password"
             id="password"
-            disabled={isSubmitting}
+            loading={isSubmitting}
             {...register('password', { required: true })}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             placeholder="••••••••"
           />
         </div>
-
-        <div>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-          >
-            {isSubmitting ? '送信中...' : '登録'}
-          </button>
-        </div>
+        <FormButton loading={isSubmitting} label='登録' />
       </form>
     </div>
   )
