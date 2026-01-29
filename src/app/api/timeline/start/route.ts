@@ -12,19 +12,12 @@ export const POST = async (request: NextRequest) => {
     if (auth instanceof NextResponse) return auth;
     const user = auth.user;
 
-    const profile = await prisma.profile.findUnique({
-      where: { userId: user.id }
-    })
-    if (!profile) {
-      return NextResponse.json({ error: 'profile not found' }, { status: 400 })
-    }
-
     //endAt が null の timeLog を findFirst で探して、
     //見つかったら runningLog は truthy になる
     const runningLog = await prisma.timeLog.findFirst({
       where: {
         endAt: null,
-        activity: { profileId: profile.id }
+        activity: { profile: { userId: user.id } },
       }
     })
 

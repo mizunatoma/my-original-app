@@ -21,14 +21,14 @@ model Profile {
 
 model Activity {
   id         String    @id @default(cuid())
-  profileId  String?
+  profileId  String
   name       String
   colorToken String?
   sortOrder  Int?
   deletedAt  DateTime?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
-  profile    Profile?  @relation(fields: [profileId], references: [id])
+  profile    Profile  @relation(fields: [profileId], references: [id])
   timeLogs   TimeLog[]
 }
 

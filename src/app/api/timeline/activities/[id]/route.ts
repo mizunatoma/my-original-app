@@ -23,9 +23,7 @@ export const PUT = async (
     const activity = await prisma.activity.findFirst({
       where: {
         id: params.id,
-        profile: {
-          userId: user.id,
-        },
+        profile: { userId: user.id },
         deletedAt: null,
       },
     });
@@ -61,9 +59,7 @@ export const DELETE = async (
     const activity = await prisma.activity.findFirst({
       where: {
         id: params.id,
-        profile: {
-          userId: user.id,
-        },
+        profile: { userId: user.id },
         deletedAt: null,
       },
     });

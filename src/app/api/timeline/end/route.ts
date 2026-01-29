@@ -12,18 +12,11 @@ export const POST = async (request: NextRequest) => {
     if (auth instanceof NextResponse) return auth;
     const user = auth.user;
 
-    const profile = await prisma.profile.findUnique({
-      where: { userId: user.id }
-    })
-    if (!profile) {
-      return NextResponse.json({ error: 'Profile not found' }, { status: 400 })
-    }
-
     // 進行中のアクティビティを探す
     const runningLog = await prisma.timeLog.findFirst({
       where: {
         endAt: null,
-        activity: { profileId: profile.id }
+        activity: { profile: { userId: user.id } },
       }
     })
     if (!runningLog) {

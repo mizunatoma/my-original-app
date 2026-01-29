@@ -12,16 +12,14 @@ export const GET = async () => {
     if (auth instanceof NextResponse) return auth;
     const user = auth.user;
 
-    const profile = await prisma.profile.findUnique({
-      where: { userId: user.id },
-    });
-    if (!profile) {
-      return NextResponse.json({ error: "Profile not found" }, { status: 400 });
-    }
-
     const activities = await prisma.activity.findMany({
-      where: { profileId: profile.id },
-      select: { id: true, name: true },
+      where: {
+        profile: { userId: user.id },
+        deletedAt: null,
+      },
+      select: {
+        id: true, name: true
+      },
     });
 
     return NextResponse.json({ activities }, { status: 200 });
@@ -40,20 +38,16 @@ export const POST = async (request: NextRequest) => {
     if (auth instanceof NextResponse) return auth;
     const user = auth.user;
 
-    const profile = await prisma.profile.findUnique({
-      where: { userId: user.id },
-    });
-    if (!profile) {
-      return NextResponse.json({ error: "Profile not found" }, { status: 400 });
-    }
-
     const { name } = await request.json();
     if (!name) {
       return NextResponse.json({ error: "name is required" }, { status: 400 });
     }
 
     const data = await prisma.activity.create({
-      data: { name, profileId: profile.id },
+      data: {
+        name,
+        profile: { connect: { userId: user.id } }
+      },
     });
 
     return NextResponse.json({ id: data.id }, { status: 200 });

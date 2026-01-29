@@ -12,14 +12,6 @@ export const GET = async (request: NextRequest) => {
     if (auth instanceof NextResponse) return auth;
     const user = auth.user;
 
-    // user に紐づく profile を取得
-    const profile = await prisma.profile.findUnique({
-      where: { userId: user.id },
-    })
-    if (!profile) {
-      return NextResponse.json({ error: "Profile not found" }, { status: 400 });
-    }
-
     // クエリパラメータから date を取得
     const { searchParams } = new URL(request.url); // リクエストのURL文字列を URLオブジェクトに変換
     const date = searchParams.get("date");         // "2026-01-01" or null
@@ -34,9 +26,7 @@ export const GET = async (request: NextRequest) => {
     // TimeLog を Activity → Profile 経由で取得
     const logs = await prisma.timeLog.findMany({
       where: {
-        activity: {
-          profileId: profile.id,
-        },
+        activity: { profile: { userId: user.id } },
         OR: [
           { startAt: { gte: startOfDay, lte: endOfDay } },
           { endAt: { gte: startOfDay, lte: endOfDay } },
