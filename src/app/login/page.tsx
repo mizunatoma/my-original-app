@@ -37,7 +37,7 @@ export default function Page() {
   }
   return (
     <div className="flex justify-center pt-[240px]">
-      <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-[400px] space-y-6">
+      <form method="POST" onSubmit={handleSubmit(onSubmit)} className="w-full max-w-[400px] space-y-6">
         <div>
           <FormLabel htmlFor='email'>メールアドレス</FormLabel>
           <FormInput
