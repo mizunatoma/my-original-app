@@ -6,7 +6,11 @@ import { useSupabaseSession } from '../../_hooks/useSupabsaeSession'
 import { supabaseBrowser } from '@/app/_utils/supabaseBrowser'
 import { useRouter } from 'next/navigation'
 
-export default function UserHeader() {
+interface UserHeaderProps {
+  toggleSidebar: () => void // ＝引数なし、戻り値なしの関数
+}
+
+export default function UserHeader({ toggleSidebar }: UserHeaderProps) {
   const router = useRouter()
 
   const handleLogout = async () => {
@@ -18,9 +22,16 @@ export default function UserHeader() {
 
   return (
     <header className="bg-gray-800 text-white p-6 font-bold flex justify-between items-center">
-      <Link href="/" className="header-link">
-        Blog
-      </Link>
+
+      <div className='flex items-center gap-4'>
+        <button onClick={toggleSidebar} className="p-2 hover:bg-white/10 rounded-lg text-2xl transition-colors">
+          ☰
+        </button>
+        <Link href="/" className="header-link">
+          Blog
+        </Link>
+      </div>
+
       {!isLoading && (
         <div className="flex items-center gap-4">
           {session ? (

@@ -3,43 +3,59 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-export default function UserSidebar() {
-  const pathname = usePathname()
+interface UserSidebarProps {
+  isCollapsed: boolean
+}
 
-  const isSelected = (href: string) => {
-    return pathname === href
-  }
+// リンク部分を共通化
+function SidebarLink({ href, icon, label, isSelected, isCollapsed }: any) {
+  return (
+    <Link
+      href={href}
+      className={`p-4 block ... ${isSelected ? 'bg-blue-100 text-blue-600' : '...'}`}
+    >
+      <span className='text-xl shrink-0'>{icon}</span>
+      {!isCollapsed && <span className='font-bold whitespace-nowrap'>{label}</span>}
+    </Link>
+  )
+}
+
+export default function UserSidebar({ isCollapsed }: UserSidebarProps) {
+  const pathname = usePathname()
+  const isSelected = (href: string) => pathname === href
 
   return (
-    <aside className="fixed bg-gray-100 w-[280px] left-0 bottom-0 top-[72px]">
-      <Link
-        href="/user/timeline"
-        className={`p-4 block hover:bg-blue-100 ${isSelected('/user/timeline') && 'bg-blue-100'
-          }`}
-      >
-        Timeline
-      </Link>
-      <Link
-        href="/user/analytics"
-        className={`p-4 block hover:bg-blue-100 ${isSelected('/user/analytics') && 'bg-blue-100'
-          }`}
-      >
-        Analytics
-      </Link>
-      <Link
-        href="/user/tasks"
-        className={`p-4 block hover:bg-blue-100 ${isSelected('/user/tasks') && 'bg-blue-100'
-          }`}
-      >
-        Tasks
-      </Link>
-      <Link
-        href="/user/routines"
-        className={`p-4 block hover:bg-blue-100 ${isSelected('/user/routines') && 'bg-blue-100'
-          }`}
-      >
-        Routines
-      </Link>
+    <aside className={`transition-all duration-300 fixed bg-gray-100 left-0 bottom-0 top-[72px] ${isCollapsed ? 'w-[80px]' : 'w-[280px]'}`}>
+      <nav>
+        <SidebarLink
+          href="/user/timeline"
+          icon="🕘"
+          label="timeline"
+          isSelected={isSelected('/user/timeline')}
+          isCollapsed={isCollapsed}
+        />
+        <SidebarLink
+          href="/user/analytics"
+          icon="📊"
+          label="Analytics"
+          isSelected={isSelected('/user/analytics')}
+          isCollapsed={isCollapsed}
+        />
+        <SidebarLink
+          href="/user/tasks"
+          icon="📝"
+          label="Tasks"
+          isSelected={isSelected('/user/tasks')}
+          isCollapsed={isCollapsed}
+        />
+        <SidebarLink
+          href="/user/routines"
+          icon="🔄"
+          label="Routines"
+          isSelected={isSelected('/user/routines')}
+          isCollapsed={isCollapsed}
+        />
+      </nav>
     </aside>
   )
 }
