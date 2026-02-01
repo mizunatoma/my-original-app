@@ -19,7 +19,8 @@ function SidebarLink({ href, icon, label, isSelected, isCollapsed }: any) {
   return (
     <Link
       href={href}
-      className={`h-12 flex items-center gap-3 px-3 rounded-2xl transition-all 
+      className={`h-12 flex items-center gap-3 rounded-xl transition-all 
+        ${isCollapsed ? 'justify-center w-12' : 'px-3 mx-2'}
         ${isSelected
           ? 'text-gray-800 bg-[#E6E1D6] shadow-sm'
           : 'text-gray-500 hover:bg-[#E6E1D6] hover:text-gray-700'}`}
@@ -42,7 +43,7 @@ export default function UserSidebar({ isCollapsed }: UserSidebarProps) {
   return (
     <aside className={`fixed left-0 top-0 bottom-0 z-20 overflow-hidden bg-[#FCFAF7] border-r border-[#EFEDE6] p-4
     ${isCollapsed ? 'w-[80px]' : 'w-[230px]'}`}>
-      <nav className='flex flex-col gap-1.5 px-2'>
+      <nav className='flex flex-col gap-1.5'>
         {MENU_ITEMS.map((item) => (
           <SidebarLink
             key={item.href}

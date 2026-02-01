@@ -6,7 +6,7 @@ export default function CurrentActivityWidget() {
   return (
     <div>
       <div className="widget-card">
-        <h2 className="section-tilte">現在のActivity</h2>
+        <h2 className="section-title">現在のActivity</h2>
 
         {/*実行中Activity*/}
         <div className="flex flex-col gap-3 bg-rose-50 rounded-xl p-4 mb-4">
@@ -24,7 +24,7 @@ export default function CurrentActivityWidget() {
         {/*任意メモ*/}
         <div className="relative">
           <textarea
-            className="w-full h-24 bg-gray-50 rounded-xl p-4 text-gray-700 focus:outline-none focus:ring-2 focus-ring-rose-100 transition-all resize-none placeholder-gray-400"
+            className="w-full h-24 bg-gray-50 rounded-xl p-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-rose-100 transition-all resize-none placeholder-gray-400"
             placeholder="(任意)終了時にメモを残します"
           />
         </div>
