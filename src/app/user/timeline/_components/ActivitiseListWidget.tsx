@@ -11,7 +11,7 @@ export default function ActivitiseListWidget() {
         <button className="button bg-orange-100 hover:bg-orange-200 text-orange-800">追加</button>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-4">
         <div className="activity-button">
           <div className="activity-name bg-rose-400"></div>
           <span className="activity-name-text">仕事</span>
