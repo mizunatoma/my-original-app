@@ -17,9 +17,9 @@ export default function UserLayout({
 
   return (
     <>
-      <UserHeader toggleSidebar={toggleSidebar} />
+      <UserHeader toggleSidebar={toggleSidebar} isCollapsed={isCollapsed} />
       <UserSidebar isCollapsed={isCollapsed} />
-      <div className={`transition-all duration-300 ${isCollapsed ? 'ml-[80px]' : `ml-[280px]`} p-4`}>
+      <div className={`transition-all duration-300 ${isCollapsed ? 'ml-[80px]' : `ml-[260px]`} p-4`}>
         {children}
       </div>
     </>
