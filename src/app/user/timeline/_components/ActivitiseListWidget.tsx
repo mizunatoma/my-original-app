@@ -2,7 +2,7 @@
 
 import React from "react"
 
-export default function ActivityShortcutsWidget() {
+export default function ActivitiseListWidget() {
   return (
     <div className="widget-card">
 
