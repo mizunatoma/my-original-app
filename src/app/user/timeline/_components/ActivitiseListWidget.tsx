@@ -2,6 +2,13 @@
 
 import React from "react"
 
+const ACTIVITIES = [
+  { name: "仕事", color: "bg-rose-400" },
+  { name: "学習", color: "bg-teal-400" },
+  { name: "運動", color: "bg-indigo-400" },
+  { name: "休憩", color: "bg-amber-400" }
+]
+
 export default function ActivitiseListWidget() {
   return (
     <div className="widget-card">
@@ -11,25 +18,14 @@ export default function ActivitiseListWidget() {
         <button className="button bg-orange-100 hover:bg-orange-200 text-orange-800">追加</button>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="activity-button">
-          <div className="activity-name bg-rose-400"></div>
-          <span className="activity-name-text">仕事</span>
-        </div>
-        <div className="activity-button">
-          <div className="activity-name bg-teal-400"></div>
-          <span className="activity-name-text">学習</span>
-        </div>
-        <div className="activity-button">
-          <div className="activity-name bg-indigo-400"></div>
-          <span className="activity-name-text">運動</span>
-        </div>
-        <div className="activity-button">
-          <div className="activity-name bg-amber-400"></div>
-          <span className="activity-name-text">休憩</span>
-        </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {ACTIVITIES.map((activity) => (
+          <div key={activity.name} className="activity-button">
+            <div className={`activity-name ${activity.color}`}></div>
+            <span className="text">{activity.name}</span>
+          </div>
+        ))}
       </div>
-
     </div>
   )
 }
