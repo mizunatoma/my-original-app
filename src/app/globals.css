@@ -8,15 +8,19 @@ body {
 }
 
 @layer components {
+  /* 認証ページ用の共通スタイル */
+  .auth-container{@apply min-h-screen grid grid-cols-1 lg:grid-cols-2}
+  .auth-form-section{@apply flex items-center justify-center bg-[#F2F0E9] p-8}
+  .auth-card{@apply w-full max-w-md bg-white rounded-2xl shadow-sm p-8}
+  .auth-title{@apply text-2xl font-bold text-center mb-8 text-gray-900}
+
+  /* timelineページ用の共通スタイル */
   .widget-card{@apply w-full bg-white rounded-2xl p-6 shadow-sm border border-orange-50/50}
   .section-title{@apply text-gray-600 font-bold mb-4 text-sm}
   .button{@apply px-6 py-1.5 rounded-full text-xs font-bold transition-colors}
   .text{@apply text-gray-600 font-bold text-sm}
 
-  .form-title{@apply text-2xl font-bold text-center mb-8 text-gray-900}
-
   .activity-button{@apply flex items-center gap-3 bg-white border border-gray-100 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer h-16}
   .activity-name{@apply w-3 h-3 rounded-full}
-
   .time-logs{@apply absolute top-0 left-0 w-full h-full border-l-4 p-1 text-xs}
 }

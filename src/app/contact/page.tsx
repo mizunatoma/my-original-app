@@ -5,6 +5,8 @@ import { FormLabel } from '../_components/form/FormLabel';
 import { FormInput } from '../_components/form/FormInput';
 import { FormButton } from '../_components/form/FormButton';
 import { FormTextarea } from "../_components/form/FormTextarea";
+import AuthIllustration from '../_components/AuthIllustration';
+import Link from 'next/link';
 
 type FormValues = {
   name: string;
