@@ -8,9 +8,8 @@ import { FormButton } from '../_components/form/FormButton';
 import AuthIllustration from '../_components/AuthIllustration';
 import Link from 'next/link';
 
-type Form = {
-  password: string
-  confirmPassword: string
+type ResetPasswordForm = {
+  email: string
 }
 
 export default function Page() {
@@ -19,54 +18,52 @@ export default function Page() {
     handleSubmit,
     reset,
     formState: { isSubmitting },
-  } = useForm<Form>();
+  } = useForm<ResetPasswordForm>();
 
-  const onSubmit = async (data: Form) => {
-    const { password, confirmPassword } = data
+  const onSubmit = async (data: ResetPasswordForm) => {
+    const { email } = data
 
-    if (password !== confirmPassword) {
-      alert('パスワードが一致しません')
-      return
-    }
-
-    const { error } = await supabaseBrowser.auth.updateUser({
-      password,
+    const { error } = await supabaseBrowser.auth.resetPasswordForEmail(email, {
+      redirectTo: location.origin + '/update_password',  // email記載リンクから、飛ぶリンク先を指定
     })
 
     if (error) {
-      alert('パスワードの更新に失敗しました')
+      console.error(error)
+      alert('リセットメールの送信に失敗しました')
       return
     }
 
     reset()
-    alert('パスワードを更新しました')
+    alert('パスワード再設定用のメールを送信しました。\nメールボックスを確認してください。')
   }
 
   return (
-    <div className="flex justify-center pt-[240px]">
-      <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-[400px] space-y-6">
-        <div>
-          <FormLabel htmlFor='password'>新しいパスワード</FormLabel>
-          <FormInput
-            type="password"
-            id="password"
-            loading={isSubmitting}
-            {...register('password', { required: true })}
-            placeholder="••••••••"
-          />
+    <div className="auth-container">
+      <AuthIllustration />
+      <div className='auth-form-section'>
+        <div className='auth-card'>
+          <h1 className='auth-title'>Reset password</h1>
+          <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-[400px] space-y-6">
+            <div>
+              <FormLabel htmlFor='email'>メールアドレス</FormLabel>
+              <FormInput
+                type="email"
+                id="email"
+                loading={isSubmitting}
+                {...register('email', { required: true })}
+                placeholder="name@company.com"
+              />
+            </div>
+            <p className='flex text-xs text-gray-500 whitespace-pre-wrap leading-relaxed'>
+              {`登録したメールアドレスに、パスワード再設定用のリンクを送ります。\n※届かない場合は、迷惑メールも確認してください。`}
+            </p>
+            <FormButton loading={isSubmitting} label='再設定リンクを送信' />
+            <div className='mt-2 text-center'>
+              <Link href='/login' className='text text-[#5A8B7D] hover:underline'>ログインに戻る</Link>
+            </div>
+          </form>
         </div>
-        <div>
-          <FormLabel htmlFor='password'>新しいパスワード(確認)</FormLabel>
-          <FormInput
-            type="password"
-            id="confirmPassword"
-            loading={isSubmitting}
-            {...register('confirmPassword', { required: true })}
-            placeholder="••••••••"
-          />
-        </div>
-        <FormButton loading={isSubmitting} label='更新' />
-      </form>
+      </div>
     </div>
   )
 }
