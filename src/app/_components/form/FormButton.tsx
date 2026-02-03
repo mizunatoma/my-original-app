@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes } from "react";
+import { forwardRef, ButtonHTMLAttributes } from "react";
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   loading: boolean
@@ -7,24 +7,28 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "primary" | "secondary";
 }
 
-export const FormButton = ({
-  loading,
-  label,
-  type = "submit",     // デフォルト値の指定
-  variant = "primary", // デフォルト値の指定
-  className = "",
-  ...props }: Props) => (
+export const FormButton = forwardRef<HTMLButtonElement, Props>(
+  ({
+    loading,
+    label,
+    type = "submit",     // デフォルト値の指定
+    variant = "primary", // デフォルト値の指定
+    className = "",
+    ...props
+  }, ref) => (
 
-  <button
-    {...props}
-    type={type}
-    disabled={loading}
-    className={`w-full rounded-lg px-5 py-2.5 disabled:opacity-50 ${className}
+    <button
+      {...props}
+      ref={ref}
+      type={type}
+      disabled={loading}
+      className={`w-full rounded-lg px-5 py-2.5 disabled:opacity-50 ${className}
     ${variant === "primary"
-        ? 'bg-[#5A8B7D] text-white hover:bg-[#4A7A6D]'
-        : 'bg-[#F5F3ED] text-gray-700 hover:bg-[#EBE9E0]'
-      }`}
-  >
-    {loading ? '送信中...' : label}
-  </button>
+          ? 'bg-[#5A8B7D] text-white hover:bg-[#4A7A6D]'
+          : 'bg-[#F5F3ED] text-gray-700 hover:bg-[#EBE9E0]'
+        }`}
+    >
+      {loading ? '送信中...' : label}
+    </button>
+  )
 );

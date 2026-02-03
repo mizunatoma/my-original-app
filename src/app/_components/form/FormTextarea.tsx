@@ -1,13 +1,18 @@
-import { TextareaHTMLAttributes } from "react";
+import { forwardRef, TextareaHTMLAttributes } from "react";
 
 type Props = TextareaHTMLAttributes<HTMLTextAreaElement> & {
   loading?: boolean;
 };
 
-export const FormTextarea = ({ loading, className = "", ...props }: Props) => (
-  <textarea
-    {...props}
-    disabled={loading}
-    className={`block w-full border border-gray-300 rounded-md p-2 disabled:opacity-50 ${className}`}
-  />
+export const FormTextarea = forwardRef<HTMLTextAreaElement, Props>(
+  ({ loading, className = "", ...props }, ref) => (
+    <textarea
+      {...props}
+      ref={ref}
+      disabled={loading}
+      className={`block w-full border border-gray-300 rounded-md p-2 disabled:opacity-50 ${className}`}
+    />
+  )
 );
+
+FormTextarea.displayName = "FormTextarea";
