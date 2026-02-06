@@ -41,16 +41,17 @@ export const GET = async (request: NextRequest) => {
       orderBy: { startAt: "asc" },
     });
 
-    const timeline = logs.map(log => ({
+    const activities = logs.map(log => ({
       id: log.id,
-      type: "timelog",
-      activityId: log.activity.id,
-      activityName: log.activity.name,
-      startAt: log.startAt,
-      endAt: log.endAt,
+      title: log.activity.name,
+      //type: "timelog",
+      //activityId: log.activity.id,
+      //activityName: log.activity.name,
+      startAt: log.startAt.toISOString(),
+      endAt: log.endAt ? log.endAt.toISOString() : null,
     }));
 
-    return NextResponse.json({ date, timeline }, { status: 200 })
+    return NextResponse.json({ activities }, { status: 200 })
   } catch (e) {
     console.error("GET /timeline?date=YYYY-MM-DD:", e);
     return NextResponse.json({ error: String(e) }, { status: 500 })

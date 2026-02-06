@@ -1,8 +1,27 @@
 'use client'
-import React from "react"
+
+import React, { useState, useEffect } from "react"
+import { TimelineActivityDTO, TimelineAPI } from "@/types/api";
+
 
 export default function TimelogWidget() {
   const hours = Array.from({ length: 24 }, (_, i) => i); // [0, 1, 2, ... 23]
+
+  const [activities, setActivities] = useState<TimelineActivityDTO[]>([]);
+
+  const fetchActivities = async () => {
+    try {
+      const res = await fetch('/api/timeline?date=2026-02-06');
+      const data: TimelineAPI.Get.Response = await res.json();
+      setActivities(data.activities || []);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  useEffect(() => {
+    fetchActivities();
+  }, []);
 
   return (
     <div className="widget-card h-[900px] flex flex-col">
@@ -20,11 +39,25 @@ export default function TimelogWidget() {
             {/* 右側：記録一覧 */}
             <div className="flex-1 relative border-l border-gray-50 hover:bg-gray-50 transition-colors">
 
+              {/* ダミーデータ
               {hour === 9 && (
                 <div className="time-logs bg-rose-100 border-rose-400 text-rose-800">
                   朝会 (9:00 - 10:00)
                 </div>
               )}
+              */}
+
+              {activities.map((activity) => {
+                const start = new Date(activity.startAt);
+
+                if (start.getHours() === hour) {
+                  return (
+                    <div key={activity.id} className="time-logs bg-100 border-rose-400 text-rose-800 mb-1">
+                      {activity.title}
+                    </div>
+                  )
+                }
+              })}
 
             </div>
           </div>
