@@ -1,8 +1,32 @@
 'use client'
 
-import React from "react"
+import React, { useState, useEffect } from "react"
+
+type RunnningApiResponse =
+  | { running: false }
+  | {
+    running: true
+    log: {
+      id: string
+      activityId: string
+      activityName: string
+      colorToken: string
+      startAt: string
+    }
+  }
 
 export default function CurrentActivityWidget() {
+
+  const [data, setData] = useState<RunnningApiResponse | null>(null)
+
+  useEffect(() => {
+    fetch('/api/timeline/running')
+      .then(res => res.json())
+      .then((json: RunnningApiResponse) => {
+        setData(json);
+      })
+  }, [])
+
   return (
     <div>
       <div className="widget-card">
@@ -14,8 +38,10 @@ export default function CurrentActivityWidget() {
           <div className="flex items-center gap-3 w-full">
             <div className="w-3 h-3 bg-rose-400 rounded-full shadow-sm flex-shrink-0" />
             <div className="flex flex-col">
-              <span className="font-bold text-gray-700 text-sm">本業</span>
-              <span className="text-xs text-gray-500">開始: 17:05 ・ 経過 10分</span>
+              {data?.running
+                ? (<span>{data.log.activityName}</span>)
+                : (<span>実行中なし</span>)
+              }
             </div>
           </div>
           <button className="button bg-rose-200 hover:bg-rose-300 text-rose-800 w-full mt-1">停止</button>
