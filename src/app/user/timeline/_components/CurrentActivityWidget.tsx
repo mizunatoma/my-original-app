@@ -49,7 +49,18 @@ export default function CurrentActivityWidget() {
               }
             </div>
           </div>
-          <button className="button bg-rose-200 hover:bg-rose-300 text-rose-800 w-full mt-1">停止</button>
+          <button
+            className="button bg-rose-200 hover:bg-rose-300 text-rose-800 w-full mt-1"
+            disabled={!data?.running}
+            onClick={async () => {
+              await fetch('/api/timeline/end', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ activityId: data?.running && data.log.activityId }),
+              })
+              setData({ running: false })
+            }}
+          >停止</button>
         </div>
 
         {/*任意メモ*/}
