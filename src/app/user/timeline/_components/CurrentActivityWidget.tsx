@@ -39,7 +39,12 @@ export default function CurrentActivityWidget() {
             <div className="w-3 h-3 bg-rose-400 rounded-full shadow-sm flex-shrink-0" />
             <div className="flex flex-col">
               {data?.running
-                ? (<span>{data.log.activityName}</span>)
+                ? (
+                  <div className="flex flex-col">
+                    <span>{data.log.activityName}</span>
+                    <span className="text-xs text-gray-500">開始：{new Date(data.log.startAt).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })} </span>
+                  </div>
+                )
                 : (<span>実行中なし</span>)
               }
             </div>
