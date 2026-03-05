@@ -17,7 +17,8 @@ type RunnningApiResponse =
 
 export default function CurrentActivityWidget() {
 
-  const [data, setData] = useState<RunnningApiResponse | null>(null)
+  const [data, setData] = useState<RunnningApiResponse | null>(null);
+  const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {
     fetch('/api/timeline/running')
@@ -26,6 +27,20 @@ export default function CurrentActivityWidget() {
         setData(json);
       })
   }, [])
+
+  useEffect(() => {
+    if (!data?.running) return // running中でなければなにもしない
+
+    const timer = setInterval(() => {
+      const now = new Date()
+      const start = new Date(data.log.startAt)
+      const minutes = Math.floor(now - start) / 60000
+      setElapsed(minutes);
+    }, 60000) // 1分ごと
+
+    return () => clearInterval(timer)
+  }, [data])
+
 
   return (
     <div>
@@ -42,7 +57,8 @@ export default function CurrentActivityWidget() {
                 ? (
                   <div className="flex flex-col">
                     <span>{data.log.activityName}</span>
-                    <span className="text-xs text-gray-500">開始：{new Date(data.log.startAt).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })} </span>
+                    <span className="text-xs text-gray-500">開始: {new Date(data.log.startAt).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })} </span>
+                    <span className="text-xs text-gray-500">経過: {elapsed}分</span>
                   </div>
                 )
                 : (<span>実行中なし</span>)
