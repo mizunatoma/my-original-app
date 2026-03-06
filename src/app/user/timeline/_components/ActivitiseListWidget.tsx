@@ -63,37 +63,53 @@ export default function ActivitiseListWidget({ onSelectActivity }: Props) {
 
       {/* activity追加のモーダル*/}
       {isOpen &&
-        <div>
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="タスク名"
-          />
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
+          {/*activity名の入力*/}
+          <div className="bg-white rounded-lg flex flex-col gap-4 p-6">
+            <h2 className="text-lg font-bold text-gray-400">New Activity</h2>
+            <input
+              className="border border-gray-400 rounded w-full p-2"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Activity's name"
+            />
 
-          <div className="flex ">
-            {COLOR_OPTIONS.map((color) => {
-              return (
-                <div
-                  key={color}
-                  className={`${color} w-6 h-6 rounded-full`}
-                  onClick={() => setColor(color)}
-                />)
-            })}
-          </div>
+            {/*色選択*/}
+            <div className="flex gap-2">
+              {COLOR_OPTIONS.map((c) => {
+                return (
+                  <div
+                    key={c}
+                    className={`${c} w-6 h-6 rounded-full ${c === color ? "border-2 border-gray-500" : ""}`}
+                    onClick={() => { setColor(c) }}
+                  />)
+              })}
+            </div>
 
-          <div className="flex flex-col">
-            <button onClick={() => setIsOpen(false)}>キャンセル</button>
-            <button
-              onClick={async () => {
-                await fetch('/api/timeline/activities', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ name, colorToken: color })
-                })
-                fetchActivities()
-                setIsOpen(false)
-              }}
-            >保存</button>
+            {/*キャンセル・保存ボタン*/}
+            <div className="justify-between flex w-full">
+              <button
+                className="rounded  border border-gray-400 px-3"
+                onClick={() => {
+                  setIsOpen(false)
+                  setName("")
+                }}
+              >キャンセル</button>
+
+              <button
+                className="rounded  border bg-red-400 text-white px-3"
+                onClick={async () => {
+                  await fetch('/api/timeline/activities', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, colorToken: color })
+                  })
+                  fetchActivities()
+                  setIsOpen(false)
+                  setName("")
+                }}
+              >保存</button>
+            </div>
           </div>
         </div>}
     </div>
