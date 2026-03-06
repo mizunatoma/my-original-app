@@ -9,6 +9,10 @@ type ActivitiesResponse = {
   }[]
 };
 
+type Props = {
+  onSelectActivity: (id: string) => void
+}
+
 const COLOR_OPTIONS = [
   "bg-rose-400",
   "bg-teal-400",
@@ -20,7 +24,7 @@ const COLOR_OPTIONS = [
   "bg-pink-400",
 ]
 
-export default function ActivitiseListWidget() {
+export default function ActivitiseListWidget({ onSelectActivity }: Props) {
   const [activities, setActivities] = useState<ActivitiesResponse['activities']>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
@@ -50,7 +54,7 @@ export default function ActivitiseListWidget() {
       {/* Activityリスト */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {activities.map((activity) => (
-          <div key={activity.name} className="activity-button">
+          <div key={activity.name} className="activity-button" onClick={() => onSelectActivity(activity.id)}>
             <div className={`activity-name ${activity.colorToken}`}></div>
             <span className="text">{activity.name}</span>
           </div>

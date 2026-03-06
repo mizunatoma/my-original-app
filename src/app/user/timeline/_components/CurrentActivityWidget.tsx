@@ -14,19 +14,39 @@ type RunnningApiResponse =
     }
   }
 
-export default function CurrentActivityWidget() {
+type Props = {
+  currentActivityID: string
+}
+
+export default function CurrentActivityWidget({ currentActivityID }: Props) {
   const [data, setData] = useState<RunnningApiResponse | null>(null);
   const [elapsed, setElapsed] = useState(0);
 
+  const fetchRunning = async () => {
+    const res = await fetch('/api/timeline/running')
+    const json = await res.json()
+    setData(json)
+  }
+
   useEffect(() => {
-    fetch('/api/timeline/running')
-      .then(res => res.json())
-      .then((json: RunnningApiResponse) => {
-        setData(json);
-      })
+    fetchRunning()
   }, [])
 
-  console.log(data)
+  // 選択されたactivityの計測を開始する
+  useEffect(() => {
+    if (!currentActivityID) return // 選択されていなければなにもしない
+
+    const start = async () => {
+      await fetch('/api/timeline/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ activityId: currentActivityID })
+      })
+      fetchRunning()
+    }
+    start()
+  }, [currentActivityID])
+
 
   // 経過時間の表示
   useEffect(() => {
@@ -41,7 +61,6 @@ export default function CurrentActivityWidget() {
 
     return () => clearInterval(timer)
   }, [data])
-
 
   return (
     <div>
