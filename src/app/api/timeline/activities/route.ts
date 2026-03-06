@@ -18,7 +18,7 @@ export const GET = async () => {
         deletedAt: null,
       },
       select: {
-        id: true, name: true
+        id: true, name: true, colorToken: true
       },
     });
 
