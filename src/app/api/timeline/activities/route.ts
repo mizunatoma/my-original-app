@@ -38,7 +38,7 @@ export const POST = async (request: NextRequest) => {
     if (auth instanceof NextResponse) return auth;
     const user = auth.user;
 
-    const { name } = await request.json();
+    const { name, colorToken } = await request.json();
     if (!name) {
       return NextResponse.json({ error: "name is required" }, { status: 400 });
     }
@@ -46,6 +46,7 @@ export const POST = async (request: NextRequest) => {
     const data = await prisma.activity.create({
       data: {
         name,
+        colorToken,
         profile: { connect: { userId: user.id } }
       },
     });

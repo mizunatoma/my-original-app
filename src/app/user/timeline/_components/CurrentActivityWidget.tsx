@@ -1,5 +1,4 @@
 'use client'
-
 import React, { useState, useEffect } from "react"
 
 type RunnningApiResponse =
@@ -16,7 +15,6 @@ type RunnningApiResponse =
   }
 
 export default function CurrentActivityWidget() {
-
   const [data, setData] = useState<RunnningApiResponse | null>(null);
   const [elapsed, setElapsed] = useState(0);
 
@@ -28,6 +26,9 @@ export default function CurrentActivityWidget() {
       })
   }, [])
 
+  console.log(data)
+
+  // 経過時間の表示
   useEffect(() => {
     if (!data?.running) return // running中でなければなにもしない
 

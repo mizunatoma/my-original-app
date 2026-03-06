@@ -1,15 +1,25 @@
 'use client'
+import React, { useState, useEffect } from "react";
 
-import React from "react"
-
-const ACTIVITIES = [
-  { name: "仕事", color: "bg-rose-400" },
-  { name: "学習", color: "bg-teal-400" },
-  { name: "運動", color: "bg-indigo-400" },
-  { name: "休憩", color: "bg-amber-400" }
-]
+type ActivitiesResponse = {
+  activities: {
+    id: string
+    name: string
+    colorToken?: string
+  }[]
+};
 
 export default function ActivitiseListWidget() {
+  const [activities, setActivities] = useState<ActivitiesResponse['activities']>([])
+
+  useEffect(() => {
+    fetch('/api/timeline/activities')
+      .then(res => res.json())
+      .then((json: ActivitiesResponse) => {
+        setActivities(json.activities);
+      })
+  }, [])
+
   return (
     <div className="widget-card">
 
@@ -19,9 +29,9 @@ export default function ActivitiseListWidget() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {ACTIVITIES.map((activity) => (
+        {activities.map((activity) => (
           <div key={activity.name} className="activity-button">
-            <div className={`activity-name ${activity.color}`}></div>
+            <div className={`activity-name ${activity.colorToken}`}></div>
             <span className="text">{activity.name}</span>
           </div>
         ))}
