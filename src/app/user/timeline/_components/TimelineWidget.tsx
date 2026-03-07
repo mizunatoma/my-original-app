@@ -1,14 +1,15 @@
 'use client'
 import React, { useState, useEffect } from "react"
 import { TimelineActivityDTO, TimelineAPI } from "@/types/api";
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function TimelogWidget() {
   const hours = Array.from({ length: 24 }, (_, i) => i); // [0, 1, 2, ... 23]
 
   const [activities, setActivities] = useState<TimelineActivityDTO[]>([]);
+  const [date, setDate] = useState<string>(new Date().toISOString().split("T")[0]);
 
   const fetchActivities = async () => {
-    const date = new Date().toISOString().split("T")[0]
     try {
       const res = await fetch(`/api/timeline?date=${date}`);
       const data: TimelineAPI.Get.Response = await res.json();
@@ -20,11 +21,29 @@ export default function TimelogWidget() {
 
   useEffect(() => {
     fetchActivities();
-  }, []);
+  }, [date]);
 
   return (
     <div className="widget-card h-[900px] flex flex-col">
-      <h2 className="section-title">Time Logs</h2>
+      <div className="flex justify-between">
+        <h2 className="section-title">Time Logs</h2>
+        <div className="flex gap-2">
+          <button
+            onClick={() => {
+              const d = new Date(date)
+              d.setDate(d.getDate() - 1)
+              setDate(d.toISOString().split("T")[0])
+            }}
+          ><ChevronLeft size={16} /></button>
+          <button>{date}</button>
+          <button
+            onClick={() => {
+              const d = new Date(date)
+              d.setDate(d.getDate() + 1)
+              setDate(d.toISOString().split("T")[0])
+            }}><ChevronRight size={16} /></button>
+        </div>
+      </div>
 
       {/* 時間軸のグリッド */}
       <div className="grid grid-rows-24 h-[1440px]">
@@ -61,7 +80,7 @@ export default function TimelogWidget() {
           </div>
         ))}
       </div>
-    </div>
+    </div >
 
   )
 }
