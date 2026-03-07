@@ -1,5 +1,7 @@
 'use client'
 import React, { useState, useEffect } from "react";
+import { Trash2 } from 'lucide-react';
+
 
 type ActivitiesResponse = {
   activities: {
@@ -36,6 +38,13 @@ export default function ActivitiseListWidget({ onSelectActivity }: Props) {
     setActivities(json.activities)
   }
 
+  const handleDelete = async (id) => {
+    await fetch(`/api/timeline/activities/${id}`, {
+      method: 'DELETE',
+    })
+    fetchActivities()
+  }
+
   useEffect(() => {
     fetchActivities()
   }, [])
@@ -45,24 +54,35 @@ export default function ActivitiseListWidget({ onSelectActivity }: Props) {
       {/* ヘッダー部分 */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="section-title">Activities</h2>
-        <button
-          className="button bg-orange-100 hover:bg-orange-200 text-orange-800"
-          onClick={() => setIsOpen(true)}
-        >追加</button>
+        <div className="felx gap-2">
+          <button
+            className="button bg-orange-100 hover:bg-orange-200 text-orange-800"
+            onClick={() => setIsOpen(true)}
+          >追加</button>
+        </div>
       </div>
 
       {/* Activityリスト */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {activities.map((activity) => (
-          <div key={activity.name} className="activity-button" onClick={() => onSelectActivity(activity.id)}>
+          <div
+            className="activity-button"
+            key={activity.name}
+            onClick={() => onSelectActivity(activity.id)}> {/* 兄弟のCurrentActivityWidgetへ渡す */}
             <div className={`activity-name ${activity.colorToken}`}></div>
             <span className="text">{activity.name}</span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                handleDelete(activity.id)
+              }}><Trash2 size={16} /></button>
           </div>
         ))}
       </div>
 
       {/* activity追加のモーダル*/}
-      {isOpen &&
+      {
+        isOpen &&
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
           {/*activity名の入力*/}
           <div className="bg-white rounded-lg flex flex-col gap-4 p-6">
@@ -111,7 +131,8 @@ export default function ActivitiseListWidget({ onSelectActivity }: Props) {
               >保存</button>
             </div>
           </div>
-        </div>}
-    </div>
+        </div>
+      }
+    </div >
   )
 }
