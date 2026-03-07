@@ -2,20 +2,22 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { Timer, BarChart2, ClipboardList, RefreshCw } from 'lucide-react'
+
+const MENU_ITEMS = [
+  { href: "/user/timeline", icon: Timer, label: "timeline" },
+  { href: "/user/analytics", icon: BarChart2, label: "analytics" },
+  { href: "/user/tasks", icon: ClipboardList, label: "tasks" },
+  { href: "/user/routines", icon: RefreshCw, label: "routines" },
+]
 
 interface UserSidebarProps {
   isCollapsed: boolean
 }
 
-const MENU_ITEMS = [
-  { href: "/user/timeline", icon: "🕘", label: "timeline" },
-  { href: "/user/analytics", icon: "📊", label: "analytics" },
-  { href: "/user/tasks", icon: "📝", label: "tasks" },
-  { href: "/user/routines", icon: "🔄", label: "routines" },
-]
-
 // リンク部分を共通化
 function SidebarLink({ href, icon, label, isSelected, isCollapsed }: any) {
+  const Icon = icon
   return (
     <Link
       href={href}
@@ -29,7 +31,7 @@ function SidebarLink({ href, icon, label, isSelected, isCollapsed }: any) {
         ${isSelected
           ? 'bg-white/50'
           : 'bg-transparent'}`}>
-        {icon}
+        <Icon size={16} />
       </div>
       {!isCollapsed && <span className='text'>{label}</span>}
     </Link>
