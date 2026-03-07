@@ -15,11 +15,6 @@ export const PUT = async (
     if (auth instanceof NextResponse) return auth;
     const user = auth.user;
 
-    //console.log("=== API HIT ===");
-    //console.log("params.id:", params.id);
-    //console.log("user.id:", user.id);
-    //console.log("DB URL:", process.env.DATABASE_URL);
-
     const activity = await prisma.activity.findFirst({
       where: {
         id: params.id,
