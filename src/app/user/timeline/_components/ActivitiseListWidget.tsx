@@ -73,7 +73,7 @@ export default function ActivitiseListWidget({ onSelectActivity }: Props) {
             <span className="text">{activity.name}</span>
             <button
               onClick={(e) => {
-                e.stopPropagation()
+                e.stopPropagation()  // 親のonClickを止める
                 handleDelete(activity.id)
               }}><Trash2 size={16} /></button>
           </div>
