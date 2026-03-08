@@ -20,8 +20,6 @@ body {
   .button{@apply px-6 py-1.5 rounded-full text-xs font-bold transition-colors}
   .text{@apply text-gray-600 font-bold text-sm}
 
-  .activity-button{@apply flex items-center gap-3 bg-white border border-gray-100 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer h-16}
-  .activity-name{@apply w-3 h-3 rounded-full}
   .time-logs{@apply absolute top-0 left-0 w-full h-full border-l-4 p-1 text-xs}
   .focus-ring{@apply focus:border-[#5A8B7D] focus:ring focus:ring-[#5A8B7D]}
 }
