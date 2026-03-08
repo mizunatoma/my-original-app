@@ -7,18 +7,18 @@ type RunnningApiResponse =
     running: true
     log: {
       id: string
-      activityId: string
-      activityName: string
+      categoryId: string
+      categoryName: string
       colorToken: string
       startAt: string
     }
   }
 
 type Props = {
-  currentActivityID: string
+  currentCategoryID: string
 }
 
-export default function CurrentActivityWidget({ currentActivityID }: Props) {
+export default function CurrentCategoryWidget({ currentCategoryID }: Props) {
   const [data, setData] = useState<RunnningApiResponse | null>(null);
   const [elapsed, setElapsed] = useState(0);
 
@@ -32,20 +32,20 @@ export default function CurrentActivityWidget({ currentActivityID }: Props) {
     fetchRunning()
   }, [])
 
-  // 選択されたactivityの計測を開始する
+  // 選択されたcategoryの計測を開始する
   useEffect(() => {
-    if (!currentActivityID) return // 選択されていなければなにもしない
+    if (!currentCategoryID) return // 選択されていなければなにもしない
 
     const start = async () => {
       await fetch('/api/timeline/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ activityId: currentActivityID })
+        body: JSON.stringify({ categoryId: currentCategoryID })
       })
       fetchRunning()
     }
     start()
-  }, [currentActivityID])
+  }, [currentCategoryID])
 
 
   // 経過時間の表示
@@ -65,9 +65,9 @@ export default function CurrentActivityWidget({ currentActivityID }: Props) {
   return (
     <div>
       <div className="widget-card">
-        <h2 className="section-title">現在のActivity</h2>
+        <h2 className="section-title">現在のCategory</h2>
 
-        {/*実行中Activity*/}
+        {/*実行中Category*/}
         <div className="flex flex-col gap-3 bg-rose-50 rounded-xl p-4 mb-4">
 
           <div className="flex items-center gap-3 w-full">
@@ -76,7 +76,7 @@ export default function CurrentActivityWidget({ currentActivityID }: Props) {
               {data?.running
                 ? (
                   <div className="flex flex-col">
-                    <span>{data.log.activityName}</span>
+                    <span>{data.log.categoryName}</span>
                     <span className="text-xs text-gray-500">開始: {new Date(data.log.startAt).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })} </span>
                     <span className="text-xs text-gray-500">経過: {elapsed}分</span>
                   </div>
@@ -92,7 +92,7 @@ export default function CurrentActivityWidget({ currentActivityID }: Props) {
               await fetch('/api/timeline/end', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ activityId: data?.running && data.log.activityId }),
+                body: JSON.stringify({ categoryId: data?.running && data.log.categoryId }),
               })
               setData({ running: false })
             }}
