@@ -40,7 +40,7 @@ export default function CurrentCategoryWidget({ currentCategoryID }: Props) {
       await fetch('/api/timeline/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ categoryId: currentCategoryID })
+        body: JSON.stringify({ activityId: currentCategoryID })
       })
       fetchRunning()
     }
@@ -76,7 +76,7 @@ export default function CurrentCategoryWidget({ currentCategoryID }: Props) {
               {data?.running
                 ? (
                   <div className="flex flex-col">
-                    <span>{data.log.categoryName}</span>
+                    <span>{data.log.activityName}</span>
                     <span className="text-xs text-gray-500">開始: {new Date(data.log.startAt).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })} </span>
                     <span className="text-xs text-gray-500">経過: {elapsed}分</span>
                   </div>

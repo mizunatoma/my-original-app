@@ -8,7 +8,7 @@ type Props = {
   onSelectCategory: (id: string) => void
 }
 
-export default function ActivitiseListWidget({ onSelectCategory }: Props) {
+export default function CategoriesListWidget({ onSelectCategory }: Props) {
   const [categories, setCategories] = useState<CategoryAPI.Get.Response['category'][]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null)
