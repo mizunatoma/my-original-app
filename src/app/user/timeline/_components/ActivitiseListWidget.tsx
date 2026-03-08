@@ -1,15 +1,7 @@
 'use client'
 import React, { useState, useEffect } from "react";
 import { Trash2, SquarePen } from 'lucide-react';
-
-
-type ActivitiesResponse = {
-  activities: {
-    id: string
-    name: string
-    colorToken?: string
-  }[]
-};
+import { CategoryAPI } from '@/types/api';
 
 type Props = {
   onSelectActivity: (id: string) => void
@@ -27,7 +19,7 @@ const COLOR_OPTIONS = [
 ]
 
 export default function ActivitiseListWidget({ onSelectActivity }: Props) {
-  const [activities, setActivities] = useState<ActivitiesResponse['activities']>([]);
+  const [activities, setActivities] = useState<CategoryAPI.Get.Response['category'][]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isEditingOpen, setIsEditingOpen] = useState(false);
   const [name, setName] = useState("");

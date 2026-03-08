@@ -1,19 +1,29 @@
 
-//共通DTO (APIレスポンス用)
+// APIレスポンス用 共通DTO
+
 export type ProfileDTO = {
   id: string;
   displayName: string;
 };
 
-export type TimelineActivityDTO = {
+export type TimelogDTO = {
   id: string;
   title: string;
   startAt: string; // ISO文字列
   endAt: string | null;
 }
 
+export type CategoryDTO = {
+  id: string
+  name: string
+  colorToken?: string
+}
 
-// Profile API (/api/profile)
+
+//================================================
+
+
+// プロフィール系 (Get/Put)
 export namespace ProfileAPI {
   // GET /api/profile
   export namespace Get {
@@ -27,38 +37,38 @@ export namespace ProfileAPI {
 }
 
 
-// Timeline API (/api/timeline)
+// タイムログ系 (Get/Start/End)
 export namespace TimelineAPI {
   // GET /api/timeline
-  export namespace Get {
-    export type Response = { activities: TimelineActivityDTO[] };
+  export namespace GetTimelog {
+    export type Response = { timelog: TimelogDTO[] };
   };
   // POST /api/timeline/start
   export namespace Start {
     export type Request = {
-      activityId: string,
+      categoryId: string,
       startAt: string, //ISO
     };
-    export type Response = {
-      activity: TimelineActivityDTO;
-    };
+    export type Response = { timelog: TimelogDTO };
   };
   // POST /api/timeline/end
   export namespace End {
     export type Request = {
-      activityId: string,
+      categoryId: string,
       endAt: string, //ISO
     };
-    export type Response = {
-      activity: TimelineActivityDTO;
-    };
+    export type Response = { timelog: TimelogDTO };
   };
 }
 
 
-
-
-
+// カテゴリ系 (Get)
+export namespace CategoryAPI {
+  // GET /api/timeline/[id]
+  export namespace Get {
+    export type Response = { category: CategoryDTO }
+  };
+}
 
 
 
