@@ -3,9 +3,11 @@ import React, { useState, useEffect } from "react";
 import { Trash2, SquarePen } from 'lucide-react';
 import { CategoryAPI } from '@/types/api';
 import CategoryModal from './CategoryModal';
+import PreviousMap_ from "postcss/lib/previous-map";
+import { Dispatch, SetStateAction } from "react"
 
 type Props = {
-  onSelectCategory: (id: string) => void
+  onSelectCategory: Dispatch<SetStateAction<{ id: string, count: number }>>
 }
 
 export default function CategoriesListWidget({ onSelectCategory }: Props) {
@@ -55,7 +57,7 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
               <div
                 className="flex items-center gap-3 bg-white border border-gray-100 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer h-16"
                 key={category.name}
-                onClick={() => onSelectCategory(category.id)}> {/* 兄弟のCurrentCategoryWidgetへ渡す */}
+                onClick={() => onSelectCategory(s => ({ id: category.id, count: s.count + 1 }))}> {/* 兄弟のCurrentCategoryWidgetへ渡す */}
 
                 <div className="flex justify-between w-full p-4">
                   <div className="flex gap-2 items-center">

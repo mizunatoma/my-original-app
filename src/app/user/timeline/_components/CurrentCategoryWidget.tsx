@@ -15,7 +15,7 @@ type RunnningApiResponse =
   }
 
 type Props = {
-  currentCategoryID: string
+  currentCategoryID: { id: string, count: number }
 }
 
 export default function CurrentCategoryWidget({ currentCategoryID }: Props) {
@@ -37,13 +37,13 @@ export default function CurrentCategoryWidget({ currentCategoryID }: Props) {
 
   // 選択されたcategoryの計測を開始する
   useEffect(() => {
-    if (!currentCategoryID) return // 選択されていなければなにもしない
+    if (!currentCategoryID.id) return // 選択されていなければなにもしない
 
     const start = async () => {
       await fetch('/api/timeline/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ activityId: currentCategoryID })
+        body: JSON.stringify({ activityId: currentCategoryID.id })
       })
       fetchRunning()
     }
@@ -74,19 +74,22 @@ export default function CurrentCategoryWidget({ currentCategoryID }: Props) {
             <div>
               < div className="flex flex-col gap-3 bg-rose-50 rounded-xl p-4 mb-4">
                 <div className="flex items-center gap-3 w-full">
-                  <div className="w-3 h-3 rounded-full shadow-sm flex-shrink-0 ${log-colorToken}" />
-                  <div className="flex flex-col">
-                    {data?.running
-                      ? (
-                        <div className="flex flex-col">
+
+                  {data?.running
+                    ? (
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <div className={`w-3 h-3 rounded-full shadow-sm flex-shrink-0 ${data.log.colorToken}`} />
                           <span>{data.log.activityName}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
                           <span className="text-xs text-gray-500">開始: {new Date(data.log.startAt).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })} </span>
                           <span className="text-xs text-gray-500">経過: {elapsed}分</span>
                         </div>
-                      )
-                      : (<span>実行中なし</span>)
-                    }
-                  </div>
+                      </div>
+                    )
+                    : (<span>実行中なし</span>)
+                  }
                 </div>
 
                 {data?.running &&
