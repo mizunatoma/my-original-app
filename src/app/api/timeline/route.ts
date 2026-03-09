@@ -35,7 +35,7 @@ export const GET = async (request: NextRequest) => {
       },
       include: {
         activity: {
-          select: { id: true, name: true },
+          select: { id: true, name: true, colorToken: true },
         },
       },
       orderBy: { startAt: "asc" },
@@ -44,11 +44,9 @@ export const GET = async (request: NextRequest) => {
     const activities = logs.map(log => ({
       id: log.id,
       title: log.activity.name,
-      //type: "timelog",
-      //activityId: log.activity.id,
-      //activityName: log.activity.name,
       startAt: log.startAt.toISOString(),
       endAt: log.endAt ? log.endAt.toISOString() : null,
+      category: { colorToken: log.activity.colorToken }
     }));
 
     return NextResponse.json({ activities }, { status: 200 })

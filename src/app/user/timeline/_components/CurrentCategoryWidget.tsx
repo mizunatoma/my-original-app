@@ -74,7 +74,7 @@ export default function CurrentCategoryWidget({ currentCategoryID }: Props) {
             <div>
               < div className="flex flex-col gap-3 bg-rose-50 rounded-xl p-4 mb-4">
                 <div className="flex items-center gap-3 w-full">
-                  <div className="w-3 h-3 bg-rose-400 rounded-full shadow-sm flex-shrink-0" />
+                  <div className="w-3 h-3 rounded-full shadow-sm flex-shrink-0 ${log-colorToken}" />
                   <div className="flex flex-col">
                     {data?.running
                       ? (

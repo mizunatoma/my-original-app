@@ -11,6 +11,9 @@ export type TimelogDTO = {
   title: string;
   startAt: string; // ISO文字列
   endAt: string | null;
+  category: {
+    colorToken?: string
+  }
 }
 
 export type CategoryDTO = {
@@ -40,8 +43,8 @@ export namespace ProfileAPI {
 // タイムログ系 (Get/Start/End)
 export namespace TimelineAPI {
   // GET /api/timeline
-  export namespace GetTimelog {
-    export type Response = { timelog: TimelogDTO[] };
+  export namespace Get {
+    export type Response = { activities: TimelogDTO[] };
   };
   // POST /api/timeline/start
   export namespace Start {
