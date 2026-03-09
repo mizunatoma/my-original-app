@@ -12,11 +12,14 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
   const [categories, setCategories] = useState<CategoryAPI.Get.Response['category'][]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null)
+  const [isLoading, setIsloading] = useState(true);
 
   // categoryリストの取得
   const fetchCategories = async () => {
+    setIsloading(true)
     const res = await fetch('/api/timeline/activities')
     const json = await res.json()
+    setIsloading(false)
     setCategories(json.activities)
   }
 
@@ -37,7 +40,7 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
       {/* ヘッダー部分 */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="section-title">Categories</h2>
-        <div className="felx gap-2">
+        <div className="flex gap-2">
           <button
             className="button bg-red-100 hover:bg-red-200 text-red-800"
             onClick={() => setIsOpen(true)}
@@ -45,28 +48,43 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
         </div>
       </div>
 
-      {/* Categoryリスト */}
-      <div className="grid grid-cols-2 md:grid-cols-2 gap-2">
-        {categories.map((category) => (
-          <div
-            className="flex items-center gap-3 bg-white border border-gray-100 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer h-16"
-            key={category.name}
-            onClick={() => onSelectCategory(category.id)}> {/* 兄弟のCurrentCategoryWidgetへ渡す */}
-            <div className={`w-3 h-3 rounded-full shrink-0 ${category.colorToken}`}></div>
-            <span className="text">{category.name}</span>
-            <button
-              onClick={(e) => {
-                e.stopPropagation()  // 親のonClickを止める
-                setEditingCategory(category)
-              }}><SquarePen size={16} /></button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation()  // 親のonClickを止める
-                handleDelete(category.id)
-              }}><Trash2 size={16} /></button>
+      {!isLoading
+        ? (
+          <div className="grid grid-cols-2 md:grid-cols-2 gap-2">
+            {categories.map((category) => (
+              <div
+                className="flex items-center gap-3 bg-white border border-gray-100 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer h-16"
+                key={category.name}
+                onClick={() => onSelectCategory(category.id)}> {/* 兄弟のCurrentCategoryWidgetへ渡す */}
+
+                <div className="flex justify-between w-full p-4">
+                  <div className="flex gap-2 items-center">
+                    <div className={`w-3 h-3 rounded-full shrink-0 ${category.colorToken}`}></div>
+                    <span className="text">{category.name}</span>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()  // 親のonClickを止める
+                        setEditingCategory(category)
+                      }}><SquarePen size={16} /></button>
+                    <button
+                      className="text-red-400"
+                      onClick={(e) => {
+                        e.stopPropagation()  // 親のonClickを止める
+                        handleDelete(category.id)
+                      }}><Trash2 size={16} /></button>
+                  </div>
+                </div>
+
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        )
+        : (<p>読み込み中...</p>)
+      }
+
 
       {/* category追加モーダル*/}
       {isOpen &&

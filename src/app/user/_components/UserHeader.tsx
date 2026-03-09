@@ -24,7 +24,7 @@ export default function UserHeader({ toggleSidebar, isCollapsed }: UserHeaderPro
   return (
     <header
       className={`fixed bg-white border-b border-[#EFEDE6] px-6 py-4 flex justify-between items-center top-0 right-0 z-30 transition-all duration-300
-      ${isCollapsed ? 'left-[80px]' : 'left-[230px]'}`}>
+      ${isCollapsed ? 'left-[80px]' : 'left-[160px]'}`}>
 
       {/*左：ハンバーガーメニュー＋ロゴ*/}
       <div className='flex items-center gap-4'>

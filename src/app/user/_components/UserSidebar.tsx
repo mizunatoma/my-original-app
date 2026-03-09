@@ -43,9 +43,9 @@ export default function UserSidebar({ isCollapsed }: UserSidebarProps) {
   const isSelected = (href: string) => pathname === href
 
   return (
-    <aside className={`fixed left-0 top-0 bottom-0 z-20 overflow-hidden bg-[#FCFAF7] border-r border-[#EFEDE6] p-4
-    ${isCollapsed ? 'w-[80px]' : 'w-[230px]'}`}>
-      <nav className='flex flex-col gap-1.5'>
+    <aside className={`fixed left-0 top-0 bottom-0 z-20 overflow-hidden bg-[#FCFAF7] border-r border-[#EFEDE6] px-4 py-3
+    ${isCollapsed ? 'w-[80px]' : 'w-[160px]'}`}>
+      <nav className='flex flex-col gap-1'>
         {MENU_ITEMS.map((item) => (
           <SidebarLink
             key={item.href}

@@ -25,24 +25,21 @@ export default function TimelogWidget() {
 
   return (
     <div className="widget-card h-[900px] flex flex-col">
-      <div className="flex justify-between">
-        <h2 className="section-title">Time Logs</h2>
-        <div className="flex gap-2">
-          <button
-            onClick={() => {
-              const d = new Date(date)
-              d.setDate(d.getDate() - 1)
-              setDate(d.toISOString().split("T")[0])
-            }}
-          ><ChevronLeft size={16} /></button>
-          <button>{date}</button>
-          <button
-            onClick={() => {
-              const d = new Date(date)
-              d.setDate(d.getDate() + 1)
-              setDate(d.toISOString().split("T")[0])
-            }}><ChevronRight size={16} /></button>
-        </div>
+      <div className="flex gap-2 justify-center">
+        <button
+          onClick={() => {
+            const d = new Date(date)
+            d.setDate(d.getDate() - 1)
+            setDate(d.toISOString().split("T")[0])
+          }}
+        ><ChevronLeft size={16} /></button>
+        <button>{date}</button>
+        <button
+          onClick={() => {
+            const d = new Date(date)
+            d.setDate(d.getDate() + 1)
+            setDate(d.toISOString().split("T")[0])
+          }}><ChevronRight size={16} /></button>
       </div>
 
       {/* 時間軸のグリッド */}
