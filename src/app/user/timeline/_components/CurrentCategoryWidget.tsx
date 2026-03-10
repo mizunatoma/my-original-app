@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useEffect } from "react"
+import { Dispatch, SetStateAction } from "react"
 
 type RunnningApiResponse =
   | { running: false }
@@ -16,9 +17,10 @@ type RunnningApiResponse =
 
 type Props = {
   currentCategoryID: { id: string, count: number }
+  onPressStopButton: Dispatch<SetStateAction<{ count: number }>>
 }
 
-export default function CurrentCategoryWidget({ currentCategoryID }: Props) {
+export default function CurrentCategoryWidget({ currentCategoryID, onPressStopButton }: Props) {
   const [data, setData] = useState<RunnningApiResponse | null>(null);
   const [elapsed, setElapsed] = useState(0);
   const [isLoading, setIsloading] = useState(true);
@@ -98,12 +100,14 @@ export default function CurrentCategoryWidget({ currentCategoryID }: Props) {
                       className="button bg-rose-200 hover:bg-rose-300 text-rose-800 w-full mt-1"
                       disabled={!data?.running}
                       onClick={async () => {
+                        onPressStopButton(s => ({ count: s.count + 1 }))
                         await fetch('/api/timeline/end', {
                           method: 'POST',
                           headers: { 'Content-Type': 'application/json' },
                           body: JSON.stringify({ categoryId: data?.running && data.log.categoryId }),
                         })
-                        setData({ running: false })
+                        setData({ running: false }
+                        )
                       }}
                     >停止</button>
                     < div className="relative mt-4 ">

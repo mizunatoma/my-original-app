@@ -3,7 +3,11 @@ import React, { useState, useEffect } from "react"
 import { TimelogDTO, TimelineAPI } from "@/types/api";
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-export default function TimelogWidget() {
+type Props = {
+  timelineKey: { count: number }
+}
+
+export default function TimelogWidget({ timelineKey }: Props) {
   const hours = Array.from({ length: 24 }, (_, i) => i); // [0, 1, 2, ... 23]
 
   const [activities, setActivities] = useState<TimelogDTO[]>([]);
@@ -21,7 +25,7 @@ export default function TimelogWidget() {
 
   useEffect(() => {
     fetchActivities();
-  }, [date]);
+  }, [date, timelineKey]);
 
   return (
     <div className="widget-card h-[calc(100vh-140px)] flex flex-col ">
