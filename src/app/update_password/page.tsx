@@ -51,7 +51,7 @@ export default function Page() {
       <div className='auth-form-section'>
         <div className='auth-card'>
           <h1 className='auth-title'> Update password</h1>
-          <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-[400px] space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div>
               <FormLabel htmlFor='password'>新しいパスワード</FormLabel>
               <FormInput
@@ -74,7 +74,7 @@ export default function Page() {
             </div>
             <FormButton loading={isSubmitting} label='再設定' />
             <div className='mt-2 text-center'>
-              <Link href='/login' className='text text-[#5A8B7D] hover:underline'>ログインに戻る</Link>
+              <Link href='/login' className='text text-[#5A8B7D] hover:underline'>ログイン画面へ</Link>
             </div>
           </form>
         </div>

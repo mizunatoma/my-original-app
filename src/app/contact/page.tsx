@@ -23,9 +23,6 @@ export default function ContactPage() {
   } = useForm<FormValues>();
 
   const onSubmit = async (data: FormValues) => {
-    console.log('===送信開始===')
-    console.log('送信データ', data)
-
     try {
       const res = await fetch("/api/contacts",
         {
@@ -49,7 +46,7 @@ export default function ContactPage() {
 
   return (
     <main className="min-h-screen bg-[#F2F0E9] flex items-center justify-center px-4">
-      <div className="auth-card max-w-lg w-full">
+      <div className="auth-card max-w-md w-full">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <h1 className="auth-title">お問い合わせ</h1>
           <div>

@@ -44,7 +44,6 @@ export default function Page() {
       <div className='auth-form-section'>
         <div className='auth-card'>
           <h1 className='auth-title'>Login</h1>
-
           <form method="POST" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
               <FormLabel htmlFor='email'>メールアドレス</FormLabel>
@@ -56,11 +55,8 @@ export default function Page() {
                 placeholder="name@company.com"
               />
             </div>
-            <div>
-              <div className='flex justify-between'>
-                <FormLabel htmlFor='password'>パスワード</FormLabel>
-                <Link href='/reset_password' className='text text-[#5A8B7D] hover:underline'>パスワードを忘れた</Link>
-              </div>
+            <div className=''>
+              <FormLabel htmlFor='password'>パスワード</FormLabel>
               <FormInput
                 type="password"
                 id="password"
@@ -70,27 +66,39 @@ export default function Page() {
               />
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
+            <div className='flex '>
+              <Link href='/reset_password' className='ml-auto block text-sm text-[#5A8B7D] hover:underline'>
+                パスワードをお忘れの場合
+              </Link>
+            </div>
+
+            {/*  今後実装予定
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
                 <input
                   type="checkbox"
                   id="remember"
                   className="w-4 h-4 text-[#5A8B7D] bg-gray-100 border-gray-300 rounded focus:ring-[#5A8B7D]"
                 />
                 <label htmlFor="remember" className="ml-2 text-sm text-gray-600">ログイン状態を保持</label>
-              </div>
-              <Link href="/signup" className="text-sm text-[#5A8B7D] hover:underline">新規登録</Link>
+            </div>
+          </div>
+          */}
+
+            <div className='flex flex-col gap-3'>
+              <FormButton variant="primary" loading={isSubmitting} label='ログイン' />
+              <Link href="/signup" className="accunt_button">新規登録</Link>
             </div>
 
-            <FormButton variant="primary" loading={isSubmitting} label='ログイン' />
+            {/*  今後実装予定
             <OrDivider />
             <FormButton variant="secondary" loading={isSubmitting} label='Googleで続行' />
             <FormButton variant="secondary" loading={isSubmitting} label='ゲストで見る' />
-
+            */}
           </form>
         </div>
       </div>
-    </div>
+    </div >
   )
 }
 

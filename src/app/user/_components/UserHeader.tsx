@@ -13,13 +13,12 @@ interface UserHeaderProps {
 
 export default function UserHeader({ toggleSidebar, isCollapsed }: UserHeaderProps) {
   const router = useRouter()
+  const { session, isLoading } = useSupabaseSession()
 
   const handleLogout = async () => {
     await supabaseBrowser.auth.signOut()
     await router.replace('/')
   }
-
-  const { session, isLoading } = useSupabaseSession()
 
   return (
     <header
@@ -39,20 +38,17 @@ export default function UserHeader({ toggleSidebar, isCollapsed }: UserHeaderPro
       {/*右：ユーザアイコン*/}
       {!isLoading && (
         <div className="flex items-center gap-4">
-          {session ? (
-            <>
-              <Link href="/contact" className="header-link text-sm">
-                お問い合わせ
-              </Link>
-              <button onClick={handleLogout} className="text-sm">ログアウト</button>
-            </>
-          ) : (
-            <>
-              <Link href="/login" className="header-link" />
-            </>
-          )}
+          {session
+            ? (
+              <>
+                <Link href="/contact" className="text-sm text-gray-600 hover:underline">お問い合わせ</Link>
+                <button onClick={handleLogout} className="text-sm text-gray-600 hover:underline">ログアウト</button>
+              </>
+            ) : (<Link href="/login" className="text-sm">ログイン</Link>
+            )}
         </div>
-      )}
-    </header>
+      )
+      }
+    </header >
   )
 }

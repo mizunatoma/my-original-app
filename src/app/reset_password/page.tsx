@@ -42,8 +42,8 @@ export default function Page() {
       <AuthIllustration />
       <div className='auth-form-section'>
         <div className='auth-card'>
-          <h1 className='auth-title'>Reset password</h1>
-          <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-[400px] space-y-6">
+          <h1 className='auth-title mb-12'>Reset password</h1>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div>
               <FormLabel htmlFor='email'>メールアドレス</FormLabel>
               <FormInput

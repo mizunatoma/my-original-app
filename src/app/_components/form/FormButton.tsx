@@ -22,7 +22,7 @@ export const FormButton = forwardRef<HTMLButtonElement, Props>(
       ref={ref}
       type={type}
       disabled={loading}
-      className={`w-full rounded-lg px-5 py-2.5 disabled:opacity-50 ${className}
+      className={`accunt_button ${className}
     ${variant === "primary"
           ? 'bg-[#5A8B7D] text-white hover:bg-[#4A7A6D]'
           : 'bg-[#F5F3ED] text-gray-700 hover:bg-[#EBE9E0]'
