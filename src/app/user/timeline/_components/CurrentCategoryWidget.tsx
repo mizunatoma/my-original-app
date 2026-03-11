@@ -110,12 +110,16 @@ export default function CurrentCategoryWidget({ currentCategoryID, onPressStopBu
                         )
                       }}
                     >停止</button>
+
+                    {/* 今後実装予定
                     < div className="relative mt-4 ">
                       <textarea
                         className="w-full h-24 bg-gray-50 rounded-xl p-4 text-gray-700 border-rose-100 border-2 focus:outline-none focus:ring-2 focus:ring-rose-100 placeholder-gray-400"
                         placeholder="(任意)終了時にメモを残します"
                       />
                     </div>
+                    */}
+
                   </div>
                 }
               </div>

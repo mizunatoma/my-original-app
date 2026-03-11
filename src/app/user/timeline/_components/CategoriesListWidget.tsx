@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { Trash2, SquarePen } from 'lucide-react';
 import { CategoryAPI } from '@/types/api';
 import CategoryModal from './CategoryModal';
-import PreviousMap_ from "postcss/lib/previous-map";
 import { Dispatch, SetStateAction } from "react"
 
 type Props = {
@@ -117,7 +116,7 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
             await fetch(`/api/timeline/activities/${editingCategory.id}`, {
               method: 'PUT',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ name })
+              body: JSON.stringify({ name, colorToken: color })
             })
             fetchCategories()
             setEditingCategory(null)
