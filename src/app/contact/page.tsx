@@ -1,18 +1,11 @@
 "use client";
-
 import { useForm } from "react-hook-form";
 import { FormLabel } from '../_components/form/FormLabel';
 import { FormInput } from '../_components/form/FormInput';
 import { FormButton } from '../_components/form/FormButton';
 import { FormTextarea } from "../_components/form/FormTextarea";
-import AuthIllustration from '../_components/AuthIllustration';
 import Link from 'next/link';
-
-type FormValues = {
-  name: string;
-  email: string;
-  message: string;
-};
+import { ContactRequestBody } from "@/types/api";
 
 export default function ContactPage() {
   const {
@@ -20,9 +13,9 @@ export default function ContactPage() {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>();
+  } = useForm<ContactRequestBody>();
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (data: ContactRequestBody) => {
     try {
       const res = await fetch("/api/contacts",
         {

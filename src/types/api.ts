@@ -22,6 +22,12 @@ export type CategoryDTO = {
   colorToken?: string
 }
 
+export type ContactRequestBody = {
+  name: string,
+  email: string,
+  message: string
+}
+
 
 //================================================
 
