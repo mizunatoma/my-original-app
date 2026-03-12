@@ -12,7 +12,7 @@ type Props = {
 export default function CategoriesListWidget({ onSelectCategory }: Props) {
   const [categories, setCategories] = useState<CategoryAPI.Get.Response['category'][]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [editingCategory, setEditingCategory] = useState(null)
+  const [editingCategory, setEditingCategory] = useState<CategoryAPI.Get.Response['category'] | null>(null)
   const [isLoading, setIsloading] = useState(true);
 
   // categoryリストの取得
@@ -25,7 +25,7 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
   }
 
   // categoryの削除
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string) => {
     await fetch(`/api/timeline/activities/${id}`, {
       method: 'DELETE',
     })
@@ -55,7 +55,7 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
             {categories.map((category) => (
               <div
                 className="flex items-center gap-3 bg-white border border-gray-100 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer h-16"
-                key={category.name}
+                key={category.id}
                 onClick={() => onSelectCategory(s => ({ id: category.id, count: s.count + 1 }))}> {/* 兄弟のCurrentCategoryWidgetへ渡す */}
 
                 <div className="flex justify-between w-full p-4">
