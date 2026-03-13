@@ -16,6 +16,14 @@ export type TimelogDTO = {
   }
 }
 
+export type RunningTimelogDTO = {
+  id: string;
+  activityId: string;
+  activityName: string;
+  colorToken: string;
+  startAt: string; // ISO文字列
+}
+
 export type CategoryDTO = {
   id: string
   name: string
@@ -55,15 +63,24 @@ export namespace TimelineAPI {
   // POST /api/timeline/start
   export namespace Start {
     export type Request = {
-      categoryId: string,
+      activityId: string,
       startAt: string, //ISO
     };
     export type Response = { timelog: TimelogDTO };
   };
+  // GET /api/timeline/running
+  export namespace Running {
+    export type Response =
+      | { running: false }
+      | {
+        running: true
+        log: RunningTimelogDTO
+      }
+  };
   // POST /api/timeline/end
   export namespace End {
     export type Request = {
-      categoryId: string,
+      activityId: string,
       endAt: string, //ISO
     };
     export type Response = { timelog: TimelogDTO };

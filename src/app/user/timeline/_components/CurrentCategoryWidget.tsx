@@ -1,19 +1,7 @@
 'use client'
 import React, { useState, useEffect } from "react"
 import { Dispatch, SetStateAction } from "react"
-
-type RunnningApiResponse =
-  | { running: false }
-  | {
-    running: true
-    log: {
-      id: string
-      categoryId: string
-      activityName: string
-      colorToken: string
-      startAt: string
-    }
-  }
+import { TimelineAPI } from "@/types/api"
 
 type Props = {
   currentCategoryID: { id: string, count: number }
@@ -21,7 +9,7 @@ type Props = {
 }
 
 export default function CurrentCategoryWidget({ currentCategoryID, onPressStopButton }: Props) {
-  const [data, setData] = useState<RunnningApiResponse | null>(null);
+  const [data, setData] = useState<TimelineAPI.Running.Response | null>(null);
   const [elapsed, setElapsed] = useState(0);
   const [isLoading, setIsloading] = useState(true);
 
@@ -104,7 +92,7 @@ export default function CurrentCategoryWidget({ currentCategoryID, onPressStopBu
                         await fetch('/api/timeline/end', {
                           method: 'POST',
                           headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ categoryId: data?.running && data.log.categoryId }),
+                          body: JSON.stringify({ activityId: data?.running && data.log.activityId }),
                         })
                         setData({ running: false }
                         )
