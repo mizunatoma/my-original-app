@@ -16,7 +16,6 @@ const fetcher = (url: string) => fetch(url).then(res => res.json())
 export default function CategoriesListWidget({ onSelectCategory }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<CategoryAPI.Get.Response['category'] | null>(null)
-
   const { data, isLoading, mutate } = useSWR<{ activities: CategoryDTO[] }>('/api/timeline/activities', fetcher)
 
   // categoryの削除
@@ -26,6 +25,29 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
     })
     mutate()
   }
+
+  // categoryの追加
+  const handleAddSave = async (name: string, color: string) => {
+    await fetch('/api/timeline/activities', {
+      method: 'POST',
+      headers: { 'Content-Type': 'applications/json' },
+      body: JSON.stringify({ name, colorToken: color })
+    })
+    mutate()
+    setIsOpen(false)
+  }
+
+  // categoryの編集
+  const handleEditSave = async (name: string, color: string) => {
+    await fetch(`/api/timeline/activities/${editingCategory!.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'applications/json' },
+      body: JSON.stringify({ name, colorToken: color })
+    })
+    mutate()
+    setEditingCategory(null)
+  }
+
 
   return (
     <div className="widget-card">
@@ -83,18 +105,8 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
         <CategoryModal
           title="New Category"
           placeholder="Category's name"
-          onSave={async (name, color) => {
-            await fetch('/api/timeline/activities', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ name, colorToken: color })
-            })
-            mutate()
-            setIsOpen(false)
-          }}
-          onCancel={() => {
-            setIsOpen(false)
-          }}
+          onSave={handleAddSave}
+          onCancel={() => { setIsOpen(false) }}
         />
       }
 
@@ -103,18 +115,8 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
         <CategoryModal
           title="Category"
           initialName={editingCategory.name}
-          onSave={async (name, color) => {
-            await fetch(`/api/timeline/activities/${editingCategory.id}`, {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ name, colorToken: color })
-            })
-            mutate()
-            setEditingCategory(null)
-          }}
-          onCancel={() => {
-            setEditingCategory(null)
-          }}
+          onSave={handleEditSave}
+          onCancel={() => { setEditingCategory(null) }}
         />
       }
     </div >
