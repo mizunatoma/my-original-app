@@ -7,11 +7,15 @@ type Props = {
   timelineKey: { count: number }
 }
 
+const toJstDateString = (date: Date): string => {
+  const jst = new Date(date.getTime() + 9 * 60 * 60 * 1000)
+  return jst.toISOString().split("T")[0]
+}
+
 export default function TimelogWidget({ timelineKey }: Props) {
   const hours = Array.from({ length: 24 }, (_, i) => i); // [0, 1, 2, ... 23]
-
   const [activities, setActivities] = useState<TimelogDTO[]>([]);
-  const [date, setDate] = useState<string>(new Date().toISOString().split("T")[0]);
+  const [date, setDate] = useState(toJstDateString(new Date()));
 
   const fetchActivities = async () => {
     try {
@@ -32,18 +36,19 @@ export default function TimelogWidget({ timelineKey }: Props) {
       <div className="flex gap-2 justify-center">
         <button
           onClick={() => {
-            const d = new Date(date)
-            d.setDate(d.getDate() - 1)
-            setDate(d.toISOString().split("T")[0])
+            const prev = new Date(date)
+            prev.setDate(prev.getDate() - 1)
+            setDate(toJstDateString(prev))
           }}
         ><ChevronLeft size={16} /></button>
         <button>{date}</button>
         <button
           onClick={() => {
-            const d = new Date(date)
-            d.setDate(d.getDate() + 1)
-            setDate(d.toISOString().split("T")[0])
-          }}><ChevronRight size={16} /></button>
+            const prev = new Date(date)
+            prev.setDate(prev.getDate() + 1)
+            setDate(toJstDateString(prev))
+          }}
+        ><ChevronRight size={16} /></button>
       </div>
 
       <div className="h-[1440px] relative overflow-y-auto">

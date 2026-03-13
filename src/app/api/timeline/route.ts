@@ -19,9 +19,9 @@ export const GET = async (request: NextRequest) => {
       return NextResponse.json({ error: "date is required" }, { status: 400 });
     }
 
-    // 指定日の開始・終了時刻（UTC）
-    const startOfDay = new Date(`${date}T00:00:00.000Z`); //
-    const endOfDay = new Date(`${date}T23:59:59.999Z`)    //
+    // 指定日の開始・終了時刻（JST）
+    const startOfDay = new Date(`${date}T00:00:00.000+09:00`); //
+    const endOfDay = new Date(`${date}T23:59:59.999+09:00`)    //
 
     // TimeLog を Activity → Profile 経由で取得
     const logs = await prisma.timeLog.findMany({
