@@ -1,40 +1,31 @@
 'use client'
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Trash2, SquarePen } from 'lucide-react';
 import { CategoryAPI } from '@/types/api';
 import CategoryModal from './CategoryModal';
 import { Dispatch, SetStateAction } from "react"
+import useSWR from "swr";
+import { CategoryDTO } from "@/types/api";
 
 type Props = {
   onSelectCategory: Dispatch<SetStateAction<{ id: string, count: number }>>
 }
 
+const fetcher = (url: string) => fetch(url).then(res => res.json())
+
 export default function CategoriesListWidget({ onSelectCategory }: Props) {
-  const [categories, setCategories] = useState<CategoryAPI.Get.Response['category'][]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<CategoryAPI.Get.Response['category'] | null>(null)
-  const [isLoading, setIsloading] = useState(true);
 
-  // categoryリストの取得
-  const fetchCategories = async () => {
-    setIsloading(true)
-    const res = await fetch('/api/timeline/activities')
-    const json = await res.json()
-    setIsloading(false)
-    setCategories(json.activities)
-  }
+  const { data, isLoading, mutate } = useSWR<{ activities: CategoryDTO[] }>('/api/timeline/activities', fetcher)
 
   // categoryの削除
   const handleDelete = async (id: string) => {
     await fetch(`/api/timeline/activities/${id}`, {
       method: 'DELETE',
     })
-    fetchCategories()
+    mutate()
   }
-
-  useEffect(() => {
-    fetchCategories()
-  }, [])
 
   return (
     <div className="widget-card">
@@ -52,7 +43,7 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
       {!isLoading
         ? (
           <div className="grid grid-cols-2 md:grid-cols-2 gap-2">
-            {categories.map((category) => (
+            {data?.activities.map((category) => (
               <div
                 className="flex items-center gap-3 bg-white border border-gray-100 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer h-16"
                 key={category.id}
@@ -98,7 +89,7 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ name, colorToken: color })
             })
-            fetchCategories()
+            mutate()
             setIsOpen(false)
           }}
           onCancel={() => {
@@ -118,7 +109,7 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ name, colorToken: color })
             })
-            fetchCategories()
+            mutate()
             setEditingCategory(null)
           }}
           onCancel={() => {
