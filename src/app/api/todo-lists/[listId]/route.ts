@@ -31,12 +31,39 @@ export const PUT = async (
 
     return NextResponse.json({ todoList: updated }, { status: 200 })
   } catch (e) {
-    console.error("PUT /api/todo-list:", e);
+    console.error("PUT /api/todo-list/[listId]:", e);
     return NextResponse.json({ error: String(e) }, { status: 500 })
-  }
-
-}
+  };
+};
 
 // ===============================
 // DELETE
 // ===============================
+export const DELETE = async (
+  request: NextRequest,
+  { params }: { params: { listId: string } }
+) => {
+  try {
+    const auth = await getAuthUser();
+    if (auth instanceof NextResponse) return auth;
+    const user = auth.user;
+
+    const todoList = await prisma.todoList.findFirst({
+      where: {
+        id: params.listId,
+        profile: { userId: user.id }
+      }
+    })
+    if (!todoList) return NextResponse.json({ error: "No list found" }, { status: 403 })
+
+    await prisma.todoList.update({
+      where: { id: params.listId },
+      data: { deletedAt: new Date() },
+    })
+
+    return new NextResponse(null, { status: 204 }) // Responseのデータなし、リクエスト成功ステータスコード
+  } catch (e) {
+    console.error("DELETE /api/todo-lists/[listId]:", e);
+    return NextResponse.json({ error: String(e) }, { status: 500 })
+  };
+};
