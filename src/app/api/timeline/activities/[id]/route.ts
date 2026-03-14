@@ -15,11 +15,6 @@ export const PUT = async (
     if (auth instanceof NextResponse) return auth;
     const user = auth.user;
 
-    //console.log("=== API HIT ===");
-    //console.log("params.id:", params.id);
-    //console.log("user.id:", user.id);
-    //console.log("DB URL:", process.env.DATABASE_URL);
-
     const activity = await prisma.activity.findFirst({
       where: {
         id: params.id,
@@ -31,10 +26,13 @@ export const PUT = async (
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
 
-    const { name } = await request.json();
+    const { name, colorToken } = await request.json();
     const updated = await prisma.activity.update({
       where: { id: params.id },
-      data: { name },
+      data: {
+        ...(name !== undefined && { name }),
+        ...(colorToken !== undefined && { colorToken }),
+      },
     })
 
     return NextResponse.json({ activity: updated });

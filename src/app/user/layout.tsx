@@ -1,8 +1,9 @@
 'use client'
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { useState } from 'react';
 import { useRouteGuard } from './_hooks/useRouteGuard'
+import UserSidebar from './_components/UserSidebar'
+import UserHeader from './_components/UserHeader'
 
 export default function UserLayout({
   children,
@@ -11,48 +12,16 @@ export default function UserLayout({
 }) {
   useRouteGuard()
 
-  const pathname = usePathname()
-  const isSelected = (href: string) => {
-    return pathname === href
-  }
+  const [isCollapsed, setIsCollapsed] = useState(false)
+  const toggleSidebar = () => setIsCollapsed(!isCollapsed)
 
   return (
     <>
-      {/* サイドバー */}
-      <aside className="fixed bg-gray-100 w-[280px] left-0 bottom-0 top-[72px]">
-        <Link
-          href="/user/timeline"
-          className={`p-4 block hover:bg-blue-100 ${isSelected('/user/timeline') && 'bg-blue-100'
-            }`}
-        >
-          Timeline
-        </Link>
-        <Link
-          href="/user/tasks"
-          className={`p-4 block hover:bg-blue-100 ${isSelected('/user/tasks') && 'bg-blue-100'
-            }`}
-        >
-          Tasks
-        </Link>
-        <Link
-          href="/user/routines"
-          className={`p-4 block hover:bg-blue-100 ${isSelected('/user/routines') && 'bg-blue-100'
-            }`}
-        >
-          Routines
-        </Link>
-        <Link
-          href="/user/analytics"
-          className={`p-4 block hover:bg-blue-100 ${isSelected('/user/analytics') && 'bg-blue-100'
-            }`}
-        >
-          Analytics
-        </Link>
-      </aside>
-
-      {/* メインエリア */}
-      <div className="ml-[280px] p-4">{children}</div>
+      <UserHeader toggleSidebar={toggleSidebar} isCollapsed={isCollapsed} />
+      <UserSidebar isCollapsed={isCollapsed} />
+      <div className={`transition-all duration-300 ${isCollapsed ? 'ml-[80px]' : 'ml-[160px]'} pt-20 p-4`}>
+        {children}
+      </div>
     </>
   )
 }
-

@@ -19,9 +19,9 @@ export const GET = async (request: NextRequest) => {
       return NextResponse.json({ error: "date is required" }, { status: 400 });
     }
 
-    // 指定日の開始・終了時刻（UTC）
-    const startOfDay = new Date(`${date}T00:00:00.000Z`); //
-    const endOfDay = new Date(`${date}T23:59:59.999Z`)    //
+    // 指定日の開始・終了時刻（JST）
+    const startOfDay = new Date(`${date}T00:00:00.000+09:00`); //
+    const endOfDay = new Date(`${date}T23:59:59.999+09:00`)    //
 
     // TimeLog を Activity → Profile 経由で取得
     const logs = await prisma.timeLog.findMany({
@@ -35,22 +35,21 @@ export const GET = async (request: NextRequest) => {
       },
       include: {
         activity: {
-          select: { id: true, name: true },
+          select: { id: true, name: true, colorToken: true },
         },
       },
       orderBy: { startAt: "asc" },
     });
 
-    const timeline = logs.map(log => ({
+    const activities = logs.map(log => ({
       id: log.id,
-      type: "timelog",
-      activityId: log.activity.id,
-      activityName: log.activity.name,
-      startAt: log.startAt,
-      endAt: log.endAt,
+      title: log.activity.name,
+      startAt: log.startAt.toISOString(),
+      endAt: log.endAt ? log.endAt.toISOString() : null,
+      category: { colorToken: log.activity.colorToken }
     }));
 
-    return NextResponse.json({ date, timeline }, { status: 200 })
+    return NextResponse.json({ activities }, { status: 200 })
   } catch (e) {
     console.error("GET /timeline?date=YYYY-MM-DD:", e);
     return NextResponse.json({ error: String(e) }, { status: 500 })

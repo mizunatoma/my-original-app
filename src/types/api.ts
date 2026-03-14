@@ -1,19 +1,46 @@
 
-//共通DTO (APIレスポンス用)
+// APIレスポンス用 共通DTO
+
 export type ProfileDTO = {
   id: string;
   displayName: string;
 };
 
-export type TimelineActivityDTO = {
+export type TimelogDTO = {
   id: string;
   title: string;
   startAt: string; // ISO文字列
   endAt: string | null;
+  category: {
+    colorToken?: string
+  }
+}
+
+export type RunningTimelogDTO = {
+  id: string;
+  activityId: string;
+  activityName: string;
+  colorToken: string;
+  startAt: string; // ISO文字列
+}
+
+export type CategoryDTO = {
+  id: string
+  name: string
+  colorToken?: string
+}
+
+export type ContactRequestBody = {
+  name: string,
+  email: string,
+  message: string
 }
 
 
-// Profile API (/api/profile)
+//================================================
+
+
+// プロフィール系 (Get/Put)
 export namespace ProfileAPI {
   // GET /api/profile
   export namespace Get {
@@ -27,11 +54,11 @@ export namespace ProfileAPI {
 }
 
 
-// Timeline API (/api/timeline)
+// タイムログ系 (Get/Start/End)
 export namespace TimelineAPI {
   // GET /api/timeline
   export namespace Get {
-    export type Response = { activities: TimelineActivityDTO[] };
+    export type Response = { activities: TimelogDTO[] };
   };
   // POST /api/timeline/start
   export namespace Start {
@@ -39,9 +66,16 @@ export namespace TimelineAPI {
       activityId: string,
       startAt: string, //ISO
     };
-    export type Response = {
-      activity: TimelineActivityDTO;
-    };
+    export type Response = { timelog: TimelogDTO };
+  };
+  // GET /api/timeline/running
+  export namespace Running {
+    export type Response =
+      | { running: false }
+      | {
+        running: true
+        log: RunningTimelogDTO
+      }
   };
   // POST /api/timeline/end
   export namespace End {
@@ -49,16 +83,18 @@ export namespace TimelineAPI {
       activityId: string,
       endAt: string, //ISO
     };
-    export type Response = {
-      activity: TimelineActivityDTO;
-    };
+    export type Response = { timelog: TimelogDTO };
   };
 }
 
 
-
-
-
+// カテゴリ系 (Get)
+export namespace CategoryAPI {
+  // GET /api/timeline/[id]
+  export namespace Get {
+    export type Response = { category: CategoryDTO }
+  };
+}
 
 
 

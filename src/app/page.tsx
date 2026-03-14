@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 
-// figmaからコピー&ペースト ↓
+// figmaからコピー&ペースト。今後、修正予定。
 export default function Home() {
   return (
     <div className="w-[1440px] h-[2155px] relative bg-[radial-gradient(ellipse_46.87%_22.48%_at_18.00%_8.00%,_var(--45-16%,_rgba(93,_134,_108,_0.16))_0%,_var(--45-0%,_rgba(93,_134,_108,_0))_60%)]">

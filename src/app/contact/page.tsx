@@ -1,16 +1,11 @@
 "use client";
-
 import { useForm } from "react-hook-form";
 import { FormLabel } from '../_components/form/FormLabel';
 import { FormInput } from '../_components/form/FormInput';
 import { FormButton } from '../_components/form/FormButton';
 import { FormTextarea } from "../_components/form/FormTextarea";
-
-type FormValues = {
-  name: string;
-  email: string;
-  message: string;
-};
+import Link from 'next/link';
+import { ContactRequestBody } from "@/types/api";
 
 export default function ContactPage() {
   const {
@@ -18,9 +13,9 @@ export default function ContactPage() {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>();
+  } = useForm<ContactRequestBody>();
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (data: ContactRequestBody) => {
     try {
       const res = await fetch("/api/contacts",
         {
@@ -43,69 +38,63 @@ export default function ContactPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-[400px] space-y-6 mx-auto">
-        <h1 className="text-2xl font-bold text-center">お問い合わせ</h1>
-        <div>
-          <FormLabel htmlFor='name'>お名前</FormLabel>
-          <FormInput
-            loading={isSubmitting}
-            className="focus:border-blue-500 focus:ring focus:ring-blue-200"
-            {...register("name", {
-              required: "名前は必須です",
-              maxLength: { value: 30, message: "30文字以内で入力してください" },
-            })}
-          />
-          {errors.name && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.name.message}
-            </p>
-          )}
-        </div>
-        <div>
-          <FormLabel htmlFor='email'>メールアドレス</FormLabel>
-          <FormInput
-            loading={isSubmitting}
-            className="focus:border-blue-500 focus:ring focus:ring-blue-200"
-            {...register("email", {
-              required: "メールアドレスは必須です",
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "正しいメールアドレスを入力してください",
-              },
-            })}
-          />
-          {errors.email && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.email.message}
-            </p>
-          )}
-        </div>
-        <div>
-          <FormLabel htmlFor="text">本文</FormLabel>
-          <FormTextarea
-            rows={5}
-            loading={isSubmitting}
-            {...register("message", { required: "本文は必須です" })}
-          />
-          {errors.message && (
-            <p>{errors.message.message}</p>
-          )}
-        </div>
-        <div className="flex justify-between gap-4">
+    <main className="min-h-screen bg-[#F2F0E9] flex items-center justify-center px-4">
+      <div className="auth-card max-w-md w-full">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <h1 className="auth-title">お問い合わせ</h1>
+          <div>
+            <FormLabel htmlFor='name'>お名前</FormLabel>
+            <FormInput
+              loading={isSubmitting}
+              className="focus-ring"
+              {...register("name", {
+                required: "名前は必須です",
+                maxLength: { value: 30, message: "30文字以内で入力してください" },
+              })}
+            />
+            {errors.name && (
+              <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+            )}
+          </div>
+          <div>
+            <FormLabel htmlFor='email'>メールアドレス</FormLabel>
+            <FormInput
+              loading={isSubmitting}
+              className="focus-ring"
+              {...register("email", {
+                required: "メールアドレスは必須です",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "正しいメールアドレスを入力してください",
+                },
+              })}
+            />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+            )}
+          </div>
+          <div>
+            <FormLabel htmlFor="text">本文</FormLabel>
+            <FormTextarea
+              rows={5}
+              loading={isSubmitting}
+              className="focus-ring"
+              {...register("message", { required: "本文は必須です" })}
+            />
+            {errors.message && (
+              <p className="text-red-500 text-sm mt-1">{errors.message.message}</p>
+            )}
+          </div>
           <FormButton
             type="submit"
             loading={isSubmitting}
             label="送信"
           />
-          <FormButton
-            type="button"
-            loading={isSubmitting}
-            label="クリア"
-            onClick={() => reset()}
-          />
-        </div>
-      </form>
+          <div className="hover:underline text flex justify-center">
+            <Link href="/user/timeline">ダッシュボードに戻る</Link>
+          </div>
+        </form>
+      </div>
     </main>
   );
 }

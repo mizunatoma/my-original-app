@@ -28,6 +28,17 @@ export const POST = async (request: NextRequest) => {
     // activityId 取得
     const { activityId } = await request.json();
 
+    const activity = await prisma.activity.findFirst({
+      where: {
+        id: activityId,
+        profile: { userId: user.id }
+      }
+    })
+
+    if (!activity) {
+      return NextResponse.json({ error: "Authorization failure" }, { status: 403 });
+    }
+
     // timeLog 作成
     const timeLog = await prisma.timeLog.create({
       data: {

@@ -1,18 +1,34 @@
-import { ButtonHTMLAttributes } from "react";
+import { forwardRef, ButtonHTMLAttributes } from "react";
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   loading: boolean
   label: string
   type?: "submit" | "button";
+  variant?: "primary" | "secondary";
 }
 
-export const FormButton = ({ className = "", type = "submit", loading, label, ...props }: Props) => (
-  <button
-    {...props}
-    type={type}
-    disabled={loading}
-    className={`w-full text-white bg-blue-700 rounded-lg px-5 py-2.5 disabled:opacity-50 ${className}`}
-  >
-    {loading ? '送信中...' : label}
-  </button>
+export const FormButton = forwardRef<HTMLButtonElement, Props>(
+  ({
+    loading,
+    label,
+    type = "submit",     // デフォルト値の指定
+    variant = "primary", // デフォルト値の指定
+    className = "",
+    ...props
+  }, ref) => (
+
+    <button
+      {...props}
+      ref={ref}
+      type={type}
+      disabled={loading}
+      className={`accunt_button ${className}
+    ${variant === "primary"
+          ? 'bg-[#5A8B7D] text-white hover:bg-[#4A7A6D]'
+          : 'bg-[#F5F3ED] text-gray-700 hover:bg-[#EBE9E0]'
+        }`}
+    >
+      {loading ? '送信中...' : label}
+    </button>
+  )
 );
