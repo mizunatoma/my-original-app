@@ -35,7 +35,7 @@ export const PUT = async (
       },
     })
 
-    return NextResponse.json({ activity: updated });
+    return NextResponse.json({ activity: updated }, { status: 201 });
   } catch (e) {
     console.error("PUT /activities/[id] error:", e);
     return NextResponse.json({ error: String(e) }, { status: 500 });
