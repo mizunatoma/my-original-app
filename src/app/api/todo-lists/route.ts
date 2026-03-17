@@ -9,7 +9,7 @@ import { getAuthUser } from "@/app/_utils/getAuthUser";
 export const GET = async (request: NextRequest) => {
   try {
     const auth = await getAuthUser();
-    if (auth instanceof NextResponse) return auth; // instanceof は「この値は○○の種類か？」を確認する構文
+    if (auth instanceof NextResponse) return auth;
     const user = auth.user;
 
     const todoList = await prisma.todoList.findMany({
