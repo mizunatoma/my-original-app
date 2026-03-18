@@ -35,7 +35,7 @@ export const PUT = async (
 
     return NextResponse.json({ todo: updated }, { status: 200 })
   } catch (e) {
-    console.error("PUT /api/todo-list/[listId]:", e);
+    console.error("PUT /api/todos/[todoId]:", e);
     return NextResponse.json({ error: String(e) }, { status: 500 })
   };
 };

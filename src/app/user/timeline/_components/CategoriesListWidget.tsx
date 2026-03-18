@@ -65,7 +65,7 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
       {!isLoading
         ? (
           <div className="grid grid-cols-2 md:grid-cols-2 gap-2">
-            {data?.activities.map((category) => (
+            {data?.activities?.map((category) => (
               <div
                 className="flex items-center gap-3 bg-white border border-gray-100 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer h-16"
                 key={category.id}
