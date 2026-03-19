@@ -51,7 +51,7 @@ export const POST = async (request: NextRequest) => {
       },
     });
 
-    return NextResponse.json({ id: data.id }, { status: 200 });
+    return NextResponse.json({ id: data.id }, { status: 201 });
   } catch (e) {
     console.error("POST /activities error:", e);
     return NextResponse.json({ error: String(e) }, { status: 500 });
