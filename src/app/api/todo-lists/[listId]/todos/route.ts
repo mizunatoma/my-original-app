@@ -15,26 +15,20 @@ export const GET = async (
     if (auth instanceof NextResponse) return auth;
     const user = auth.user;
 
-    const { listId } = params;
-
     // リストの存在確認と所有権チェック
     const todoList = await prisma.todoList.findFirst({
       where: {
         id: params.listId,
         profile: { userId: user.id }
+      },
+      select: {
+        todos: { where: { deletedAt: null } }
       }
     })
 
     if (!todoList) return NextResponse.json({ error: "No list found" }, { status: 403 })
 
-    const todos = await prisma.todo.findMany({
-      where: {
-        todoListId: listId,
-        deletedAt: null,
-      },
-    })
-
-    return NextResponse.json({ todos }, { status: 200 })
+    return NextResponse.json({ todos: todoList.todos }, { status: 200 })
   } catch (e) {
     console.error("GET /api/todo-lists/[listId]/todos:", e);
     return NextResponse.json({ error: String(e) }, { status: 500 })
