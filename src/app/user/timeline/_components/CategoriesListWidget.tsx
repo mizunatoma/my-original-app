@@ -1,11 +1,10 @@
 'use client'
-import React, { useState } from "react";
+import React, { useState, Dispatch, SetStateAction } from "react";
 import { Trash2, SquarePen } from 'lucide-react';
-import { CategoryAPI } from '@/types/api';
+import { CategoryAPI, CategoryDTO } from '@/types/api';
 import CategoryModal from './CategoryModal';
-import { Dispatch, SetStateAction } from "react"
 import useSWR from "swr";
-import { CategoryDTO } from "@/types/api";
+
 
 type Props = {
   onSelectCategory: Dispatch<SetStateAction<{ id: string, count: number }>>

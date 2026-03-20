@@ -1,5 +1,10 @@
 
 // APIレスポンス用 共通DTO
+export type ContactRequestBody = {
+  name: string,
+  email: string,
+  message: string
+}
 
 export type ProfileDTO = {
   id: string;
@@ -30,12 +35,24 @@ export type CategoryDTO = {
   colorToken?: string
 }
 
-export type ContactRequestBody = {
-  name: string,
-  email: string,
-  message: string
+export type TodoListDTO = {
+  id: string;
+  profileId: string;
+  name: string;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
+export type TodoItemDTO = {
+  id: string;
+  todoListId: string;
+  title: string;
+  isDone: boolean;
+  doneAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
 
 //================================================
 
@@ -97,8 +114,41 @@ export namespace CategoryAPI {
 }
 
 
+// TodoList (Get/Post/Put)
+export namespace TodoListsAPI {
+  // GET /api/todo-lists
+  export namespace Get {
+    export type Response = { todoLists: TodoListDTO[] }
+  };
+  // POST /api/todo-lists
+  export namespace Post {
+    export type Request = { name: string };
+    export type Response = { todoList: TodoListDTO }
+  };
+  // PUT /api/todo-lists/[listId]
+  export namespace Put {
+    export type Request = { name: string };
+    export type Response = { todoList: TodoListDTO }
+  };
+}
 
 
-
+// TodoItem (Get/Post/Put)
+export namespace TodoItemsAPI {
+  // GET /api/todo-lists/[listId]/todos
+  export namespace Get {
+    export type Response = { todos: TodoItemDTO[] }
+  };
+  // POST /api/todo-lists/[listId]/todos
+  export namespace Post {
+    export type Request = { title: string };
+    export type Response = { todo: TodoItemDTO }
+  };
+  // PUT /api/todos/[todoId]
+  export namespace Put {
+    export type Request = { title: string, isDone: boolean };
+    export type Response = { todo: TodoItemDTO }
+  };
+}
 
 

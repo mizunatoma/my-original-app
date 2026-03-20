@@ -7,7 +7,7 @@ import { Timer, BarChart2, ClipboardList, RefreshCw } from 'lucide-react'
 const MENU_ITEMS = [
   { href: "/user/timeline", icon: Timer, label: "Timeline" },
   { href: "/user/analytics", icon: BarChart2, label: "Analytics" },
-  { href: "/user/tasks", icon: ClipboardList, label: "Todos" },
+  { href: "/user/todos", icon: ClipboardList, label: "Todos" },
   { href: "/user/routines", icon: RefreshCw, label: "Routines" },
 ]
 
