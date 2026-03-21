@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react';
-import { TodoListsAPI } from '@/types/api';
+import { TodoListsAPI, TodoItemsAPI } from '@/types/api';
 import useSWR from "swr";
 
 interface TodoPanelProps {
@@ -13,7 +13,8 @@ const fetcher = (url: string) => fetch(url).then(res => res.json())
 export default function TodoPanel({ isCollapsed, isTodoPanelOpen }: TodoPanelProps) {
   const [selectedListId, setSelectedListId] = useState<string | null>(null);
   const [todo, setTodo] = useState("")
-  const { data, isLoading, mutate } = useSWR<TodoListsAPI.Get.Response>('/api/todo-lists', fetcher)
+  const { data: list } = useSWR<TodoListsAPI.Get.Response>('/api/todo-lists', fetcher)
+  const { data: todos, mutate: mutateTodo } = useSWR<TodoItemsAPI.Get.Response>(`/api/todo-lists/${selectedListId}/todos`, fetcher)
 
   const handleAddSave = async (title: string) => {
     console.log(selectedListId)
@@ -22,13 +23,13 @@ export default function TodoPanel({ isCollapsed, isTodoPanelOpen }: TodoPanelPro
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title })
     })
-    mutate()
+    mutateTodo()
     setTodo("")
   }
 
   useEffect(() => {
-    if (data) setSelectedListId(data.todoLists[0].id)
-  }, [data])
+    if (list) setSelectedListId(list.todoLists[0].id)
+  }, [list])
 
   return (
     <aside
@@ -37,7 +38,7 @@ export default function TodoPanel({ isCollapsed, isTodoPanelOpen }: TodoPanelPro
       ${isTodoPanelOpen ? 'w-[300px] border border-[#EFEDE6]' : 'w-[0px]'}`}
     >
 
-      {data?.todoLists.map((list) => (
+      {list?.todoLists.map((list) => (
         <button
           key={list.id}
           className={`inline-flex items-center px-3 py-1 rounded-t-lg text-sm font-medium bg-orange-100 text-orange-800 
@@ -47,6 +48,13 @@ export default function TodoPanel({ isCollapsed, isTodoPanelOpen }: TodoPanelPro
           {list.name}
         </button>
       ))}
+
+      <button
+        className='inline-flex items-center px-3 py-1 rounded-t-lg text-sm font-medium bg-orange-200 text-orange-800'
+        onClick={() => { }}
+      >
+        +
+      </button>
 
       <div className='flex'>
         <input
@@ -63,7 +71,11 @@ export default function TodoPanel({ isCollapsed, isTodoPanelOpen }: TodoPanelPro
         </button>
       </div>
 
-      <div>selectedList's todos</div>
+      {(todos?.todos || []).map((todo) => (
+        <ul>
+          <li>{todo.title}</li>
+        </ul>
+      ))}
     </aside >
   )
 }
