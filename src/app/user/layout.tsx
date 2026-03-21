@@ -22,13 +22,15 @@ export default function UserLayout({
     <>
       <UserHeader
         toggleSidebar={toggleSidebar}
-        isCollapsed={isCollapsed} />
+        isCollapsed={isCollapsed}
+        isTodoPanelOpen={isTodoPanelOpen} />
       <UserSidebar
         isCollapsed={isCollapsed}
         toggleTodoPanel={toggleTodoPanel}
         isTodoPanelOpen={isTodoPanelOpen} />
       <TodoPanel
-        isTodoPanelOpen={isTodoPanelOpen} />
+        isTodoPanelOpen={isTodoPanelOpen}
+        isCollapsed={isCollapsed} />
 
       <div className={`transition-all duration-300 ${isCollapsed
         ? 'ml-[80px]'
