@@ -5,7 +5,6 @@ import { CategoryAPI, CategoryDTO } from '@/types/api';
 import CategoryModal from './CategoryModal';
 import useSWR from "swr";
 
-
 type Props = {
   onSelectCategory: Dispatch<SetStateAction<{ id: string, count: number }>>
 }

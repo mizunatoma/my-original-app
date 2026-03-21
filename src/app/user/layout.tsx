@@ -1,9 +1,9 @@
 'use client'
-
 import { useState } from 'react';
 import { useRouteGuard } from './_hooks/useRouteGuard'
 import UserSidebar from './_components/UserSidebar'
 import UserHeader from './_components/UserHeader'
+import TodoPanel from './_components/TodoPanel'
 
 export default function UserLayout({
   children,
@@ -15,13 +15,27 @@ export default function UserLayout({
   const [isCollapsed, setIsCollapsed] = useState(false)
   const toggleSidebar = () => setIsCollapsed(!isCollapsed)
 
+  const [isTodoPanelOpen, setIsTodoPanelOpen] = useState(false)
+  const toggleTodoPanel = () => setIsTodoPanelOpen(!isTodoPanelOpen)
+
   return (
     <>
-      <UserHeader toggleSidebar={toggleSidebar} isCollapsed={isCollapsed} />
-      <UserSidebar isCollapsed={isCollapsed} />
-      <div className={`transition-all duration-300 ${isCollapsed ? 'ml-[80px]' : 'ml-[160px]'} pt-20 p-4`}>
+      <UserHeader
+        toggleSidebar={toggleSidebar}
+        isCollapsed={isCollapsed} />
+      <UserSidebar
+        isCollapsed={isCollapsed}
+        toggleTodoPanel={toggleTodoPanel}
+        isTodoPanelOpen={isTodoPanelOpen} />
+      <TodoPanel
+        isTodoPanelOpen={isTodoPanelOpen} />
+
+      <div className={`transition-all duration-300 ${isCollapsed
+        ? 'ml-[80px]'
+        : 'ml-[160px]'} pt-20 p-4`}>
         {children}
       </div>
     </>
   )
 }
+

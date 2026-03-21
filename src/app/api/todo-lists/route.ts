@@ -12,14 +12,14 @@ export const GET = async (request: NextRequest) => {
     if (auth instanceof NextResponse) return auth;
     const user = auth.user;
 
-    const todoList = await prisma.todoList.findMany({
+    const todoLists = await prisma.todoList.findMany({
       where: {
         profile: { userId: user.id },
         deletedAt: null,
       },
     })
 
-    return NextResponse.json({ todoList }, { status: 200 })
+    return NextResponse.json({ todoLists }, { status: 200 })
   } catch (e) {
     console.error("GET /api/todo-list:", e);
     return NextResponse.json({ error: String(e) }, { status: 500 }) // 500＝サーバー側で予期しないエラーが起きた
