@@ -69,7 +69,8 @@ export default function TodoPanel({ isCollapsed, isTodoPanelOpen }: TodoPanelPro
   }
 
   useEffect(() => {
-    if (list) setSelectedListId(list.todoLists[0].id)
+    if (list && list.todoLists[0]) setSelectedListId(list.todoLists[0].id)
+    else setSelectedListId(null)
   }, [list])
 
   return (
@@ -152,12 +153,14 @@ export default function TodoPanel({ isCollapsed, isTodoPanelOpen }: TodoPanelPro
         ))}
       </ul>
 
-      <button
-        className="text-red-400 text-right w-full"
-        onClick={(e) => handleDeleteList()}
-      >
-        このリストを削除する<Trash2 size={16} />
-      </button>
+      {selectedListId !== null &&
+        <button
+          className="text-red-400 text-right w-full"
+          onClick={(e) => handleDeleteList()}
+        >
+          このリストを削除する<Trash2 size={16} />
+        </button>
+      }
 
     </aside >
   )
