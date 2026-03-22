@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { TodoListsAPI, TodoItemsAPI } from '@/types/api';
 import useSWR from "swr";
+import { Trash2, SquarePen } from 'lucide-react';
 
 interface TodoPanelProps {
   isCollapsed: boolean
@@ -47,6 +48,14 @@ export default function TodoPanel({ isCollapsed, isTodoPanelOpen }: TodoPanelPro
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title, isDone })
+    })
+    mutateTodo()
+  }
+
+  // todoの削除
+  const handleDeleteTodo = async (id: string) => {
+    await fetch(`/api/todos/${id}`, {
+      method: 'DELETE',
     })
     mutateTodo()
   }
@@ -106,12 +115,14 @@ export default function TodoPanel({ isCollapsed, isTodoPanelOpen }: TodoPanelPro
         <button
           className='rounded-lg p-1 text-center text-sm text-[#5A8B7D] border border-[#5A8B7D] hover:bg-[#F2F0E9]'
           onClick={() => handleAddTodo(editingTodo)}
+          disabled={!editingTodo.trim()}
         >追加</button>
       </div>
 
       {/*todoチェック一覧*/}
       <ul>
         {(todos?.todos || []).map((todo) => (
+
           <li key={todo.id}>
             <label>
               <input
@@ -123,6 +134,12 @@ export default function TodoPanel({ isCollapsed, isTodoPanelOpen }: TodoPanelPro
                 {todo.title}
               </span>
             </label>
+            <button onClick={(e) => { setEditingTodo(todo.title); handleDeleteTodo(todo.id) }}>
+              <SquarePen size={16} />
+            </button>
+            <button className="text-red-400" onClick={(e) => handleDeleteTodo(todo.id)}>
+              <Trash2 size={16} />
+            </button>
           </li>
         ))}
       </ul>
