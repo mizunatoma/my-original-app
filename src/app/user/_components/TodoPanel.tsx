@@ -31,6 +31,14 @@ export default function TodoPanel({ isCollapsed, isTodoPanelOpen }: TodoPanelPro
     setEditingList("")
   }
 
+  // listの削除
+  const handleDeleteList = async () => {
+    await fetch(`/api/todo-lists/${selectedListId}`, {
+      method: 'DELETE',
+    })
+    mutateList()
+  }
+
   // todoの追加
   const handleAddTodo = async (title: string) => {
     await fetch(`/api/todo-lists/${selectedListId}/todos`, {
@@ -144,6 +152,12 @@ export default function TodoPanel({ isCollapsed, isTodoPanelOpen }: TodoPanelPro
         ))}
       </ul>
 
+      <button
+        className="text-red-400 text-right w-full"
+        onClick={(e) => handleDeleteList()}
+      >
+        このリストを削除する<Trash2 size={16} />
+      </button>
 
     </aside >
   )
