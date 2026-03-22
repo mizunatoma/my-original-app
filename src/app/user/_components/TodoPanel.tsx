@@ -12,10 +12,14 @@ interface TodoPanelProps {
 const fetcher = (url: string) => fetch(url).then(res => res.json())
 
 export default function TodoPanel({ isCollapsed, isTodoPanelOpen }: TodoPanelProps) {
-  const [selectedListId, setSelectedListId] = useState<string | null>(null);
-  const [editingList, setEditingList] = useState("")
-  const [editingTodo, setEditingTodo] = useState("")
-  const [isOpen, setIsOpen] = useState(false);
+  const [selectedListId, setSelectedListId] = useState<string | null>(null);  // 開いているlist
+  const [isOpen, setIsOpen] = useState(false);                                // List追加ブロックの開閉
+  const [newList, setNewList] = useState("");                                 // 新規追加のList
+
+  const [editingId, setEditingId] = useState<string | null>(null); // 編集中のtodo id
+  const [editingTitle, setEditingTitle] = useState("");            // 編集中のtodo title
+  const [newTodo, setNewTodo] = useState("");                      // 新規追加のtodo
+
   const { data: list, mutate: mutateList } = useSWR<TodoListsAPI.Get.Response>('/api/todo-lists', fetcher)
   const { data: todos, mutate: mutateTodo } = useSWR<TodoItemsAPI.Get.Response>(`/api/todo-lists/${selectedListId}/todos`, fetcher)
 
@@ -28,7 +32,7 @@ export default function TodoPanel({ isCollapsed, isTodoPanelOpen }: TodoPanelPro
     })
     mutateList()
     mutateTodo()
-    setEditingList("")
+    setNewList("")
   }
 
   // listの削除
@@ -47,10 +51,10 @@ export default function TodoPanel({ isCollapsed, isTodoPanelOpen }: TodoPanelPro
       body: JSON.stringify({ title })
     })
     mutateTodo()
-    setEditingTodo("")
+    setNewTodo("")
   }
 
-  // todoのチェック(isDone切替)
+  // todoの編集
   const toggleTodoStatus = async (id: string, title: string, isDone: boolean) => {
     await fetch(`/api/todos/${id}`, {
       method: 'PUT',
@@ -81,7 +85,7 @@ export default function TodoPanel({ isCollapsed, isTodoPanelOpen }: TodoPanelPro
     >
 
       {/*listチップ一覧*/}
-      {list?.todoLists.map((list) => (
+      {list?.todoLists?.map((list) => (
         <button
           key={list.id}
           className={`inline-flex items-center px-3 py-1 rounded-t-lg text-sm font-medium bg-orange-100 text-orange-800 
@@ -101,58 +105,93 @@ export default function TodoPanel({ isCollapsed, isTodoPanelOpen }: TodoPanelPro
           <input
             className='border border-gray-400 rounded p-2'
             placeholder='新しいTodoList'
-            onChange={(e) => setEditingList(e.target.value)}
-            value={editingList}
+            onChange={(e) => setNewList(e.target.value)}
+            value={newList}
           />
           <button
             className='rounded-lg p-1 text-center text-sm text-[#5A8B7D] border border-[#5A8B7D] hover:bg-[#F2F0E9]'
-            disabled={!editingList.trim()}
+            disabled={!newList.trim()}
             onClick={() => {
-              handleAddList(editingList)
+              handleAddList(newList)
               setIsOpen(false)
             }}>追加</button>
         </div>}
 
       {/*todo追加*/}
-      <div className='flex'>
-        <input
-          className='boder border-gray-100 rounded'
-          placeholder='新しいTodo'
-          onChange={(e) => setEditingTodo(e.target.value)}
-          value={editingTodo}
-        />
-        <button
-          className='rounded-lg p-1 text-center text-sm text-[#5A8B7D] border border-[#5A8B7D] hover:bg-[#F2F0E9]'
-          onClick={() => handleAddTodo(editingTodo)}
-          disabled={!editingTodo.trim()}
-        >追加</button>
-      </div>
+      {selectedListId !== null &&
+        <div className='flex'>
+          <input
+            className='boder border-gray-100 rounded'
+            placeholder='新しいTodo'
+            onChange={(e) => setNewTodo(e.target.value)}
+            value={newTodo}
+          />
+          <button
+            className='rounded-lg p-1 text-center text-sm text-[#5A8B7D] border border-[#5A8B7D] hover:bg-[#F2F0E9]'
+            onClick={() => handleAddTodo(newTodo)}
+            disabled={!newTodo.trim()}
+          >追加</button>
+        </div>
+      }
 
-      {/*todoチェック一覧*/}
+      {/*todo一覧*/}
       <ul>
         {(todos?.todos || []).map((todo) => (
+          <li key={todo.id} className="flex items-center gap-2 py-1">
+            {editingId !== todo.id
 
-          <li key={todo.id}>
-            <label>
-              <input
-                type='checkbox'
-                checked={todo.isDone}
-                onChange={() => toggleTodoStatus(todo.id, todo.title, !todo.isDone)}
-              />
-              <span className={`${todo.isDone ? 'line-through text-gray-400' : ''}`}>
-                {todo.title}
-              </span>
-            </label>
-            <button onClick={(e) => { setEditingTodo(todo.title); handleDeleteTodo(todo.id) }}>
-              <SquarePen size={16} />
-            </button>
-            <button className="text-red-400" onClick={(e) => handleDeleteTodo(todo.id)}>
-              <Trash2 size={16} />
-            </button>
+              ? (
+                /* 通常モードの表示 */
+                <>
+                  <label>
+                    <input
+                      type='checkbox'
+                      checked={todo.isDone}
+                      onChange={() => toggleTodoStatus(todo.id, todo.title, !todo.isDone)}
+                    />
+                    <span className={`${todo.isDone ? 'line-through text-gray-400' : ''}`}>
+                      {todo.title}
+                    </span>
+                  </label>
+                  <button onClick={() => {
+                    setEditingId(todo.id);       // 編集モードにセット
+                    setEditingTitle(todo.title); // 今のタイトル初期値をセット
+                  }}>
+                    <SquarePen size={16} className="text-gray-500 hover:text-orange-200" />
+                  </button>
+                  <button className="text-red-400" onClick={() => handleDeleteTodo(todo.id)}>
+                    <Trash2 size={16} />
+                  </button>
+                </>
+
+              ) : (
+                /* 編集モードの表示 */
+                <div className="flex items-center gap-2 flex-1">
+                  <input
+                    type="text"
+                    value={editingTitle}
+                    onChange={(e) => setEditingTitle(e.target.value)}
+                    className="border rounded px-2 py-1 flex-1"
+                    autoFocus
+                  />
+                  <button
+                    onClick={async () => {
+                      await toggleTodoStatus(todo.id, editingTitle, todo.isDone);
+                      setEditingId(null); // 編集モード終了
+                    }}
+                  >
+                    保存
+                  </button>
+                  <button onClick={() => setEditingId(null)}>
+                    キャンセル
+                  </button>
+                </div>
+              )}
           </li>
         ))}
       </ul>
 
+      {/*list削除*/}
       {selectedListId !== null &&
         <button
           className="text-red-400 text-right w-full"
