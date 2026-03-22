@@ -97,7 +97,7 @@ export default function TodoPanel({ isCollapsed, isTodoPanelOpen }: TodoPanelPro
       {/*list追加*/}
       <button
         className='inline-flex items-center px-3 py-1 rounded-t-lg text-sm font-medium bg-orange-200 text-orange-800'
-        onClick={() => setIsOpen(true)}
+        onClick={() => setIsOpen(!isOpen)}
       >+</button>
 
       {isOpen &&
