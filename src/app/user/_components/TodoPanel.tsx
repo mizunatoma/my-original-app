@@ -12,22 +12,11 @@ const fetcher = (url: string) => fetch(url).then(res => res.json())
 
 export default function TodoPanel({ isCollapsed, isTodoPanelOpen }: TodoPanelProps) {
   const [selectedListId, setSelectedListId] = useState<string | null>(null);
-  const [editingTodo, setEditingTodo] = useState("")
   const [editingList, setEditingList] = useState("")
+  const [editingTodo, setEditingTodo] = useState("")
   const [isOpen, setIsOpen] = useState(false);
   const { data: list, mutate: mutateList } = useSWR<TodoListsAPI.Get.Response>('/api/todo-lists', fetcher)
   const { data: todos, mutate: mutateTodo } = useSWR<TodoItemsAPI.Get.Response>(`/api/todo-lists/${selectedListId}/todos`, fetcher)
-
-  // todoの追加
-  const handleAddTodo = async (title: string) => {
-    await fetch(`/api/todo-lists/${selectedListId}/todos`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title })
-    })
-    mutateTodo()
-    setEditingTodo("")
-  }
 
   // listの追加
   const handleAddList = async (name: string) => {
@@ -41,6 +30,27 @@ export default function TodoPanel({ isCollapsed, isTodoPanelOpen }: TodoPanelPro
     setEditingList("")
   }
 
+  // todoの追加
+  const handleAddTodo = async (title: string) => {
+    await fetch(`/api/todo-lists/${selectedListId}/todos`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title })
+    })
+    mutateTodo()
+    setEditingTodo("")
+  }
+
+  // todoのチェック(isDone切替)
+  const toggleTodoStatus = async (id: string, title: string, isDone: boolean) => {
+    await fetch(`/api/todos/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, isDone })
+    })
+    mutateTodo()
+  }
+
   useEffect(() => {
     if (list) setSelectedListId(list.todoLists[0].id)
   }, [list])
@@ -52,23 +62,21 @@ export default function TodoPanel({ isCollapsed, isTodoPanelOpen }: TodoPanelPro
       ${isTodoPanelOpen ? 'w-[300px] border border-[#EFEDE6]' : 'w-[0px]'}`}
     >
 
+      {/*listチップ一覧*/}
       {list?.todoLists.map((list) => (
         <button
           key={list.id}
           className={`inline-flex items-center px-3 py-1 rounded-t-lg text-sm font-medium bg-orange-100 text-orange-800 
             ${list.id === selectedListId && 'border-orange-200 border-2'}`}
           onClick={() => setSelectedListId(list.id)}
-        >
-          {list.name}
-        </button>
+        >{list.name}</button>
       ))}
 
+      {/*list追加*/}
       <button
         className='inline-flex items-center px-3 py-1 rounded-t-lg text-sm font-medium bg-orange-200 text-orange-800'
         onClick={() => setIsOpen(true)}
-      >
-        +
-      </button>
+      >+</button>
 
       {isOpen &&
         <div>
@@ -84,13 +92,10 @@ export default function TodoPanel({ isCollapsed, isTodoPanelOpen }: TodoPanelPro
             onClick={() => {
               handleAddList(editingList)
               setIsOpen(false)
-            }}
-
-          >
-            追加
-          </button>
+            }}>追加</button>
         </div>}
 
+      {/*todo追加*/}
       <div className='flex'>
         <input
           className='boder border-gray-100 rounded'
@@ -101,16 +106,28 @@ export default function TodoPanel({ isCollapsed, isTodoPanelOpen }: TodoPanelPro
         <button
           className='rounded-lg p-1 text-center text-sm text-[#5A8B7D] border border-[#5A8B7D] hover:bg-[#F2F0E9]'
           onClick={() => handleAddTodo(editingTodo)}
-        >
-          追加
-        </button>
+        >追加</button>
       </div>
 
-      {(todos?.todos || []).map((todo) => (
-        <ul>
-          <li>{todo.title}</li>
-        </ul>
-      ))}
+      {/*todoチェック一覧*/}
+      <ul>
+        {(todos?.todos || []).map((todo) => (
+          <li key={todo.id}>
+            <label>
+              <input
+                type='checkbox'
+                checked={todo.isDone}
+                onChange={() => toggleTodoStatus(todo.id, todo.title, !todo.isDone)}
+              />
+              <span className={`${todo.isDone ? 'line-through text-gray-400' : ''}`}>
+                {todo.title}
+              </span>
+            </label>
+          </li>
+        ))}
+      </ul>
+
+
     </aside >
   )
 }

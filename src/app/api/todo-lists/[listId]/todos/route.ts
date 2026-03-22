@@ -22,8 +22,11 @@ export const GET = async (
         profile: { userId: user.id }
       },
       select: {
-        todos: { where: { deletedAt: null } }
-      }
+        todos: {
+          where: { deletedAt: null },
+          orderBy: { createdAt: 'asc' }
+        }
+      },
     })
 
     if (!todoList) return NextResponse.json({ error: "No list found" }, { status: 403 })
