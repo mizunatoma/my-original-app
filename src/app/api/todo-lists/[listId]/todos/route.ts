@@ -1,75 +1,106 @@
 // /api/todo-lists/[listId]/todos
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/_utils/prisma'
-import { getAuthUser } from "@/app/_utils/getAuthUser";
+import { getAuthUser } from '@/app/_utils/getAuthUser'
+import { TodoItemsAPI } from '@/types/api'
 
 // ===============================
 // GET
 // ===============================
 export const GET = async (
   request: NextRequest,
-  { params }: { params: { listId: string } }
+  { params }: { params: { listId: string } },
 ) => {
   try {
-    const auth = await getAuthUser();
-    if (auth instanceof NextResponse) return auth;
-    const user = auth.user;
+    const auth = await getAuthUser()
+    if (auth instanceof NextResponse) return auth
+    const user = auth.user
 
     // リストの存在確認と所有権チェック
     const todoList = await prisma.todoList.findFirst({
       where: {
         id: params.listId,
-        profile: { userId: user.id }
+        profile: { userId: user.id },
       },
       select: {
-        todos: { where: { deletedAt: null } }
-      }
+        todos: {
+          where: { deletedAt: null },
+          orderBy: { createdAt: 'asc' },
+        },
+      },
     })
 
-    if (!todoList) return NextResponse.json({ error: "No list found" }, { status: 403 })
+    if (!todoList)
+      return NextResponse.json({ error: 'No list found' }, { status: 403 })
 
-    return NextResponse.json({ todos: todoList.todos }, { status: 200 })
+    const mapped = todoList.todos.map((todo) => ({
+      id: todo.id,
+      todoListId: todo.todoListId,
+      title: todo.title,
+      isDone: todo.isDone,
+      doneAt: todo.doneAt ? todo.doneAt.toISOString() : null,
+      createdAt: todo.createdAt.toISOString(),
+      updatedAt: todo.updatedAt.toISOString(),
+    }))
+
+    return NextResponse.json<TodoItemsAPI.Get.Response>(
+      { todos: mapped },
+      { status: 200 },
+    )
   } catch (e) {
-    console.error("GET /api/todo-lists/[listId]/todos:", e);
+    console.error('GET /api/todo-lists/[listId]/todos:', e)
     return NextResponse.json({ error: String(e) }, { status: 500 })
-  };
-};
+  }
+}
 
 // ===============================
 // POST
 // ===============================
 export const POST = async (
   request: NextRequest,
-  { params }: { params: { listId: string } }
+  { params }: { params: { listId: string } },
 ) => {
   try {
-    const auth = await getAuthUser();
-    if (auth instanceof NextResponse) return auth;
-    const user = auth.user;
+    const auth = await getAuthUser()
+    if (auth instanceof NextResponse) return auth
+    const user = auth.user
 
-    const { listId } = params;
+    const { listId } = params
 
     const todoList = await prisma.todoList.findFirst({
       where: {
         id: params.listId,
-        profile: { userId: user.id }
-      }
+        profile: { userId: user.id },
+      },
     })
-    if (!todoList) return NextResponse.json({ error: "No list found" }, { status: 403 })
+    if (!todoList)
+      return NextResponse.json({ error: 'No list found' }, { status: 403 })
 
-    const { title } = await request.json();
+    const { title } = await request.json()
 
     const todo = await prisma.todo.create({
       data: {
         todoListId: listId,
-        title
-      }
+        title,
+      },
     })
 
-    return NextResponse.json({ todo }, { status: 201 });
+    const mapped = {
+      id: todo.id,
+      todoListId: todo.todoListId,
+      title: todo.title,
+      isDone: todo.isDone,
+      doneAt: todo.doneAt ? todo.doneAt.toISOString() : null,
+      createdAt: todo.createdAt.toISOString(),
+      updatedAt: todo.updatedAt.toISOString(),
+    }
+
+    return NextResponse.json<TodoItemsAPI.Post.Response>(
+      { todo: mapped },
+      { status: 201 },
+    )
   } catch (e) {
-    console.error("POST /api/todo-lists/[listId]/todos:", e);
+    console.error('POST /api/todo-lists/[listId]/todos:', e)
     return NextResponse.json({ error: String(e) }, { status: 500 })
   }
 }
-
