@@ -1,32 +1,31 @@
-
 // APIレスポンス用 共通DTO
 export type ContactRequestBody = {
-  name: string,
-  email: string,
+  name: string
+  email: string
   message: string
 }
 
 export type ProfileDTO = {
-  id: string;
-  displayName: string;
-};
+  id: string
+  displayName: string
+}
 
 export type TimelogDTO = {
-  id: string;
-  title: string;
-  startAt: string; // ISO文字列
-  endAt: string | null;
+  id: string
+  title: string
+  startAt: string // ISO文字列
+  endAt: string | null
   category: {
     colorToken?: string
   }
 }
 
 export type RunningTimelogDTO = {
-  id: string;
-  activityId: string;
-  activityName: string;
-  colorToken: string;
-  startAt: string; // ISO文字列
+  id: string
+  activityId: string
+  activityName: string
+  colorToken: string
+  startAt: string // ISO文字列
 }
 
 export type CategoryDTO = {
@@ -36,119 +35,112 @@ export type CategoryDTO = {
 }
 
 export type TodoListDTO = {
-  id: string;
-  profileId: string;
-  name: string;
-  sortOrder: number;
-  createdAt: string;
-  updatedAt: string;
+  id: string
+  profileId: string
+  name: string
+  sortOrder: number
+  createdAt: string
+  updatedAt: string
 }
 
 export type TodoItemDTO = {
-  id: string;
-  todoListId: string;
-  title: string;
-  isDone: boolean;
-  doneAt: string | null;
-  createdAt: string;
-  updatedAt: string;
+  id: string
+  todoListId: string
+  title: string
+  isDone: boolean
+  doneAt: string | null
+  createdAt: string
+  updatedAt: string
 }
 
 //================================================
-
 
 // プロフィール系 (Get/Put)
 export namespace ProfileAPI {
   // GET /api/profile
   export namespace Get {
-    export type Response = { profile: ProfileDTO };
-  };
+    export type Response = { profile: ProfileDTO }
+  }
   // PUT /api/profile
   export namespace Put {
-    export type Request = { displayName: string };
-    export type Response = { profile: ProfileDTO };
-  };
+    export type Request = { displayName: string }
+    export type Response = { profile: ProfileDTO }
+  }
 }
-
 
 // タイムログ系 (Get/Start/End)
 export namespace TimelineAPI {
   // GET /api/timeline
   export namespace Get {
-    export type Response = { activities: TimelogDTO[] };
-  };
+    export type Response = { activities: TimelogDTO[] }
+  }
   // POST /api/timeline/start
   export namespace Start {
     export type Request = {
-      activityId: string,
-      startAt: string, //ISO
-    };
-    export type Response = { timelog: TimelogDTO };
-  };
+      activityId: string
+      startAt: string //ISO
+    }
+    export type Response = { timelog: TimelogDTO }
+  }
   // GET /api/timeline/running
   export namespace Running {
     export type Response =
       | { running: false }
       | {
-        running: true
-        log: RunningTimelogDTO
-      }
-  };
+          running: true
+          log: RunningTimelogDTO
+        }
+  }
   // POST /api/timeline/end
   export namespace End {
     export type Request = {
-      activityId: string,
-      endAt: string, //ISO
-    };
-    export type Response = { timelog: TimelogDTO };
-  };
+      activityId: string
+      endAt: string //ISO
+    }
+    export type Response = { timelog: TimelogDTO }
+  }
 }
-
 
 // カテゴリ系 (Get)
 export namespace CategoryAPI {
   // GET /api/timeline/[id]
   export namespace Get {
     export type Response = { category: CategoryDTO }
-  };
+  }
 }
-
 
 // TodoList (Get/Post/Put)
 export namespace TodoListsAPI {
   // GET /api/todo-lists
   export namespace Get {
     export type Response = { todoLists: TodoListDTO[] }
-  };
+  }
   // POST /api/todo-lists
   export namespace Post {
-    export type Request = { name: string };
+    export type Request = { name: string }
     export type Response = { todoList: TodoListDTO }
-  };
+  }
   // PUT /api/todo-lists/[listId]
   export namespace Put {
-    export type Request = { name: string };
+    export type Request = { name: string }
     export type Response = { todoList: TodoListDTO }
-  };
+  }
 }
-
 
 // TodoItem (Get/Post/Put)
 export namespace TodoItemsAPI {
   // GET /api/todo-lists/[listId]/todos
   export namespace Get {
     export type Response = { todos: TodoItemDTO[] }
-  };
+  }
   // POST /api/todo-lists/[listId]/todos
   export namespace Post {
-    export type Request = { title: string };
+    export type Request = { title: string }
     export type Response = { todo: TodoItemDTO }
-  };
+  }
   // PUT /api/todos/[todoId]
   export namespace Put {
-    export type Request = { title: string, isDone: boolean };
+    export type Request = { title: string; isDone: boolean }
     export type Response = { todo: TodoItemDTO }
-  };
+  }
 }
-
-

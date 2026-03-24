@@ -70,7 +70,19 @@ export const POST = async (request: NextRequest) => {
       },
     })
 
-    return NextResponse.json({ todoList }, { status: 201 }) // 201=成功(新規作成)
+    const mapped = {
+      id: todoList.id,
+      profileId: todoList.profileId,
+      name: todoList.name,
+      sortOrder: todoList.sortOrder,
+      createdAt: todoList.createdAt.toISOString(),
+      updatedAt: todoList.updatedAt.toISOString(),
+    }
+
+    return NextResponse.json<TodoListsAPI.Post.Response>(
+      { todoList: mapped },
+      { status: 201 },
+    ) // 201=成功(新規作成)
   } catch (e) {
     console.error('POST /api/todo-list error:', e)
     return NextResponse.json({ error: String(e) }, { status: 500 })
