@@ -16,6 +16,7 @@ export default function CurrentCategoryWidget({
   const [elapsed, setElapsed] = useState(0)
   const [isLoading, setIsloading] = useState(true)
 
+  // タイムトラック中のカテゴリを取得
   const fetchRunning = async () => {
     setIsloading(true)
     const res = await fetch('/api/timeline/running')
@@ -28,7 +29,7 @@ export default function CurrentCategoryWidget({
     fetchRunning()
   }, [])
 
-  // 選択されたcategoryの計測を開始する
+  // タイムトラックの開始
   useEffect(() => {
     if (!currentCategoryID.id) return // 選択されていなければなにもしない
 
@@ -56,6 +57,19 @@ export default function CurrentCategoryWidget({
 
     return () => clearInterval(timer)
   }, [data])
+
+  // タイムトラックの停止
+  const handleStop = async () => {
+    onPressStopButton((s) => ({ count: s.count + 1 }))
+    await fetch('/api/timeline/end', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        activityId: data?.running && data.log.activityId,
+      }),
+    })
+    setData({ running: false })
+  }
 
   return (
     <div>
@@ -96,17 +110,7 @@ export default function CurrentCategoryWidget({
                   <button
                     className="button mt-1 w-full bg-rose-200 text-rose-800 hover:bg-rose-300"
                     disabled={!data?.running}
-                    onClick={async () => {
-                      onPressStopButton((s) => ({ count: s.count + 1 }))
-                      await fetch('/api/timeline/end', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                          activityId: data?.running && data.log.activityId,
-                        }),
-                      })
-                      setData({ running: false })
-                    }}
+                    onClick={handleStop}
                   >
                     停止
                   </button>
