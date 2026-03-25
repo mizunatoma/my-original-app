@@ -28,39 +28,64 @@ export default function TodoPanel({
     fetcher,
   )
   const { data: todos, mutate: mutateTodo } = useSWR<TodoItemsAPI.Get.Response>(
-    `/api/todo-lists/${selectedListId}/todos`,
+    selectedListId ? `/api/todo-lists/${selectedListId}/todos` : null,
     fetcher,
   )
 
   // listの追加
   const handleAddList = async (name: string) => {
-    await fetch(`/api/todo-lists`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name }),
-    })
-    mutateList()
-    mutateTodo()
-    setNewList('')
+    try {
+      const res = await fetch(`/api/todo-lists`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name }),
+      })
+      if (!res.ok) {
+        console.error('リスト追加失敗', await res.json())
+        return
+      }
+
+      mutateList()
+      mutateTodo()
+      setNewList('')
+    } catch (e) {
+      console.error('リスト作成エラー：', e)
+    }
   }
 
   // listの削除
   const handleDeleteList = async () => {
-    await fetch(`/api/todo-lists/${selectedListId}`, {
-      method: 'DELETE',
-    })
-    mutateList()
+    try {
+      const res = await fetch(`/api/todo-lists/${selectedListId}`, {
+        method: 'DELETE',
+      })
+      if (!res.ok) {
+        console.error('リスト削除失敗', await res.json())
+        return
+      }
+      mutateList()
+    } catch (e) {
+      console.error('リスト削除エラー：', e)
+    }
   }
 
   // todoの追加
   const handleAddTodo = async (title: string) => {
-    await fetch(`/api/todo-lists/${selectedListId}/todos`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title }),
-    })
-    mutateTodo()
-    setNewTodo('')
+    try {
+      const res = await fetch(`/api/todo-lists/${selectedListId}/todos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title }),
+      })
+      if (!res.ok) {
+        console.error('todo追加失敗', await res.json())
+        return
+      }
+      mutateTodo()
+      setNewTodo('')
+    } catch (e) {
+      console.error('todo追加エラー：', e)
+    }
   }
 
   // todoの編集
@@ -69,20 +94,36 @@ export default function TodoPanel({
     title: string,
     isDone: boolean,
   ) => {
-    await fetch(`/api/todos/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, isDone }),
-    })
-    mutateTodo()
+    try {
+      const res = await fetch(`/api/todos/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, isDone }),
+      })
+      if (!res.ok) {
+        console.error('todo編集失敗', await res.json())
+        return
+      }
+      mutateTodo()
+    } catch (e) {
+      console.error('todo編集エラー：', e)
+    }
   }
 
   // todoの削除
   const handleDeleteTodo = async (id: string) => {
-    await fetch(`/api/todos/${id}`, {
-      method: 'DELETE',
-    })
-    mutateTodo()
+    try {
+      const res = await fetch(`/api/todos/${id}`, {
+        method: 'DELETE',
+      })
+      if (!res.ok) {
+        console.error('todo削除失敗', await res.json())
+        return
+      }
+      mutateTodo()
+    } catch (e) {
+      console.error('todo削除エラー：', e)
+    }
   }
 
   useEffect(() => {
