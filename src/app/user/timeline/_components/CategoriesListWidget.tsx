@@ -21,34 +21,62 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
     fetcher,
   )
 
-  // categoryの削除
-  const handleDelete = async (id: string) => {
-    await fetch(`/api/timeline/activities/${id}`, {
-      method: 'DELETE',
-    })
-    mutate()
-  }
-
   // categoryの追加
   const handleAddSave = async (name: string, color: string) => {
-    await fetch('/api/timeline/activities', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, colorToken: color }),
-    })
-    mutate()
-    setIsOpen(false)
+    try {
+      const res = await fetch('/api/timeline/activities', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, colorToken: color }),
+      })
+      if (!res.ok) {
+        console.error('category追加失敗', await res.json())
+        return
+      }
+      mutate()
+      setIsOpen(false)
+    } catch (e) {
+      console.error('category追加エラー：', e)
+    }
   }
 
   // categoryの編集
   const handleEditSave = async (name: string, color: string) => {
-    await fetch(`/api/timeline/activities/${editingCategory!.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, colorToken: color }),
-    })
-    mutate()
-    setEditingCategory(null)
+    try {
+      const res = await fetch(
+        `/api/timeline/activities/${editingCategory!.id}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, colorToken: color }),
+        },
+      )
+      if (!res.ok) {
+        console.error('category編集失敗', await res.json())
+        return
+      }
+      mutate()
+      setEditingCategory(null)
+    } catch (e) {
+      console.error('category編集エラー：', e)
+    }
+  }
+
+  // categoryの削除
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await fetch(`/api/timeline/activities/${id}`, {
+        method: 'DELETE',
+      })
+      if (!res.ok) {
+        console.error('category削除失敗', await res.json())
+        return
+      }
+
+      mutate()
+    } catch (e) {
+      console.error('category削除エラー：', e)
+    }
   }
 
   return (
