@@ -18,6 +18,9 @@ export const GET = async (request: NextRequest) => {
         profile: { userId: user.id },
         deletedAt: null,
       },
+      orderBy: {
+        sortOrder: 'asc',
+      },
     })
 
     const todoLists = todosLists.map((todoList) => ({
