@@ -127,8 +127,16 @@ export default function TodoPanel({
   }
 
   useEffect(() => {
-    if (list && list.todoLists[0]) setSelectedListId(list.todoLists[0].id)
-    else setSelectedListId(null)
+    if (list === undefined) {
+      // ロード中、何もしない
+      return
+    } else if (list.todoLists.length === 0) {
+      // Listが１件もない場合、nullをセット
+      setSelectedListId(null)
+    } else if (selectedListId === null) {
+      // Listはあるが未選択の場合、先頭のListを表示する
+      setSelectedListId(list.todoLists[0].id)
+    } // Listを選択中であれば、そのまま
   }, [list])
 
   return (
