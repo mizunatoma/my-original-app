@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { TimelogDTO, TimelineAPI } from '@/types/api'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import useSWR from 'swr' // TODO: SWRを導入
 
 type Props = {
   timelineKey: { count: number }

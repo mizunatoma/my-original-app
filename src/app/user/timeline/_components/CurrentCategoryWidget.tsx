@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { Dispatch, SetStateAction } from 'react'
 import { TimelineAPI } from '@/types/api'
+import useSWR from 'swr' // TODO: SWRを導入
 
 type Props = {
   currentCategoryID: { id: string; count: number }
