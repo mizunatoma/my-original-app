@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import React from 'react'
-import { useSupabaseSession } from '../../_hooks/useSupabsaeSession'
+import { useSupabaseSession } from '../../_hooks/useSupabaseSession'
 import { supabaseBrowser } from '@/app/_utils/supabaseBrowser'
 import { useRouter } from 'next/navigation'
 
