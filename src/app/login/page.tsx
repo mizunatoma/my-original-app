@@ -2,17 +2,16 @@
 
 import { supabaseBrowser } from '@/app/_utils/supabaseBrowser'
 import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form';
-import { FormLabel } from '../_components/form/FormLabel';
-import { FormInput } from '../_components/form/FormInput';
-import { FormButton } from '../_components/form/FormButton';
-import AuthIllustration from '../_components/AuthIllustration';
-import OrDivider from '../_components/form/OrDivider';
-import Link from 'next/link';
+import { useForm } from 'react-hook-form'
+import { FormLabel } from '../_components/form/FormLabel'
+import { FormInput } from '../_components/form/FormInput'
+import { FormButton } from '../_components/form/FormButton'
+import AuthIllustration from '../_components/AuthIllustration'
+import Link from 'next/link'
 
 type LoginForm = {
-  email: string,
-  password: string,
+  email: string
+  password: string
 }
 
 export default function Page() {
@@ -21,7 +20,7 @@ export default function Page() {
     register,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<LoginForm>();
+  } = useForm<LoginForm>()
 
   const onSubmit = async (data: LoginForm) => {
     const { email, password } = data
@@ -41,12 +40,16 @@ export default function Page() {
   return (
     <div className="auth-container">
       <AuthIllustration />
-      <div className='auth-form-section'>
-        <div className='auth-card'>
-          <h1 className='auth-title'>Login</h1>
-          <form method="POST" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <div className="auth-form-section">
+        <div className="auth-card">
+          <h1 className="auth-title">Login</h1>
+          <form
+            method="POST"
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-4"
+          >
             <div>
-              <FormLabel htmlFor='email'>メールアドレス</FormLabel>
+              <FormLabel htmlFor="email">メールアドレス</FormLabel>
               <FormInput
                 type="email"
                 id="email"
@@ -55,8 +58,8 @@ export default function Page() {
                 placeholder="name@company.com"
               />
             </div>
-            <div className=''>
-              <FormLabel htmlFor='password'>パスワード</FormLabel>
+            <div className="">
+              <FormLabel htmlFor="password">パスワード</FormLabel>
               <FormInput
                 type="password"
                 id="password"
@@ -66,8 +69,11 @@ export default function Page() {
               />
             </div>
 
-            <div className='flex '>
-              <Link href='/reset_password' className='ml-auto block text-sm text-[#5A8B7D] hover:underline'>
+            <div className="flex">
+              <Link
+                href="/reset_password"
+                className="ml-auto block text-sm text-[#5A8B7D] hover:underline"
+              >
                 パスワードをお忘れの場合
               </Link>
             </div>
@@ -85,9 +91,15 @@ export default function Page() {
           </div>
           */}
 
-            <div className='flex flex-col gap-3'>
-              <FormButton variant="primary" loading={isSubmitting} label='ログイン' />
-              <Link href="/signup" className="accunt_button">新規登録</Link>
+            <div className="flex flex-col gap-3">
+              <FormButton
+                variant="primary"
+                loading={isSubmitting}
+                label="ログイン"
+              />
+              <Link href="/signup" className="accunt_button">
+                新規登録
+              </Link>
             </div>
 
             {/*  今後実装予定
@@ -98,7 +110,6 @@ export default function Page() {
           </form>
         </div>
       </div>
-    </div >
+    </div>
   )
 }
-
