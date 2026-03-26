@@ -38,7 +38,10 @@ export const GET = async (request: NextRequest) => {
     )
   } catch (e) {
     console.error('GET /api/todo-lists:', e)
-    return NextResponse.json({ error: String(e) }, { status: 500 }) // 500＝サーバー側で予期しないエラーが起きた
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 },
+    )
   }
 }
 
@@ -88,6 +91,9 @@ export const POST = async (request: NextRequest) => {
     ) // 201=成功(新規作成)
   } catch (e) {
     console.error('POST /api/todo-list error:', e)
-    return NextResponse.json({ error: String(e) }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 },
+    )
   }
 }

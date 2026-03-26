@@ -51,7 +51,10 @@ export const PUT = async (
     )
   } catch (e) {
     console.error('PUT /api/todos/[todoId]:', e)
-    return NextResponse.json({ error: String(e) }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 },
+    )
   }
 }
 
@@ -84,6 +87,9 @@ export const DELETE = async (
     return NextResponse.json(null, { status: 200 })
   } catch (e) {
     console.error('DELETE /api/todos/[todoId]:', e)
-    return NextResponse.json({ error: String(e) }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 },
+    )
   }
 }
