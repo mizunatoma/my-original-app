@@ -65,7 +65,7 @@ export default function UserSidebar({
           className={`flex h-12 items-center gap-3 rounded-xl transition-all ${isCollapsed ? 'w-13 justify-center' : 'px-3'} ${
             isTodoPanelOpen
               ? 'bg-[#5D866C]/50 text-gray-800 shadow-sm'
-              : 'text-gray-500 hover:bg-[#5A8B7D]/30 hover:bg-[#E6E1D6]'
+              : 'text-gray-500 hover:bg-[#5D866C]/30'
           }`}
         >
           <div
