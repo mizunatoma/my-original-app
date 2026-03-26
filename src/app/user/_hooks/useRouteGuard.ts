@@ -1,4 +1,4 @@
-//「未ログインならこのページに入らせない」ためのカスタムhook
+// ログインしてなければ /login に飛ばすカスタムhook
 import { useSupabaseSession } from '@/app/_hooks/useSupabaseSession'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
