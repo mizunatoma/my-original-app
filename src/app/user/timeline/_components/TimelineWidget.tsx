@@ -1,8 +1,8 @@
 'use client'
-import React, { useState, useEffect } from 'react'
-import { TimelogDTO, TimelineAPI } from '@/types/api'
+import React, { useEffect, useState } from 'react'
+import { TimelineAPI } from '@/types/api'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import useSWR from 'swr' // TODO: SWRを導入
+import { useFetch } from '@/app/user/_hooks/useFetch'
 
 type Props = {
   timelineKey: { count: number }
@@ -15,27 +15,14 @@ const toJstDateString = (date: Date): string => {
 
 export default function TimelogWidget({ timelineKey }: Props) {
   const hours = Array.from({ length: 24 }, (_, i) => i) // [0, 1, 2, ... 23]
-  const [activities, setActivities] = useState<TimelogDTO[]>([])
   const [date, setDate] = useState(toJstDateString(new Date()))
 
-  // YYYY-MM-DDのタイムトラック記録を描画
-  const fetchActivities = async () => {
-    try {
-      const res = await fetch(`/api/timeline?date=${date}`)
-      if (!res.ok) {
-        console.error('記録描画失敗', await res.json())
-        return
-      }
-      const data: TimelineAPI.Get.Response = await res.json()
-      setActivities(data.activities || [])
-    } catch (e) {
-      console.error('記録描画エラー：', e)
-    }
-  }
+  const { data, error, isLoading, mutate } =
+    useFetch<TimelineAPI.Get.Response | null>(`/api/timeline?date=${date}`)
 
   useEffect(() => {
-    fetchActivities()
-  }, [date, timelineKey])
+    mutate()
+  }, [timelineKey])
 
   return (
     <div className="widget-card flex h-[calc(100vh-140px)] flex-col">
@@ -72,7 +59,7 @@ export default function TimelogWidget({ timelineKey }: Props) {
         ))}
 
         {/* 右側：記録一覧 */}
-        {activities.map((activity) => {
+        {data?.activities.map((activity) => {
           if (activity.endAt === null) return
           const start = new Date(activity.startAt)
           const end = new Date(activity.endAt)

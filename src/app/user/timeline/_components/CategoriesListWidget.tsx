@@ -3,22 +3,19 @@ import React, { useState, Dispatch, SetStateAction } from 'react'
 import { Trash2, SquarePen } from 'lucide-react'
 import { CategoryAPI, CategoryDTO } from '@/types/api'
 import CategoryModal from './CategoryModal'
-import useSWR from 'swr'
+import { useFetch } from '@/app/user/_hooks/useFetch'
 
 type Props = {
   onSelectCategory: Dispatch<SetStateAction<{ id: string; count: number }>>
 }
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 export default function CategoriesListWidget({ onSelectCategory }: Props) {
   const [isOpen, setIsOpen] = useState(false)
   const [editingCategory, setEditingCategory] = useState<
     CategoryAPI.Get.Response['category'] | null
   >(null)
-  const { data, isLoading, mutate } = useSWR<{ activities: CategoryDTO[] }>(
+  const { data, isLoading, mutate } = useFetch<{ activities: CategoryDTO[] }>(
     '/api/timeline/activities',
-    fetcher,
   )
 
   // categoryの追加

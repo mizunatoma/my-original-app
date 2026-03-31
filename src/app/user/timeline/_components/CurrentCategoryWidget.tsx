@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { Dispatch, SetStateAction } from 'react'
 import { TimelineAPI } from '@/types/api'
-import useSWR from 'swr' // TODO: SWRを導入
+import { useFetch } from '@/app/user/_hooks/useFetch'
 
 type Props = {
   currentCategoryID: { id: string; count: number }
@@ -13,13 +13,9 @@ export default function CurrentCategoryWidget({
   currentCategoryID,
   onPressStopButton,
 }: Props) {
-  const [data, setData] = useState<TimelineAPI.Running.Response | null>(null)
   const [elapsed, setElapsed] = useState(0)
-  const [isLoading, setIsloading] = useState(true)
-
-  useEffect(() => {
-    fetchRunning()
-  }, [])
+  const { data, error, isLoading, mutate } =
+    useFetch<TimelineAPI.Running.Response | null>('/api/timeline/running')
 
   // タイムトラックの開始
   const start = async () => {
@@ -33,7 +29,7 @@ export default function CurrentCategoryWidget({
         console.error('タイムトラックの開始失敗', await res.json())
         return
       }
-      fetchRunning()
+      mutate()
     } catch (e) {
       console.error('タイムトラックの開始エラー：', e)
     }
@@ -42,24 +38,6 @@ export default function CurrentCategoryWidget({
     if (!currentCategoryID.id) return // 選択されていなければなにもしない
     start()
   }, [currentCategoryID])
-
-  // タイムトラック中のカテゴリを取得
-  const fetchRunning = async () => {
-    try {
-      setIsloading(true)
-      const res = await fetch('/api/timeline/running')
-      if (!res.ok) {
-        console.error('タイムトラック中のカテゴリを取得失敗', await res.json())
-        return
-      }
-      const json = await res.json()
-      setData(json)
-    } catch (e) {
-      console.error('タイムトラック中のカテゴリを取得エラー：', e)
-    } finally {
-      setIsloading(false)
-    }
-  }
 
   // タイムトラックの停止
   const handleStop = async () => {
@@ -75,7 +53,7 @@ export default function CurrentCategoryWidget({
         console.error('タイムトラックの停止失敗', await res.json())
         return
       }
-      setData({ running: false })
+      mutate()
       onPressStopButton((s) => ({ count: s.count + 1 }))
     } catch (e) {
       console.error('タイムトラックの停止エラー：', e)

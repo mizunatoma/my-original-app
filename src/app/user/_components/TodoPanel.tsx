@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { TodoListsAPI, TodoItemsAPI } from '@/types/api'
-import useSWR from 'swr'
+import { useFetch } from '@/app/user/_hooks/useFetch'
 import { Trash2, SquarePen, Check, X } from 'lucide-react'
 import { useForm } from 'react-hook-form' // TODO: RHFの導入
 
@@ -9,8 +9,6 @@ interface TodoPanelProps {
   isCollapsed: boolean
   isTodoPanelOpen: boolean
 }
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 export default function TodoPanel({
   isCollapsed,
@@ -24,14 +22,12 @@ export default function TodoPanel({
   const [editingTitle, setEditingTitle] = useState('') // 編集中のtodo title
   const [newTodo, setNewTodo] = useState('') // 新規追加のtodo
 
-  const { data: list, mutate: mutateList } = useSWR<TodoListsAPI.Get.Response>(
-    '/api/todo-lists',
-    fetcher,
-  )
-  const { data: todos, mutate: mutateTodo } = useSWR<TodoItemsAPI.Get.Response>(
-    selectedListId ? `/api/todo-lists/${selectedListId}/todos` : null,
-    fetcher,
-  )
+  const { data: list, mutate: mutateList } =
+    useFetch<TodoListsAPI.Get.Response>('/api/todo-lists')
+  const { data: todos, mutate: mutateTodo } =
+    useFetch<TodoItemsAPI.Get.Response>(
+      selectedListId ? `/api/todo-lists/${selectedListId}/todos` : null,
+    )
 
   // listの追加
   const handleAddList = async (name: string) => {
