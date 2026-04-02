@@ -1,16 +1,16 @@
 // /api/timeline/start
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from '@/app/_utils/prisma';
-import { getAuthUser } from "@/app/_utils/getAuthUser";
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/app/_utils/prisma'
+import { getAuthUser } from '@/app/_utils/getAuthUser'
 
 // ===============================
 // POST
 // ===============================
 export const POST = async (request: NextRequest) => {
   try {
-    const auth = await getAuthUser();
-    if (auth instanceof NextResponse) return auth;
-    const user = auth.user;
+    const auth = await getAuthUser()
+    if (auth instanceof NextResponse) return auth
+    const user = auth.user
 
     //endAt が null の timeLog を findFirst で探して、
     //見つかったら runningLog は truthy になる
@@ -18,39 +18,44 @@ export const POST = async (request: NextRequest) => {
       where: {
         endAt: null,
         activity: { profile: { userId: user.id } },
-      }
+      },
     })
 
     if (runningLog) {
-      return NextResponse.json({ error: "Already running" }, { status: 409 });
-    };
+      return NextResponse.json({ error: 'Already running' }, { status: 409 })
+    }
 
     // activityId 取得
-    const { activityId } = await request.json();
+    const { activityId } = await request.json()
 
     const activity = await prisma.activity.findFirst({
       where: {
         id: activityId,
-        profile: { userId: user.id }
-      }
+        profile: { userId: user.id },
+      },
     })
 
     if (!activity) {
-      return NextResponse.json({ error: "Authorization failure" }, { status: 403 });
+      return NextResponse.json(
+        { error: 'Authorization failure' },
+        { status: 403 },
+      )
     }
 
     // timeLog 作成
     const timeLog = await prisma.timeLog.create({
       data: {
         activityId,
-        startAt: new Date()
+        startAt: new Date(),
       },
-    });
+    })
 
-    return NextResponse.json({ timeLog }, { status: 201 });
+    return NextResponse.json({ timeLog }, { status: 201 })
   } catch (e) {
-    console.error("POST /timeline/start error:", e);
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+    console.error('POST /timeline/start error:', e)
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 },
+    )
   }
-};
-
+}

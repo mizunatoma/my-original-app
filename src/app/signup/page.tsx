@@ -1,18 +1,17 @@
 'use client'
 
 import { supabaseBrowser } from '@/app/_utils/supabaseBrowser'
-import { useForm } from 'react-hook-form';
-import { FormLabel } from '../_components/form/FormLabel';
-import { FormInput } from '../_components/form/FormInput';
-import { FormButton } from '../_components/form/FormButton';
-import AuthIllustration from '../_components/AuthIllustration';
-import Link from "next/link";
-import OrDivider from '../_components/form/OrDivider';
+import { useForm } from 'react-hook-form'
+import { FormLabel } from '../_components/form/FormLabel'
+import { FormInput } from '../_components/form/FormInput'
+import { FormButton } from '../_components/form/FormButton'
+import AuthIllustration from '../_components/AuthIllustration'
+import Link from 'next/link'
 
 type LoginForm = {
-  email: string,
-  password: string,
-  confirmPassword: string,
+  email: string
+  password: string
+  confirmPassword: string
 }
 
 export default function Page() {
@@ -21,7 +20,7 @@ export default function Page() {
     handleSubmit,
     reset,
     formState: { isSubmitting },
-  } = useForm<LoginForm>();
+  } = useForm<LoginForm>()
 
   const onSubmit = async (data: LoginForm) => {
     const { email, password } = data
@@ -43,11 +42,11 @@ export default function Page() {
   return (
     <div className="auth-container">
       <AuthIllustration />
-      <div className='auth-form-section'>
-        <div className='auth-card'>
-          <h1 className='auth-title'>Sign up</h1>
+      <div className="auth-form-section">
+        <div className="auth-card">
+          <h1 className="auth-title">Sign up</h1>
 
-          <div className=''>
+          <div className="">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
               <div>
                 <FormLabel htmlFor="email">メールアドレス</FormLabel>
@@ -60,7 +59,7 @@ export default function Page() {
                 />
               </div>
               <div>
-                <FormLabel htmlFor='password'>パスワード</FormLabel>
+                <FormLabel htmlFor="password">パスワード</FormLabel>
                 <FormInput
                   type="password"
                   id="password"
@@ -70,7 +69,9 @@ export default function Page() {
                 />
               </div>
               <div>
-                <FormLabel htmlFor='confirmPassword'>パスワード(確認)</FormLabel>
+                <FormLabel htmlFor="confirmPassword">
+                  パスワード(確認)
+                </FormLabel>
                 <FormInput
                   type="password"
                   id="confirmPassword"
@@ -79,20 +80,31 @@ export default function Page() {
                   placeholder="password"
                 />
               </div>
-              <FormButton variant="primary" loading={isSubmitting} label='新規登録' className='!mt-8' />
+              <FormButton
+                variant="primary"
+                loading={isSubmitting}
+                label="新規登録"
+                className="!mt-8"
+              />
 
               {/*  今後実装予定
               <OrDivider />
               <FormButton variant="secondary" loading={isSubmitting} label='Googleで続行' />
               */}
 
-              <p className='text-center text-sm mt-4 text-gray-600'>
-                アカウントをお持ちの方は<Link href='/login' className='hover:underline ml-1 text-[#5A8B7D]'>こちら</Link>
+              <p className="mt-4 text-center text-sm text-gray-600">
+                アカウントをお持ちの方は
+                <Link
+                  href="/login"
+                  className="ml-1 text-[#5A8B7D] hover:underline"
+                >
+                  こちら
+                </Link>
               </p>
             </form>
           </div>
         </div>
-      </div >
-    </div >
+      </div>
+    </div>
   )
 }

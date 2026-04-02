@@ -1,16 +1,16 @@
 // /api/profile
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from '@/app/_utils/prisma';
-import { getAuthUser } from "@/app/_utils/getAuthUser";
-import { ProfileAPI } from "@/types/api";
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/app/_utils/prisma'
+import { getAuthUser } from '@/app/_utils/getAuthUser'
+import { ProfileAPI } from '@/types/api'
 
 // ===============================
 // POST
 // ===============================
 export const POST = async (request: NextRequest) => {
-  const auth = await getAuthUser();
-  if (auth instanceof NextResponse) return auth;
-  const user = auth.user;
+  const auth = await getAuthUser()
+  if (auth instanceof NextResponse) return auth
+  const user = auth.user
 
   try {
     const profile = await prisma.profile.upsert({
@@ -21,8 +21,11 @@ export const POST = async (request: NextRequest) => {
 
     return NextResponse.json({ profile }, { status: 200 })
   } catch (e) {
-    console.error("POST /profile error:", e);
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+    console.error('POST /profile error:', e)
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 },
+    )
   }
 }
 
@@ -31,9 +34,9 @@ export const POST = async (request: NextRequest) => {
 // ===============================
 export const GET = async (request: NextRequest) => {
   try {
-    const auth = await getAuthUser();
-    if (auth instanceof NextResponse) return auth;
-    const user = auth.user;
+    const auth = await getAuthUser()
+    if (auth instanceof NextResponse) return auth
+    const user = auth.user
 
     const profile = await prisma.profile.findUnique({
       where: { userId: user.id },
@@ -41,8 +44,11 @@ export const GET = async (request: NextRequest) => {
 
     return NextResponse.json({ profile }, { status: 200 })
   } catch (e) {
-    console.error("GET /profile error:", e);
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+    console.error('GET /profile error:', e)
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 },
+    )
   }
 }
 
@@ -51,11 +57,11 @@ export const GET = async (request: NextRequest) => {
 // ===============================
 export const PUT = async (request: NextRequest) => {
   try {
-    const auth = await getAuthUser();
-    if (auth instanceof NextResponse) return auth;
-    const user = auth.user;
+    const auth = await getAuthUser()
+    if (auth instanceof NextResponse) return auth
+    const user = auth.user
 
-    const body = (await request.json()) as ProfileAPI.Put.Request;
+    const body = (await request.json()) as ProfileAPI.Put.Request
     const { displayName } = body
 
     const profile = await prisma.profile.update({
@@ -65,11 +71,10 @@ export const PUT = async (request: NextRequest) => {
 
     return NextResponse.json({ profile }, { status: 200 })
   } catch (e) {
-    console.error("PUT /profile error:", e);
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+    console.error('PUT /profile error:', e)
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 },
+    )
   }
 }
-
-
-
-

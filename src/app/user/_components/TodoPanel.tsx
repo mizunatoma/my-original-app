@@ -1,15 +1,16 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { TodoListsAPI, TodoItemsAPI } from '@/types/api'
-import useSWR from 'swr'
+import { useFetch } from '@/app/user/_hooks/useFetch'
 import { Trash2, SquarePen, Check, X } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 
 interface TodoPanelProps {
   isCollapsed: boolean
   isTodoPanelOpen: boolean
 }
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 export default function TodoPanel({
   isCollapsed,
@@ -17,50 +18,92 @@ export default function TodoPanel({
 }: TodoPanelProps) {
   const [selectedListId, setSelectedListId] = useState<string | null>(null) // 開いているlist
   const [isOpen, setIsOpen] = useState(false) // List追加ブロックの開閉
-  const [newList, setNewList] = useState('') // 新規追加のList
 
   const [editingId, setEditingId] = useState<string | null>(null) // 編集中のtodo id
   const [editingTitle, setEditingTitle] = useState('') // 編集中のtodo title
-  const [newTodo, setNewTodo] = useState('') // 新規追加のtodo
 
-  const { data: list, mutate: mutateList } = useSWR<TodoListsAPI.Get.Response>(
-    '/api/todo-lists',
-    fetcher,
-  )
-  const { data: todos, mutate: mutateTodo } = useSWR<TodoItemsAPI.Get.Response>(
-    `/api/todo-lists/${selectedListId}/todos`,
-    fetcher,
-  )
+  const { data: list, mutate: mutateList } =
+    useFetch<TodoListsAPI.Get.Response>('/api/todo-lists')
+  const { data: todos, mutate: mutateTodo } =
+    useFetch<TodoItemsAPI.Get.Response>(
+      selectedListId ? `/api/todo-lists/${selectedListId}/todos` : null,
+    )
+
+  // 1.スキーマ定義（型 + バリデーション一元化）Zod スキーマは「このフォームでユーザーが入力するもの」だけを定義
+  // 2.useForm に zodResolver を渡す
+  const ListSchema = z.object({
+    name: z.string().trim().min(1, 'リスト名を入力してください'),
+  })
+  type ListInput = z.infer<typeof ListSchema>
+  const {
+    register: registerList,
+    handleSubmit: handleSubmitList,
+    formState: { errors: errorsList },
+  } = useForm<ListInput>({ resolver: zodResolver(ListSchema) })
+
+  const TodoSchema = z.object({
+    title: z.string().trim().min(1, 'todoを入力してください'),
+  })
+  type TodoInput = z.infer<typeof TodoSchema>
+  const {
+    register: registerTodo,
+    handleSubmit: handleSubmitTodo,
+    formState: { errors: errorsTodo },
+    reset: resetTodo,
+  } = useForm<TodoInput>({ resolver: zodResolver(TodoSchema) })
 
   // listの追加
   const handleAddList = async (name: string) => {
-    await fetch(`/api/todo-lists`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name }),
-    })
-    mutateList()
-    mutateTodo()
-    setNewList('')
+    try {
+      const res = await fetch(`/api/todo-lists`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name }),
+      })
+      if (!res.ok) {
+        console.error('リスト追加失敗', await res.json())
+        return
+      }
+
+      mutateList()
+      mutateTodo()
+    } catch (e) {
+      console.error('リスト作成エラー：', e)
+    }
   }
 
   // listの削除
   const handleDeleteList = async () => {
-    await fetch(`/api/todo-lists/${selectedListId}`, {
-      method: 'DELETE',
-    })
-    mutateList()
+    try {
+      const res = await fetch(`/api/todo-lists/${selectedListId}`, {
+        method: 'DELETE',
+      })
+      if (!res.ok) {
+        console.error('リスト削除失敗', await res.json())
+        return
+      }
+      mutateList()
+    } catch (e) {
+      console.error('リスト削除エラー：', e)
+    }
   }
 
   // todoの追加
   const handleAddTodo = async (title: string) => {
-    await fetch(`/api/todo-lists/${selectedListId}/todos`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title }),
-    })
-    mutateTodo()
-    setNewTodo('')
+    try {
+      const res = await fetch(`/api/todo-lists/${selectedListId}/todos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title }),
+      })
+      if (!res.ok) {
+        console.error('todo追加失敗', await res.json())
+        return
+      }
+      mutateTodo()
+    } catch (e) {
+      console.error('todo追加エラー：', e)
+    }
   }
 
   // todoの編集
@@ -69,25 +112,49 @@ export default function TodoPanel({
     title: string,
     isDone: boolean,
   ) => {
-    await fetch(`/api/todos/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, isDone }),
-    })
-    mutateTodo()
+    try {
+      const res = await fetch(`/api/todos/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, isDone }),
+      })
+      if (!res.ok) {
+        console.error('todo編集失敗', await res.json())
+        return
+      }
+      mutateTodo()
+    } catch (e) {
+      console.error('todo編集エラー：', e)
+    }
   }
 
   // todoの削除
   const handleDeleteTodo = async (id: string) => {
-    await fetch(`/api/todos/${id}`, {
-      method: 'DELETE',
-    })
-    mutateTodo()
+    try {
+      const res = await fetch(`/api/todos/${id}`, {
+        method: 'DELETE',
+      })
+      if (!res.ok) {
+        console.error('todo削除失敗', await res.json())
+        return
+      }
+      mutateTodo()
+    } catch (e) {
+      console.error('todo削除エラー：', e)
+    }
   }
 
   useEffect(() => {
-    if (list && list.todoLists[0]) setSelectedListId(list.todoLists[0].id)
-    else setSelectedListId(null)
+    if (list === undefined) {
+      // ロード中、何もしない
+      return
+    } else if (list.todoLists.length === 0) {
+      // Listが１件もない場合、nullをセット
+      setSelectedListId(null)
+    } else if (selectedListId === null) {
+      // Listはあるが未選択の場合、先頭のListを表示する
+      setSelectedListId(list.todoLists[0].id)
+    } // Listを選択中であれば、そのまま
   }, [list])
 
   return (
@@ -116,43 +183,62 @@ export default function TodoPanel({
       </div>
 
       {isOpen && (
-        <div className="flex gap-2">
-          <input
-            className="flex-1 rounded border-2 border-[#5A8B7D] p-1 focus:outline-none focus:ring-1 focus:ring-[#5A8B7D]"
-            placeholder="新しいリスト"
-            onChange={(e) => setNewList(e.target.value)}
-            value={newList}
-          />
+        <form
+          className="flex gap-2"
+          onSubmit={handleSubmitList((data) => {
+            handleAddList(data.name)
+            setIsOpen(false)
+          })}
+        >
+          <div>
+            <input
+              className="flex-1 rounded border-2 border-[#5A8B7D] p-1 focus:outline-none focus:ring-1 focus:ring-[#5A8B7D]"
+              placeholder="新しいリスト"
+              {...registerList('name')}
+            />
+            {errorsList.name && (
+              <p className="mt-1 text-sm text-red-400">
+                {errorsList.name.message}
+              </p>
+            )}
+          </div>
           <button
             className="rounded-lg border-2 border-[#5A8B7D] p-2 text-center text-xs text-[#5A8B7D] hover:bg-[#5A8B7D]/70 hover:text-white"
-            disabled={!newList.trim()}
-            onClick={() => {
-              handleAddList(newList)
-              setIsOpen(false)
-            }}
+            type="submit"
           >
             作成
           </button>
-        </div>
+        </form>
       )}
 
       {/*todo追加*/}
       {selectedListId !== null && (
-        <div className="flex gap-2">
-          <input
-            className="flex-1 rounded border border-[#5A8B7D] p-1 focus:outline-none focus:ring-1 focus:ring-[#5A8B7D]"
-            placeholder="新しいTodo"
-            onChange={(e) => setNewTodo(e.target.value)}
-            value={newTodo}
-          />
+        <form
+          className="flex gap-2"
+          onSubmit={handleSubmitTodo((data) => {
+            handleAddTodo(data.title)
+            resetTodo()
+          })}
+        >
+          <div>
+            <input
+              className="flex-1 rounded border border-[#5A8B7D] p-1 focus:outline-none focus:ring-1 focus:ring-[#5A8B7D]"
+              placeholder="新しいTodo"
+              {...registerTodo('title')}
+            />
+            {errorsTodo.title && (
+              <p className="mt-1 text-sm text-red-400">
+                {errorsTodo.title.message}
+              </p>
+            )}
+          </div>
           <button
             className="rounded-lg border border-[#5A8B7D] p-2 text-center text-sm text-[#5A8B7D] hover:bg-[#5A8B7D]/70 hover:text-white"
-            onClick={() => handleAddTodo(newTodo)}
-            disabled={!newTodo.trim()}
+            type="submit"
           >
             +
           </button>
-        </div>
+        </form>
       )}
 
       {/*todo一覧*/}

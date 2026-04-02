@@ -49,7 +49,10 @@ export const GET = async (
     )
   } catch (e) {
     console.error('GET /api/todo-lists/[listId]/todos:', e)
-    return NextResponse.json({ error: String(e) }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 },
+    )
   }
 }
 
@@ -101,6 +104,9 @@ export const POST = async (
     )
   } catch (e) {
     console.error('POST /api/todo-lists/[listId]/todos:', e)
-    return NextResponse.json({ error: String(e) }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 },
+    )
   }
 }

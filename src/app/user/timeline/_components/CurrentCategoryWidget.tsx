@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { Dispatch, SetStateAction } from 'react'
 import { TimelineAPI } from '@/types/api'
+import { useFetch } from '@/app/user/_hooks/useFetch'
 
 type Props = {
   currentCategoryID: { id: string; count: number }
@@ -12,37 +13,52 @@ export default function CurrentCategoryWidget({
   currentCategoryID,
   onPressStopButton,
 }: Props) {
-  const [data, setData] = useState<TimelineAPI.Running.Response | null>(null)
   const [elapsed, setElapsed] = useState(0)
-  const [isLoading, setIsloading] = useState(true)
-
-  // タイムトラック中のカテゴリを取得
-  const fetchRunning = async () => {
-    setIsloading(true)
-    const res = await fetch('/api/timeline/running')
-    const json = await res.json()
-    setData(json)
-    setIsloading(false)
-  }
-
-  useEffect(() => {
-    fetchRunning()
-  }, [])
+  const { data, error, isLoading, mutate } =
+    useFetch<TimelineAPI.Running.Response | null>('/api/timeline/running')
 
   // タイムトラックの開始
-  useEffect(() => {
-    if (!currentCategoryID.id) return // 選択されていなければなにもしない
-
-    const start = async () => {
-      await fetch('/api/timeline/start', {
+  const start = async () => {
+    try {
+      const res = await fetch('/api/timeline/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ activityId: currentCategoryID.id }),
       })
-      fetchRunning()
+      if (!res.ok) {
+        console.error('タイムトラックの開始失敗', await res.json())
+        return
+      }
+      mutate()
+    } catch (e) {
+      console.error('タイムトラックの開始エラー：', e)
     }
+  }
+  useEffect(() => {
+    if (!currentCategoryID.id) return // 選択されていなければなにもしない
     start()
   }, [currentCategoryID])
+
+  // タイムトラックの停止
+  const handleStop = async () => {
+    try {
+      const res = await fetch('/api/timeline/end', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          activityId: data?.running && data.log.activityId,
+        }),
+      })
+      if (!res.ok) {
+        console.error('タイムトラックの停止失敗', await res.json())
+        return
+      }
+      mutate()
+      onPressStopButton((s) => ({ count: s.count + 1 }))
+    } catch (e) {
+      console.error('タイムトラックの停止エラー：', e)
+    }
+  }
 
   // 経過時間の表示
   useEffect(() => {
@@ -57,19 +73,6 @@ export default function CurrentCategoryWidget({
 
     return () => clearInterval(timer)
   }, [data])
-
-  // タイムトラックの停止
-  const handleStop = async () => {
-    onPressStopButton((s) => ({ count: s.count + 1 }))
-    await fetch('/api/timeline/end', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        activityId: data?.running && data.log.activityId,
-      }),
-    })
-    setData({ running: false })
-  }
 
   return (
     <div>

@@ -46,7 +46,10 @@ export const PUT = async (
     )
   } catch (e) {
     console.error('PUT /api/todo-list/[listId]:', e)
-    return NextResponse.json({ error: String(e) }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 },
+    )
   }
 }
 
@@ -79,6 +82,9 @@ export const DELETE = async (
     return new NextResponse(null, { status: 204 }) // Responseのデータなし、リクエスト成功ステータスコード
   } catch (e) {
     console.error('DELETE /api/todo-lists/[listId]:', e)
-    return NextResponse.json({ error: String(e) }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 },
+    )
   }
 }
