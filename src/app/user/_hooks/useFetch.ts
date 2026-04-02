@@ -11,6 +11,5 @@ export function useFetch<T>(endpoint: string | null) {
   }
 
   // useSWRにendpoint、fetcherを渡す
-  const { data, error, isLoading, mutate } = useSWR<T>(endpoint, fetcher)
-  return { data, error, isLoading, mutate }
+  return useSWR<T>(endpoint, fetcher)
 }
