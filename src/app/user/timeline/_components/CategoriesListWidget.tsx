@@ -14,9 +14,10 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
   const [editingCategory, setEditingCategory] = useState<
     CategoryAPI.Get.Response['category'] | null
   >(null)
-  const { data, isLoading, mutate } = useFetch<{ activities: CategoryDTO[] }>(
-    '/api/timeline/activities',
-  )
+
+  const { data, isLoading, mutate, isValidating } = useFetch<{
+    activities: CategoryDTO[]
+  }>('/api/timeline/activities')
 
   // categoryの追加
   const handleAddSave = async (name: string, color: string) => {
@@ -129,6 +130,7 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
                       e.stopPropagation() // 親のonClickを止める
                       handleDelete(category.id)
                     }}
+                    disabled={isValidating}
                   >
                     <Trash2 size={16} />
                   </button>
