@@ -23,7 +23,19 @@ const toJstParts = (date: Date) => {
 const formatMinutes = (totalMinutes: number) => {
   const hour = Math.floor(totalMinutes / 60)
   const mins = totalMinutes % 60
-  return `${hour}h ${mins}m`
+  return mins !== 0 ? `${hour}h ${mins}m` : `${hour}h`
+}
+
+// colorTokenの Tailwind クラス名 → HEX 変換テーブル
+const COLOR_MAP: Record<string, string> = {
+  'bg-rose-400': '#fb7185',
+  'bg-teal-400': '#2dd4bf',
+  'bg-indigo-400': '#818cf8',
+  'bg-amber-400': '#fbbf24',
+  'bg-sky-400': '#38bdf8',
+  'bg-green-400': '#4ade80',
+  'bg-purple-400': '#c084fc',
+  'bg-pink-400': '#f472b6',
 }
 
 export default function Page() {
@@ -41,17 +53,13 @@ export default function Page() {
     }[]
   }>(`/api/analytics?from=${dateFrom}&to=${dateTo}`)
 
-  // colorTokenの Tailwind クラス名 → HEX 変換テーブル
-  const COLOR_MAP: Record<string, string> = {
-    'bg-rose-400': '#fb7185',
-    'bg-teal-400': '#2dd4bf',
-    'bg-indigo-400': '#818cf8',
-    'bg-amber-400': '#fbbf24',
-    'bg-sky-400': '#38bdf8',
-    'bg-green-400': '#4ade80',
-    'bg-purple-400': '#c084fc',
-    'bg-pink-400': '#f472b6',
-  }
+  // 全カテゴリの合計分数をもとに、グラフのY軸(h目盛り)の配列を作成
+  const allMinutes = data?.byCategory.map((c) => c.totalMinutes) ?? []
+  const maxMinutes = Math.max(0, ...allMinutes)
+  const yAxisTicks = Array.from(
+    { length: Math.ceil(maxMinutes / 60) + 1 },
+    (_, i) => i * 60,
+  )
 
   return (
     <div className="widget-card flex flex-col gap-4">
@@ -99,7 +107,7 @@ export default function Page() {
                 ))}
             </Bar>
             <XAxis dataKey="name" />
-            <YAxis tickFormatter={formatMinutes} />
+            <YAxis tickFormatter={formatMinutes} ticks={yAxisTicks} />
             <Tooltip formatter={formatMinutes} />
             <CartesianGrid />
           </BarChart>
