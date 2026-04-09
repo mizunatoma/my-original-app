@@ -60,7 +60,7 @@ export const GET = async (request: NextRequest) => {
       totals[log.activityId].totalMinutes += minutes
       // totaols = {"abc123": { name: "コーディング", colorToken: "green", totalMinutes: 120 }, "":{},...}
     }
-    // Object.entries()でリスト化 => [["abc123": { name: "コーディング", colorToken: "green", totalMinutes: 120 }], ["":{}],...]
+    // Object.entries(オブジェクト名)でリスト化 => [["abc123": { name: "コーディング", colorToken: "green", totalMinutes: 120 }], ["":{}],...]
     const byCategory = Object.entries(totals).map(([id, value]) => ({
       id: id,
       name: value.name,
