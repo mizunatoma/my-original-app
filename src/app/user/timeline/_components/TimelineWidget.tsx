@@ -36,7 +36,7 @@ export default function TimelogWidget({ timelineKey }: Props) {
         >
           <ChevronLeft size={16} />
         </button>
-        <p>{date}</p>
+        <h2 className="section-title mb-0">{date}</h2>
         <button
           onClick={() => {
             const prev = new Date(date)

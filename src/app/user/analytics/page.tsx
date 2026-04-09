@@ -10,16 +10,25 @@ import {
   YAxis,
   Tooltip, // ホバー時に詳細を表示
   CartesianGrid, // 方眼紙のような目盛を表示
+  Cell, // 各バーに個別のスタイルを当てるためのコンポーネント
 } from 'recharts'
 
+// 日本時刻のYYYY-MM-DDを返す
 const toJstParts = (date: Date) => {
   const jst = new Date(date.getTime() + 9 * 60 * 60 * 1000)
   return jst.toISOString().split('T')[0]
 }
 
+// 分数を 〇h 〇m に変換する
+const formatMinutes = (totalMinutes: number) => {
+  const hour = Math.floor(totalMinutes / 60)
+  const mins = totalMinutes % 60
+  return `${hour}h ${mins}m`
+}
+
 export default function Page() {
   const [currentDate, setCurrentDate] = useState(new Date())
-  const dateFrom = toJstParts(currentDate).slice(0, 7) + '-01'
+  const dateFrom = toJstParts(currentDate).slice(0, 7) + '-01' // 当月の１日
   const dateTo = toJstParts(
     new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0),
   ) //dateToの末尾「,0」 => 次の月の0日目 => 今月の最終日
@@ -32,9 +41,22 @@ export default function Page() {
     }[]
   }>(`/api/analytics?from=${dateFrom}&to=${dateTo}`)
 
+  // colorTokenの Tailwind クラス名 → HEX 変換テーブル
+  const COLOR_MAP: Record<string, string> = {
+    'bg-rose-400': '#fb7185',
+    'bg-teal-400': '#2dd4bf',
+    'bg-indigo-400': '#818cf8',
+    'bg-amber-400': '#fbbf24',
+    'bg-sky-400': '#38bdf8',
+    'bg-green-400': '#4ade80',
+    'bg-purple-400': '#c084fc',
+    'bg-pink-400': '#f472b6',
+  }
+
   return (
-    <div className="flex justify-center pt-[240px]">
-      <div className="flex gap-2">
+    <div className="widget-card flex flex-col gap-4">
+      {/* < YYYY-MM > */}
+      <div className="flex items-center justify-center gap-2">
         <button
           onClick={() => {
             const prev = new Date(currentDate)
@@ -44,10 +66,9 @@ export default function Page() {
         >
           <ChevronLeft />
         </button>
-
-        <p>集計期間</p>
-        <p>{`/api/analytics?from=${dateFrom}&to=${dateTo}`}</p>
-
+        <h2 className="section-title mb-0">
+          {currentDate.getFullYear()}年 {currentDate.getMonth() + 1}月
+        </h2>
         <button
           onClick={() => {
             const prev = new Date(currentDate)
@@ -60,15 +81,30 @@ export default function Page() {
       </div>
 
       {/*rechartsの集計棒グラフ*/}
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={data?.byCategory}>
-          <Bar dataKey="totalMinutes" fill="#5D866C99" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <CartesianGrid />
-        </BarChart>
-      </ResponsiveContainer>
+      <div>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={data?.byCategory.filter((c) => c.totalMinutes >= 1)}>
+            <Bar dataKey="totalMinutes">
+              {data?.byCategory
+                .filter((c) => c.totalMinutes >= 1)
+                .map((item) => (
+                  <Cell
+                    key={item.id}
+                    fill={
+                      item.colorToken
+                        ? COLOR_MAP[item.colorToken] + '99'
+                        : '#5D866C99'
+                    }
+                  />
+                ))}
+            </Bar>
+            <XAxis dataKey="name" />
+            <YAxis tickFormatter={formatMinutes} />
+            <Tooltip formatter={formatMinutes} />
+            <CartesianGrid />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   )
 }
