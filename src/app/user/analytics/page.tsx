@@ -140,11 +140,14 @@ export default function Page() {
           <div className="widget-card flex flex-col gap-4 border">
             <ResponsiveContainer width="100%" height={300}>
               <BarChart
-                data={data?.byCategory.filter((c) => c.totalMinutes >= 1)}
+                data={data?.byCategory
+                  .filter((c) => c.totalMinutes >= 1) // 0分は非表示
+                  .sort((a, b) => b.totalMinutes - a.totalMinutes)} // 降順
               >
                 <Bar dataKey="totalMinutes">
                   {data?.byCategory
                     .filter((c) => c.totalMinutes >= 1)
+                    .sort((a, b) => b.totalMinutes - a.totalMinutes)
                     .map((item) => (
                       <Cell
                         key={item.id}
@@ -158,7 +161,9 @@ export default function Page() {
                 </Bar>
                 <XAxis dataKey="name" />
                 <YAxis tickFormatter={formatMinutes} ticks={yAxisTicks} />
-                <Tooltip formatter={formatMinutes} />
+                <Tooltip
+                  formatter={(value) => [formatMinutes(value), '合計時間']}
+                />
                 <CartesianGrid />
               </BarChart>
             </ResponsiveContainer>
@@ -170,14 +175,19 @@ export default function Page() {
               <PieChart width={500} height={500}>
                 <Pie
                   dataKey="totalMinutes"
-                  data={data?.byCategory.filter((c) => c.totalMinutes >= 1)}
+                  data={data?.byCategory
+                    .filter((c) => c.totalMinutes >= 1)
+                    .sort((a, b) => b.totalMinutes - a.totalMinutes)}
                   label={({ name, value }) => {
                     return `${name} ${formatMinutes(value)}`
                   }}
                   labelLine={customizedLabel}
+                  startAngle={450} // 12時の軸を基準に
+                  endAngle={90}
                 >
                   {data?.byCategory
                     .filter((c) => c.totalMinutes >= 1)
+                    .sort((a, b) => b.totalMinutes - a.totalMinutes)
                     .map((item) => (
                       <Cell
                         key={item.id}
