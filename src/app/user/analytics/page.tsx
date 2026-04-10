@@ -99,7 +99,7 @@ export default function Page() {
   const daysInMonth = Number(dateTo.slice(-2)) // 当月の日数
   const sumTotalMinutes =
     data?.byCategory.reduce((sum, item) => sum + item.totalMinutes, 0) ?? 0 // 記録総時間
-  const avgMinutes = sumTotalMinutes / daysInMonth // 1日平均記録時間
+  const avgMinutes = Math.floor(sumTotalMinutes / daysInMonth) // 1日平均記録時間
 
   if (error) return <p>エラーが発生しました</p>
 
@@ -141,9 +141,9 @@ export default function Page() {
 
       {isLoading ? (
         // スケルトンスクリーン
-        <div className="widget-card flex animate-pulse flex-col gap-4 bg-gray-200">
-          <div className="widget-card flex h-[350px] flex-col gap-4 bg-gray-200 shadow-sm" />
-          <div className="widget-card flex h-[350px] flex-col gap-4 bg-gray-200 shadow-sm" />
+        <div className="widget-card animate-shimmer flex flex-col gap-4 bg-[linear-gradient(90deg,#ede9de_0%,#ede9de_25%,#f7f5ef_50%,#ede9de_75%,#ede9de_100%)] bg-[length:200%_100%]">
+          <div className="widget-card animate-shimmer flex h-[350px] flex-col gap-4 bg-[linear-gradient(90deg,#ede9de_0%,#ede9de_25%,#f7f5ef_50%,#ede9de_75%,#ede9de_100%)] bg-[length:200%_100%] shadow-sm" />
+          <div className="widget-card animate-shimmer flex h-[350px] flex-col gap-4 bg-[linear-gradient(90deg,#ede9de_0%,#ede9de_25%,#f7f5ef_50%,#ede9de_75%,#ede9de_100%)] bg-[length:200%_100%] shadow-sm" />
         </div>
       ) : data?.byCategory.length === 0 ? (
         <div className="widget-card flex h-[764px] flex-col justify-center gap-4">
@@ -151,8 +151,14 @@ export default function Page() {
         </div>
       ) : (
         <div className="widget-card flex flex-col gap-4">
+          <div className="flex w-full items-center justify-center gap-4">
+            <p>総時間 : {formatMinutes(sumTotalMinutes)}</p>
+            <p>平均時間 : {formatMinutes(avgMinutes)} / 日</p>
+            <div className="animate-shimmer h-14 w-full bg-[linear-gradient(90deg,#ede9de_0%,#ede9de_25%,#f7f5ef_50%,#ede9de_75%,#ede9de_100%)] bg-[length:200%_100%]" />
+          </div>
+
           {/*rechartsの棒グラフ*/}
-          <div className="widget-card flex flex-col gap-4 border">
+          <div className="widget-card border">
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={chartData}>
                 <Bar dataKey="totalMinutes">
@@ -178,38 +184,32 @@ export default function Page() {
           </div>
 
           {/*rechartsの円グラフ*/}
-          <div className="widget-card flex flex-col gap-4 border">
-            <div className="flex">
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart width={500} height={500}>
-                  <Pie
-                    dataKey="totalMinutes"
-                    data={chartData}
-                    label={({ name, value }) => {
-                      return `${name} ${formatMinutes(value)}`
-                    }}
-                    labelLine={customizedLabel}
-                    startAngle={450} // 12時の軸を基準に
-                    endAngle={90}
-                  >
-                    {chartData.map((item) => (
-                      <Cell
-                        key={item.id}
-                        fill={
-                          item.colorToken
-                            ? COLOR_MAP[item.colorToken] + '99'
-                            : '#5D866C99'
-                        }
-                      />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="flex w-full items-center justify-center gap-4">
-              <p>総時間 : {formatMinutes(sumTotalMinutes)}</p>
-              <p>平均時間 : {formatMinutes(avgMinutes)} / 日</p>
-            </div>
+          <div className="widget-card border">
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart width={500} height={500}>
+                <Pie
+                  dataKey="totalMinutes"
+                  data={chartData}
+                  label={({ name, value }) => {
+                    return `${name} ${formatMinutes(value)}`
+                  }}
+                  labelLine={customizedLabel}
+                  startAngle={450} // 12時の軸を基準に
+                  endAngle={90}
+                >
+                  {chartData.map((item) => (
+                    <Cell
+                      key={item.id}
+                      fill={
+                        item.colorToken
+                          ? COLOR_MAP[item.colorToken] + '99'
+                          : '#5D866C99'
+                      }
+                    />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
           </div>
         </div>
       )}
