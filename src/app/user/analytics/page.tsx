@@ -11,6 +11,8 @@ import {
   Tooltip, // ホバー時に詳細を表示
   CartesianGrid, // 方眼紙のような目盛を表示
   Cell, // 各バーに個別のスタイルを当てるためのコンポーネント
+  Pie,
+  PieChart,
 } from 'recharts'
 
 // 日本時刻のYYYY-MM-DDを返す
@@ -38,6 +40,33 @@ const COLOR_MAP: Record<string, string> = {
   'bg-pink-400': '#f472b6',
 }
 
+// 円グラフの各スライス内に、数字を表示させる関数 (props要素から各スライスの中央位置を算出する)
+const RADIAN = Math.PI / 180
+const customizedLabel = ({
+  cx,
+  cy,
+  midAngle,
+  innerRadius,
+  outerRadius,
+  percent,
+}) => {
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.5
+  const x = cx + radius * Math.cos(-midAngle * RADIAN)
+  const y = cy + radius * Math.sin(-midAngle * RADIAN)
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="white"
+      textAnchor={x > cx ? 'start' : 'middle'}
+      dominantBaseline="central"
+      fontSize={16}
+    >
+      {`${(percent * 100).toFixed(0)}%`}
+    </text>
+  )
+}
+
 export default function Page() {
   const [currentDate, setCurrentDate] = useState(new Date())
   const dateFrom = toJstParts(currentDate).slice(0, 7) + '-01' // 当月の１日
@@ -53,7 +82,7 @@ export default function Page() {
     }[]
   }>(`/api/analytics?from=${dateFrom}&to=${dateTo}`)
 
-  // 全カテゴリの合計分数をもとに、グラフのY軸(h目盛り)の配列を作成
+  // 全カテゴリの合計分数をもとに、棒グラフのY軸(h目盛り)の配列を作成
   const allMinutes = data?.byCategory.map((c) => c.totalMinutes) ?? []
   const maxMinutes = Math.max(0, ...allMinutes)
   const yAxisTicks = Array.from(
@@ -62,37 +91,76 @@ export default function Page() {
   )
 
   return (
-    <div className="widget-card flex flex-col gap-4">
-      {/* < YYYY-MM > */}
-      <div className="flex items-center justify-center gap-2">
-        <button
-          onClick={() => {
-            const prev = new Date(currentDate)
-            prev.setMonth(prev.getMonth() - 1)
-            setCurrentDate(prev)
-          }}
-        >
-          <ChevronLeft />
-        </button>
-        <h2 className="section-title mb-0">
-          {currentDate.getFullYear()}年 {currentDate.getMonth() + 1}月
-        </h2>
-        <button
-          onClick={() => {
-            const prev = new Date(currentDate)
-            prev.setMonth(prev.getMonth() + 1)
-            setCurrentDate(prev)
-          }}
-        >
-          <ChevronRight />
-        </button>
+    <div className="flex flex-col gap-4 p-4">
+      <div className="widget-card flex flex-col gap-4">
+        {/* ナビゲーション < YYYY-MM > */}
+        <div className="flex items-center justify-center gap-2">
+          <button
+            onClick={() => {
+              const prev = new Date(currentDate)
+              prev.setMonth(prev.getMonth() - 1)
+              setCurrentDate(prev)
+            }}
+          >
+            <ChevronLeft />
+          </button>
+          <h2 className="section-title mb-0">
+            {currentDate.getFullYear()}年 {currentDate.getMonth() + 1}月
+          </h2>
+          <button
+            onClick={() => {
+              const prev = new Date(currentDate)
+              prev.setMonth(prev.getMonth() + 1)
+              setCurrentDate(prev)
+            }}
+          >
+            <ChevronRight />
+          </button>
+        </div>
       </div>
 
-      {/*rechartsの集計棒グラフ*/}
-      <div>
+      {/*rechartsの棒グラフ*/}
+      <div className="widget-card flex flex-col gap-4">
+        <div>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart
+              data={data?.byCategory.filter((c) => c.totalMinutes >= 1)}
+            >
+              <Bar dataKey="totalMinutes">
+                {data?.byCategory
+                  .filter((c) => c.totalMinutes >= 1)
+                  .map((item) => (
+                    <Cell
+                      key={item.id}
+                      fill={
+                        item.colorToken
+                          ? COLOR_MAP[item.colorToken] + '99'
+                          : '#5D866C99'
+                      }
+                    />
+                  ))}
+              </Bar>
+              <XAxis dataKey="name" />
+              <YAxis tickFormatter={formatMinutes} ticks={yAxisTicks} />
+              <Tooltip formatter={formatMinutes} />
+              <CartesianGrid />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/*rechartsの円グラフ*/}
+      <div className="widget-card flex flex-col gap-4">
         <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={data?.byCategory.filter((c) => c.totalMinutes >= 1)}>
-            <Bar dataKey="totalMinutes">
+          <PieChart width={500} height={500}>
+            <Pie
+              dataKey="totalMinutes"
+              data={data?.byCategory.filter((c) => c.totalMinutes >= 1)}
+              label={({ name, value }) => {
+                return `${name} ${formatMinutes(value)}`
+              }}
+              labelLine={customizedLabel}
+            >
               {data?.byCategory
                 .filter((c) => c.totalMinutes >= 1)
                 .map((item) => (
@@ -105,12 +173,8 @@ export default function Page() {
                     }
                   />
                 ))}
-            </Bar>
-            <XAxis dataKey="name" />
-            <YAxis tickFormatter={formatMinutes} ticks={yAxisTicks} />
-            <Tooltip formatter={formatMinutes} />
-            <CartesianGrid />
-          </BarChart>
+            </Pie>
+          </PieChart>
         </ResponsiveContainer>
       </div>
     </div>
