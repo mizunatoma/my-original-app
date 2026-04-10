@@ -30,14 +30,14 @@ const formatMinutes = (totalMinutes: number) => {
 
 // colorTokenの Tailwind クラス名 → HEX 変換テーブル
 const COLOR_MAP: Record<string, string> = {
-  'bg-rose-400': '#fb7185',
-  'bg-teal-400': '#2dd4bf',
-  'bg-indigo-400': '#818cf8',
-  'bg-amber-400': '#fbbf24',
-  'bg-sky-400': '#38bdf8',
-  'bg-green-400': '#4ade80',
-  'bg-purple-400': '#c084fc',
-  'bg-pink-400': '#f472b6',
+  'bg-rose-400/60': '#fb7185',
+  'bg-teal-400/60': '#2dd4bf',
+  'bg-indigo-400/60': '#818cf8',
+  'bg-amber-400/60': '#fbbf24',
+  'bg-sky-400/60': '#38bdf8',
+  'bg-green-400/60': '#4ade80',
+  'bg-purple-400/60': '#c084fc',
+  'bg-pink-400/60': '#f472b6',
 }
 
 // 円グラフの各スライス内に、数字を表示させる関数 (props要素から各スライスの中央位置を算出する)
@@ -90,8 +90,12 @@ export default function Page() {
     (_, i) => i * 60,
   )
 
-  if (isLoading) return <p>読み込み中...</p>
-  if (!data) return <p>...</p> // 型 narrowing のため
+  // グラフ表示用データ
+  const chartData =
+    data?.byCategory
+      .filter((c) => c.totalMinutes >= 1) // 0分は非表示
+      .sort((a, b) => b.totalMinutes - a.totalMinutes) ?? [] // 降順
+
   if (error) return <p>エラーが発生しました</p>
 
   return (
@@ -130,34 +134,33 @@ export default function Page() {
         </div>
       </div>
 
-      {/*rechartsの棒グラフ*/}
-      {data.byCategory.length === 0 ? (
-        <div className="widget-card flex flex-col gap-4">
+      {isLoading ? (
+        // スケルトンスクリーン
+        <div className="widget-card flex animate-pulse flex-col gap-4 bg-gray-200">
+          <div className="widget-card flex h-[350px] flex-col gap-4 bg-gray-200 shadow-sm" />
+          <div className="widget-card flex h-[350px] flex-col gap-4 bg-gray-200 shadow-sm" />
+        </div>
+      ) : data?.byCategory.length === 0 ? (
+        <div className="widget-card flex h-[764px] flex-col justify-center gap-4">
           <p className="flex justify-center">この月の記録はありません</p>
         </div>
       ) : (
         <div className="widget-card flex flex-col gap-4">
+          {/*rechartsの棒グラフ*/}
           <div className="widget-card flex flex-col gap-4 border">
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart
-                data={data?.byCategory
-                  .filter((c) => c.totalMinutes >= 1) // 0分は非表示
-                  .sort((a, b) => b.totalMinutes - a.totalMinutes)} // 降順
-              >
+              <BarChart data={chartData}>
                 <Bar dataKey="totalMinutes">
-                  {data?.byCategory
-                    .filter((c) => c.totalMinutes >= 1)
-                    .sort((a, b) => b.totalMinutes - a.totalMinutes)
-                    .map((item) => (
-                      <Cell
-                        key={item.id}
-                        fill={
-                          item.colorToken
-                            ? COLOR_MAP[item.colorToken] + '99'
-                            : '#5D866C99'
-                        }
-                      />
-                    ))}
+                  {chartData.map((item) => (
+                    <Cell
+                      key={item.id}
+                      fill={
+                        item.colorToken
+                          ? COLOR_MAP[item.colorToken] + '99'
+                          : '#5D866C99'
+                      }
+                    />
+                  ))}
                 </Bar>
                 <XAxis dataKey="name" />
                 <YAxis tickFormatter={formatMinutes} ticks={yAxisTicks} />
@@ -175,9 +178,7 @@ export default function Page() {
               <PieChart width={500} height={500}>
                 <Pie
                   dataKey="totalMinutes"
-                  data={data?.byCategory
-                    .filter((c) => c.totalMinutes >= 1)
-                    .sort((a, b) => b.totalMinutes - a.totalMinutes)}
+                  data={chartData}
                   label={({ name, value }) => {
                     return `${name} ${formatMinutes(value)}`
                   }}
@@ -185,19 +186,16 @@ export default function Page() {
                   startAngle={450} // 12時の軸を基準に
                   endAngle={90}
                 >
-                  {data?.byCategory
-                    .filter((c) => c.totalMinutes >= 1)
-                    .sort((a, b) => b.totalMinutes - a.totalMinutes)
-                    .map((item) => (
-                      <Cell
-                        key={item.id}
-                        fill={
-                          item.colorToken
-                            ? COLOR_MAP[item.colorToken] + '99'
-                            : '#5D866C99'
-                        }
-                      />
-                    ))}
+                  {chartData.map((item) => (
+                    <Cell
+                      key={item.id}
+                      fill={
+                        item.colorToken
+                          ? COLOR_MAP[item.colorToken] + '99'
+                          : '#5D866C99'
+                      }
+                    />
+                  ))}
                 </Pie>
               </PieChart>
             </ResponsiveContainer>
