@@ -91,7 +91,7 @@ export default function Page() {
   )
 
   if (isLoading) return <p>読み込み中...</p>
-  if (!data) return <p>...</p>
+  if (!data) return <p>...</p> // 型 narrowing のため
   if (error) return <p>エラーが発生しました</p>
 
   return (
@@ -101,8 +101,11 @@ export default function Page() {
         <div className="flex items-center justify-center gap-2">
           <button
             onClick={() => {
-              const prev = new Date(currentDate)
-              prev.setMonth(prev.getMonth() - 1)
+              const prev = new Date(
+                currentDate.getFullYear(),
+                currentDate.getMonth() - 1,
+                1,
+              )
               setCurrentDate(prev)
             }}
           >
@@ -113,8 +116,12 @@ export default function Page() {
           </h2>
           <button
             onClick={() => {
-              const prev = new Date(currentDate)
-              prev.setMonth(prev.getMonth() + 1)
+              // 月末日ずれ防止のため、常に月初（1日）で Date を生成する
+              const prev = new Date(
+                currentDate.getFullYear(),
+                currentDate.getMonth() + 1,
+                1,
+              )
               setCurrentDate(prev)
             }}
           >
