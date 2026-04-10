@@ -73,7 +73,7 @@ export default function Page() {
   const dateTo = toJstParts(
     new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0),
   ) //dateToの末尾「,0」 => 次の月の0日目 => 今月の最終日
-  const { data, error, isLoading, mutate, isValidating } = useFetch<{
+  const { data, error, isLoading } = useFetch<{
     byCategory: {
       id: string
       name: string
@@ -89,6 +89,10 @@ export default function Page() {
     { length: Math.ceil(maxMinutes / 60) + 1 },
     (_, i) => i * 60,
   )
+
+  if (isLoading) return <p>読み込み中...</p>
+  if (!data) return <p>...</p>
+  if (error) return <p>エラーが発生しました</p>
 
   return (
     <div className="flex flex-col gap-4 p-4">
@@ -120,63 +124,69 @@ export default function Page() {
       </div>
 
       {/*rechartsの棒グラフ*/}
-      <div className="widget-card flex flex-col gap-4">
-        <div>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart
-              data={data?.byCategory.filter((c) => c.totalMinutes >= 1)}
-            >
-              <Bar dataKey="totalMinutes">
-                {data?.byCategory
-                  .filter((c) => c.totalMinutes >= 1)
-                  .map((item) => (
-                    <Cell
-                      key={item.id}
-                      fill={
-                        item.colorToken
-                          ? COLOR_MAP[item.colorToken] + '99'
-                          : '#5D866C99'
-                      }
-                    />
-                  ))}
-              </Bar>
-              <XAxis dataKey="name" />
-              <YAxis tickFormatter={formatMinutes} ticks={yAxisTicks} />
-              <Tooltip formatter={formatMinutes} />
-              <CartesianGrid />
-            </BarChart>
-          </ResponsiveContainer>
+      {data.byCategory.length === 0 ? (
+        <div className="widget-card flex flex-col gap-4">
+          <p className="flex justify-center">この月の記録はありません</p>
         </div>
-      </div>
+      ) : (
+        <div className="widget-card flex flex-col gap-4">
+          <div className="widget-card flex flex-col gap-4 border">
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart
+                data={data?.byCategory.filter((c) => c.totalMinutes >= 1)}
+              >
+                <Bar dataKey="totalMinutes">
+                  {data?.byCategory
+                    .filter((c) => c.totalMinutes >= 1)
+                    .map((item) => (
+                      <Cell
+                        key={item.id}
+                        fill={
+                          item.colorToken
+                            ? COLOR_MAP[item.colorToken] + '99'
+                            : '#5D866C99'
+                        }
+                      />
+                    ))}
+                </Bar>
+                <XAxis dataKey="name" />
+                <YAxis tickFormatter={formatMinutes} ticks={yAxisTicks} />
+                <Tooltip formatter={formatMinutes} />
+                <CartesianGrid />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
 
-      {/*rechartsの円グラフ*/}
-      <div className="widget-card flex flex-col gap-4">
-        <ResponsiveContainer width="100%" height={300}>
-          <PieChart width={500} height={500}>
-            <Pie
-              dataKey="totalMinutes"
-              data={data?.byCategory.filter((c) => c.totalMinutes >= 1)}
-              label={({ name, value }) => {
-                return `${name} ${formatMinutes(value)}`
-              }}
-              labelLine={customizedLabel}
-            >
-              {data?.byCategory
-                .filter((c) => c.totalMinutes >= 1)
-                .map((item) => (
-                  <Cell
-                    key={item.id}
-                    fill={
-                      item.colorToken
-                        ? COLOR_MAP[item.colorToken] + '99'
-                        : '#5D866C99'
-                    }
-                  />
-                ))}
-            </Pie>
-          </PieChart>
-        </ResponsiveContainer>
-      </div>
+          {/*rechartsの円グラフ*/}
+          <div className="widget-card flex flex-col gap-4 border">
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart width={500} height={500}>
+                <Pie
+                  dataKey="totalMinutes"
+                  data={data?.byCategory.filter((c) => c.totalMinutes >= 1)}
+                  label={({ name, value }) => {
+                    return `${name} ${formatMinutes(value)}`
+                  }}
+                  labelLine={customizedLabel}
+                >
+                  {data?.byCategory
+                    .filter((c) => c.totalMinutes >= 1)
+                    .map((item) => (
+                      <Cell
+                        key={item.id}
+                        fill={
+                          item.colorToken
+                            ? COLOR_MAP[item.colorToken] + '99'
+                            : '#5D866C99'
+                        }
+                      />
+                    ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
