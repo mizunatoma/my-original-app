@@ -159,3 +159,4 @@ export namespace AnalyticsAPI {
     }
   }
 }
+// TODO：次回PRにて、型定義とフロント＆バックの共用について、全体的な見直し
