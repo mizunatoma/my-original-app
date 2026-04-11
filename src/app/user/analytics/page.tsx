@@ -82,6 +82,17 @@ export default function Page() {
     }[]
   }>(`/api/analytics?from=${dateFrom}&to=${dateTo}`)
 
+  // 月切替ナビボタン
+  const handleNavButton = (direction: number) => {
+    // 日付を 1 日に固定 ⇒ 翌月に31日がない場合の、月が飛び越えるバグを防ぐ定石
+    const nextDate = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() + direction,
+      1,
+    )
+    setCurrentDate(nextDate)
+  }
+
   // 全カテゴリの合計分数をもとに、棒グラフのY軸(h目盛り)の配列を作成
   const allMinutes = data?.byCategory.map((c) => c.totalMinutes) ?? []
   const maxMinutes = Math.max(0, ...allMinutes)
@@ -108,39 +119,20 @@ export default function Page() {
       <div className="widget-card flex flex-col gap-4">
         {/* ナビゲーション < YYYY-MM > */}
         <div className="flex items-center justify-center gap-2">
-          <button
-            onClick={() => {
-              const prev = new Date(
-                currentDate.getFullYear(),
-                currentDate.getMonth() - 1,
-                1,
-              )
-              setCurrentDate(prev)
-            }}
-          >
+          <button onClick={() => handleNavButton(-1)}>
             <ChevronLeft />
           </button>
           <h2 className="section-title mb-0">
             {currentDate.getFullYear()}年 {currentDate.getMonth() + 1}月
           </h2>
-          <button
-            onClick={() => {
-              // 月末日ずれ防止のため、常に月初（1日）で Date を生成する
-              const prev = new Date(
-                currentDate.getFullYear(),
-                currentDate.getMonth() + 1,
-                1,
-              )
-              setCurrentDate(prev)
-            }}
-          >
+          <button onClick={() => handleNavButton(1)}>
             <ChevronRight />
           </button>
         </div>
       </div>
 
       {isLoading ? (
-        // スケルトンスクリーン
+        // スケルトンスクリーン シマーエフェクト
         <div className="widget-card animate-shimmer flex flex-col gap-4 bg-[linear-gradient(90deg,#ede9de_0%,#ede9de_25%,#f7f5ef_50%,#ede9de_75%,#ede9de_100%)] bg-[length:200%_100%]">
           <div className="widget-card animate-shimmer flex h-[350px] flex-col gap-4 bg-[linear-gradient(90deg,#ede9de_0%,#ede9de_25%,#f7f5ef_50%,#ede9de_75%,#ede9de_100%)] bg-[length:200%_100%] shadow-sm" />
           <div className="widget-card animate-shimmer flex h-[350px] flex-col gap-4 bg-[linear-gradient(90deg,#ede9de_0%,#ede9de_25%,#f7f5ef_50%,#ede9de_75%,#ede9de_100%)] bg-[length:200%_100%] shadow-sm" />
@@ -154,7 +146,6 @@ export default function Page() {
           <div className="flex w-full items-center justify-center gap-4">
             <p>総時間 : {formatMinutes(sumTotalMinutes)}</p>
             <p>平均時間 : {formatMinutes(avgMinutes)} / 日</p>
-            <div className="animate-shimmer h-14 w-full bg-[linear-gradient(90deg,#ede9de_0%,#ede9de_25%,#f7f5ef_50%,#ede9de_75%,#ede9de_100%)] bg-[length:200%_100%]" />
           </div>
 
           {/*rechartsの棒グラフ*/}
