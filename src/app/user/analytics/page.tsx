@@ -14,6 +14,7 @@ import {
   Pie,
   PieChart,
 } from 'recharts'
+import type { PieLabelRenderProps } from 'recharts'
 
 // 日本時刻のYYYY-MM-DDを返す
 const toJstParts = (date: Date) => {
@@ -49,20 +50,22 @@ const customizedLabel = ({
   innerRadius,
   outerRadius,
   percent,
-}) => {
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5
-  const x = cx + radius * Math.cos(-midAngle * RADIAN)
-  const y = cy + radius * Math.sin(-midAngle * RADIAN)
+}: PieLabelRenderProps) => {
+  // 「 ?? 0 」⇒ number | undefined の undefined チェック
+  const radius =
+    (innerRadius ?? 0) + ((outerRadius ?? 0) - (innerRadius ?? 0)) * 0.5
+  const x = (cx ?? 0) + radius * Math.cos(-(midAngle ?? 0) * RADIAN)
+  const y = (cy ?? 0) + radius * Math.sin(-(midAngle ?? 0) * RADIAN)
   return (
     <text
       x={x}
       y={y}
       fill="white"
-      textAnchor={x > cx ? 'start' : 'middle'}
+      textAnchor={x > (cx ?? 0) ? 'start' : 'middle'}
       dominantBaseline="central"
       fontSize={16}
     >
-      {`${(percent * 100).toFixed(0)}%`}
+      {`${((percent ?? 0) * 100).toFixed(0)}%`}
     </text>
   )
 }
