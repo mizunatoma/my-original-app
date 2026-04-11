@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useFetch } from '@/app/user/_hooks/useFetch'
+import { AnalyticsAPI } from '@/types/api'
 import {
   BarChart,
   Bar,
@@ -76,14 +77,9 @@ export default function Page() {
   const dateTo = toJstParts(
     new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0),
   ) //dateToの末尾「,0」 => 次の月の0日目 => 今月の最終日
-  const { data, error, isLoading } = useFetch<{
-    byCategory: {
-      id: string
-      name: string
-      colorToken: string | null
-      totalMinutes: number
-    }[]
-  }>(`/api/analytics?from=${dateFrom}&to=${dateTo}`)
+  const { data, error, isLoading } = useFetch<AnalyticsAPI.Get.Response>(
+    `/api/analytics?from=${dateFrom}&to=${dateTo}`,
+  )
 
   // 月切替ナビボタン
   const handleNavButton = (direction: number) => {

@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/_utils/prisma'
 import { getAuthUser } from '@/app/_utils/getAuthUser'
+import { AnalyticsAPI } from '@/types/api'
 
 // ===============================
 // GET
@@ -68,7 +69,10 @@ export const GET = async (request: NextRequest) => {
       totalMinutes: value.totalMinutes,
     }))
 
-    return NextResponse.json({ byCategory }, { status: 200 })
+    return NextResponse.json<AnalyticsAPI.Get.Response>(
+      { byCategory },
+      { status: 200 },
+    )
   } catch (e) {
     console.error('GET /api/analytics?from=YYYY-MM-DD&to=YYYY-MM-DD:', e)
     return NextResponse.json(
