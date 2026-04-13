@@ -16,6 +16,7 @@ import {
   PieChart,
 } from 'recharts'
 import type { PieLabelRenderProps } from 'recharts'
+import Skelton from '../_components/Skelton'
 
 // 日本時刻のYYYY-MM-DDを返す
 const toJstParts = (date: Date) => {
@@ -132,10 +133,10 @@ export default function Page() {
 
       {isLoading ? (
         // スケルトンスクリーン シマーエフェクト
-        <div className="widget-card animate-shimmer flex flex-col gap-4 bg-[linear-gradient(90deg,#ede9de_0%,#ede9de_25%,#f7f5ef_50%,#ede9de_75%,#ede9de_100%)] bg-[length:200%_100%]">
-          <div className="widget-card animate-shimmer flex h-[350px] flex-col gap-4 bg-[linear-gradient(90deg,#ede9de_0%,#ede9de_25%,#f7f5ef_50%,#ede9de_75%,#ede9de_100%)] bg-[length:200%_100%] shadow-sm" />
-          <div className="widget-card animate-shimmer flex h-[350px] flex-col gap-4 bg-[linear-gradient(90deg,#ede9de_0%,#ede9de_25%,#f7f5ef_50%,#ede9de_75%,#ede9de_100%)] bg-[length:200%_100%] shadow-sm" />
-        </div>
+        <Skelton height="">
+          <Skelton height="h-[350px]" />
+          <Skelton height="h-[350px]" />
+        </Skelton>
       ) : data?.byCategory.length === 0 ? (
         <div className="widget-card flex h-[764px] flex-col justify-center gap-4">
           <p className="flex justify-center">この月の記録はありません</p>
