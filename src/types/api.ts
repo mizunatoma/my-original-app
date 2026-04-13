@@ -11,14 +11,17 @@ export type ProfileDTO = {
   displayName: string | null
 }
 
+// GET /api/profile
 export type GetProfileResponse = {
   profile: ProfileDTO
 }
 
+// PUT /api/profile
 export type UpdateProfileRequest = {
   displayName: string
 }
 
+// PUT, POST /api/profile
 export type UpdateProfileResponse = {
   profile: ProfileDTO
 }
@@ -147,17 +150,13 @@ export namespace TodoItemsAPI {
 }
 
 //===Analytics=============================================
-// analytics (Get)
-export namespace AnalyticsAPI {
-  // GET /api/analytics?from=YYYY-MM-DD&to=YYYY-MM-DD
-  export namespace Get {
-    export type Response = {
-      byCategory: {
-        id: string
-        name: string
-        colorToken: string | null
-        totalMinutes: number
-      }[]
-    }
-  }
+
+// GET /api/analytics?from=YYYY-MM-DD&to=YYYY-MM-DD
+export type GetAnalyticsResponse = {
+  byCategory: {
+    id: string
+    name: string
+    colorToken: string | null
+    totalMinutes: number
+  }[]
 }
