@@ -22,12 +22,18 @@ export default function TodoPanel({
   const [editingId, setEditingId] = useState<string | null>(null) // 編集中のtodo id
   const [editingTitle, setEditingTitle] = useState('') // 編集中のtodo title
 
-  const { data: list, mutate: mutateList } =
-    useFetch<TodoListsAPI.Get.Response>('/api/todo-lists')
-  const { data: todos, mutate: mutateTodo } =
-    useFetch<TodoItemsAPI.Get.Response>(
-      selectedListId ? `/api/todo-lists/${selectedListId}/todos` : null,
-    )
+  const {
+    data: list,
+    mutate: mutateList,
+    isValidating: isValidatingList,
+  } = useFetch<TodoListsAPI.Get.Response>('/api/todo-lists')
+  const {
+    data: todos,
+    mutate: mutateTodo,
+    isValidating: isValidatingTodo,
+  } = useFetch<TodoItemsAPI.Get.Response>(
+    selectedListId ? `/api/todo-lists/${selectedListId}/todos` : null,
+  )
 
   // 1.スキーマ定義（型 + バリデーション一元化）Zod スキーマは「このフォームでユーザーが入力するもの」だけを定義
   // 2.useForm に zodResolver を渡す
@@ -177,6 +183,7 @@ export default function TodoPanel({
         <button
           className="items-center rounded-xl border-[#5A8B7D]/70 px-2 text-[#5A8B7D] hover:bg-[#5A8B7D]/70 hover:text-white"
           onClick={() => setIsOpen(!isOpen)}
+          disabled={isValidatingList}
         >
           +
         </button>
@@ -205,6 +212,7 @@ export default function TodoPanel({
           <button
             className="rounded-lg border-2 border-[#5A8B7D] p-2 text-center text-xs text-[#5A8B7D] hover:bg-[#5A8B7D]/70 hover:text-white"
             type="submit"
+            disabled={isValidatingList || isValidatingTodo}
           >
             作成
           </button>
@@ -235,6 +243,7 @@ export default function TodoPanel({
           <button
             className="rounded-lg border border-[#5A8B7D] p-2 text-center text-sm text-[#5A8B7D] hover:bg-[#5A8B7D]/70 hover:text-white"
             type="submit"
+            disabled={isValidatingTodo}
           >
             +
           </button>
@@ -272,6 +281,7 @@ export default function TodoPanel({
                       setEditingId(todo.id) // 編集モードにセット
                       setEditingTitle(todo.title) // 今のタイトル初期値をセット
                     }}
+                    disabled={isValidatingTodo}
                   >
                     <SquarePen
                       size={16}
@@ -281,6 +291,7 @@ export default function TodoPanel({
                   <button
                     className="text-red-400"
                     onClick={() => handleDeleteTodo(todo.id)}
+                    disabled={isValidatingTodo}
                   >
                     <Trash2
                       size={16}
@@ -321,6 +332,7 @@ export default function TodoPanel({
         <button
           className="mt-auto flex w-full justify-end gap-1 p-2 text-right"
           onClick={handleDeleteList}
+          disabled={isValidatingList}
         >
           <div className="flex items-center text-gray-500 hover:text-red-400">
             <Trash2 size={16} />

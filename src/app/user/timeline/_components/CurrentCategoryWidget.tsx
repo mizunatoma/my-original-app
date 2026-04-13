@@ -14,7 +14,7 @@ export default function CurrentCategoryWidget({
   onPressStopButton,
 }: Props) {
   const [elapsed, setElapsed] = useState(0)
-  const { data, error, isLoading, mutate } =
+  const { data, error, isLoading, mutate, isValidating } =
     useFetch<TimelineAPI.Running.Response | null>('/api/timeline/running')
 
   // タイムトラックの開始
@@ -112,7 +112,7 @@ export default function CurrentCategoryWidget({
                 <div className="">
                   <button
                     className="button mt-1 w-full bg-rose-200 text-rose-800 hover:bg-rose-300"
-                    disabled={!data?.running}
+                    disabled={isValidating}
                     onClick={handleStop}
                   >
                     停止

@@ -144,3 +144,19 @@ export namespace TodoItemsAPI {
     export type Response = { todo: TodoItemDTO }
   }
 }
+
+// analytics (Get)
+export namespace AnalyticsAPI {
+  // GET /api/analytics?from=YYYY-MM-DD&to=YYYY-MM-DD
+  export namespace Get {
+    export type Response = {
+      byCategory: {
+        id: string
+        name: string
+        colorToken: string | null
+        totalMinutes: number
+      }[]
+    }
+  }
+}
+// TODO：次回PRにて、型定義とフロント＆バックの共用について、全体的な見直し

@@ -13,14 +13,14 @@ type Props = {
 }
 
 const COLOR_OPTIONS = [
-  'bg-rose-400',
-  'bg-teal-400',
-  'bg-indigo-400',
-  'bg-amber-400',
-  'bg-sky-400',
-  'bg-green-400',
-  'bg-purple-400',
-  'bg-pink-400',
+  'bg-rose-400/60',
+  'bg-teal-400/60',
+  'bg-indigo-400/60',
+  'bg-amber-400/60',
+  'bg-sky-400/60',
+  'bg-green-400/60',
+  'bg-purple-400/60',
+  'bg-pink-400/60',
 ]
 
 // スキーマ定義（型 + バリデーション一元化）
