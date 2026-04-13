@@ -1,15 +1,29 @@
-// APIレスポンス用 共通DTO
+//===ContactForm=============================================
 export type ContactRequestBody = {
   name: string
   email: string
   message: string
 }
 
+//===Profile=============================================
 export type ProfileDTO = {
   id: string
+  displayName: string | null
+}
+
+export type GetProfileResponse = {
+  profile: ProfileDTO
+}
+
+export type UpdateProfileRequest = {
   displayName: string
 }
 
+export type UpdateProfileResponse = {
+  profile: ProfileDTO
+}
+
+//===Timeline=============================================
 export type TimelogDTO = {
   id: string
   title: string
@@ -26,46 +40,6 @@ export type RunningTimelogDTO = {
   activityName: string
   colorToken: string
   startAt: string // ISO文字列
-}
-
-export type CategoryDTO = {
-  id: string
-  name: string
-  colorToken?: string
-}
-
-export type TodoListDTO = {
-  id: string
-  profileId: string
-  name: string
-  sortOrder: number
-  createdAt: string
-  updatedAt: string
-}
-
-export type TodoItemDTO = {
-  id: string
-  todoListId: string
-  title: string
-  isDone: boolean
-  doneAt: string | null
-  createdAt: string
-  updatedAt: string
-}
-
-//================================================
-
-// プロフィール系 (Get/Put)
-export namespace ProfileAPI {
-  // GET /api/profile
-  export namespace Get {
-    export type Response = { profile: ProfileDTO }
-  }
-  // PUT /api/profile
-  export namespace Put {
-    export type Request = { displayName: string }
-    export type Response = { profile: ProfileDTO }
-  }
 }
 
 // タイムログ系 (Get/Start/End)
@@ -101,12 +75,39 @@ export namespace TimelineAPI {
   }
 }
 
+//===Category=============================================
+export type CategoryDTO = {
+  id: string
+  name: string
+  colorToken?: string
+}
+
 // カテゴリ系 (Get)
 export namespace CategoryAPI {
   // GET /api/timeline/[id]
   export namespace Get {
     export type Response = { category: CategoryDTO }
   }
+}
+
+//===TodoList=============================================
+export type TodoListDTO = {
+  id: string
+  profileId: string
+  name: string
+  sortOrder: number
+  createdAt: string
+  updatedAt: string
+}
+
+export type TodoItemDTO = {
+  id: string
+  todoListId: string
+  title: string
+  isDone: boolean
+  doneAt: string | null
+  createdAt: string
+  updatedAt: string
 }
 
 // TodoList (Get/Post/Put)
@@ -145,6 +146,7 @@ export namespace TodoItemsAPI {
   }
 }
 
+//===Analytics=============================================
 // analytics (Get)
 export namespace AnalyticsAPI {
   // GET /api/analytics?from=YYYY-MM-DD&to=YYYY-MM-DD
@@ -159,4 +161,3 @@ export namespace AnalyticsAPI {
     }
   }
 }
-// TODO：次回PRにて、型定義とフロント＆バックの共用について、全体的な見直し
