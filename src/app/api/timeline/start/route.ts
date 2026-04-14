@@ -51,7 +51,7 @@ export const POST = async (request: NextRequest) => {
       title: timelog.activity.name,
       startAt: timelog.startAt.toISOString(),
       endAt: timelog.endAt ? timelog.endAt.toISOString() : null,
-      category: { colorToken: timelog.activity.colorToken ?? undefined },
+      category: { colorToken: timelog.activity.colorToken },
     }
 
     return NextResponse.json<StartTimelogResponse>(

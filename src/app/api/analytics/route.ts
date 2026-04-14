@@ -47,7 +47,8 @@ export const GET = async (request: NextRequest) => {
     // logs をループして activityId ごとに分数を合計する
     for (const log of logs) {
       const minutes = Math.floor(
-        (new Date(log.endAt) - new Date(log.startAt)) / 60000,
+        (new Date(log.endAt!).getTime() - new Date(log.startAt!).getTime()) /
+          60000,
       )
       if (!totals[log.activityId]) {
         // 初回：オブジェクトを作る

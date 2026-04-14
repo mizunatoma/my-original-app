@@ -67,7 +67,7 @@ export default function CurrentCategoryWidget({
     const timer = setInterval(() => {
       const now = new Date()
       const start = new Date(data.log.startAt)
-      const minutes = Math.floor((now - start) / 60000)
+      const minutes = Math.floor((now.getTime() - start.getTime()) / 60000) // getTime()でDate型をnumberに変換
       setElapsed(minutes)
     }, 60000) // 1分ごと
 

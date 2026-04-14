@@ -167,7 +167,10 @@ export default function Page() {
                 <XAxis dataKey="name" />
                 <YAxis tickFormatter={formatMinutes} ticks={yAxisTicks} />
                 <Tooltip
-                  formatter={(value) => [formatMinutes(value), '合計時間']}
+                  formatter={(value) => [
+                    typeof value === 'number' ? formatMinutes(value) : value, // typeofで型チェック
+                    '合計時間',
+                  ]}
                 />
                 <CartesianGrid />
               </BarChart>
