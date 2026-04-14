@@ -1,7 +1,8 @@
-// /api/timeline/activities/[id]
+// /api/timeline/category/[id]
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/_utils/prisma'
 import { getAuthUser } from '@/app/_utils/getAuthUser'
+import type { GetCategoryResponse } from '@/types/api'
 
 // ===============================
 // PUT
@@ -15,14 +16,14 @@ export const PUT = async (
     if (auth instanceof NextResponse) return auth
     const user = auth.user
 
-    const activity = await prisma.activity.findFirst({
+    const category = await prisma.activity.findFirst({
       where: {
         id: params.id,
         profile: { userId: user.id },
         deletedAt: null,
       },
     })
-    if (!activity) {
+    if (!category) {
       return NextResponse.json({ error: 'Not found' }, { status: 404 })
     }
 
@@ -35,9 +36,12 @@ export const PUT = async (
       },
     })
 
-    return NextResponse.json({ activity: updated }, { status: 201 })
+    return NextResponse.json<GetCategoryResponse>(
+      { category: updated },
+      { status: 201 },
+    )
   } catch (e) {
-    console.error('PUT /activities/[id] error:', e)
+    console.error('PUT /category/[id] error:', e)
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 },
@@ -57,14 +61,14 @@ export const DELETE = async (
     if (auth instanceof NextResponse) return auth
     const user = auth.user
 
-    const activity = await prisma.activity.findFirst({
+    const category = await prisma.activity.findFirst({
       where: {
         id: params.id,
         profile: { userId: user.id },
         deletedAt: null,
       },
     })
-    if (!activity) {
+    if (!category) {
       return NextResponse.json({ error: 'Not found' }, { status: 404 })
     }
 
@@ -73,9 +77,9 @@ export const DELETE = async (
       data: { deletedAt: new Date() },
     })
 
-    return NextResponse.json({ activity }, { status: 200 })
+    return NextResponse.json<GetCategoryResponse>({ category }, { status: 200 })
   } catch (e) {
-    console.error('DELETE /activities/[id] error:', e)
+    console.error('DELETE /category/[id] error:', e)
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 },

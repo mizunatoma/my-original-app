@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, Dispatch, SetStateAction } from 'react'
 import { Trash2, SquarePen } from 'lucide-react'
-import type { GetCategoryResponse } from '@/types/api'
+import type { GetCategoriesResponse, CategoryDTO } from '@/types/api'
 import CategoryModal from './CategoryModal'
 import { useFetch } from '@/app/user/_hooks/useFetch'
 
@@ -11,18 +11,17 @@ type Props = {
 
 export default function CategoriesListWidget({ onSelectCategory }: Props) {
   const [isOpen, setIsOpen] = useState(false)
-  const [editingCategory, setEditingCategory] = useState<
-    GetCategoryResponse['category'] | null
-  >(null)
+  const [editingCategory, setEditingCategory] = useState<CategoryDTO | null>(
+    null,
+  )
 
-  const { data, isLoading, mutate, isValidating } = useFetch<{
-    activities: GetCategoryResponse
-  }>('/api/timeline/activities')
+  const { data, isLoading, mutate, isValidating } =
+    useFetch<GetCategoriesResponse>('/api/timeline/categories')
 
   // categoryの追加
   const handleAddSave = async (name: string, color: string) => {
     try {
-      const res = await fetch('/api/timeline/activities', {
+      const res = await fetch('/api/timeline/categories', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, colorToken: color }),
@@ -42,7 +41,7 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
   const handleEditSave = async (name: string, color: string) => {
     try {
       const res = await fetch(
-        `/api/timeline/activities/${editingCategory!.id}`,
+        `/api/timeline/categories/${editingCategory!.id}`,
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -63,7 +62,7 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
   // categoryの削除
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/timeline/activities/${id}`, {
+      const res = await fetch(`/api/timeline/categories/${id}`, {
         method: 'DELETE',
       })
       if (!res.ok) {
@@ -94,7 +93,7 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
 
       {!isLoading ? (
         <div className="grid grid-cols-2 gap-2 md:grid-cols-2">
-          {data?.activities?.map((category) => (
+          {data?.categories?.map((category) => (
             <div
               className="flex h-16 cursor-pointer items-center gap-3 rounded-xl border border-gray-100 bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
               key={category.id}

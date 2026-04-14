@@ -25,7 +25,7 @@ export type TimelogDTO = {
   startAt: string // ISO文字列
   endAt: string | null
   category: {
-    colorToken?: string
+    colorToken: string | null
   }
 }
 
@@ -52,14 +52,16 @@ export type GetRunningTimelogResponse =
     }
 
 //===Category=============================================
-// GET /api/timeline/[id]
-export type GetCategoryResponse = {
-  category: {
-    id: string
-    name: string
-    colorToken?: string
-  }
+export type CategoryDTO = {
+  id: string
+  name: string
+  colorToken: string | null
 }
+
+// GET /api/timeline/categories
+export type GetCategoriesResponse = { categories: CategoryDTO[] }
+// GET /api/timeline/[id]
+export type GetCategoryResponse = { category: CategoryDTO }
 
 //===TodoList=============================================
 export type TodoListDTO = {

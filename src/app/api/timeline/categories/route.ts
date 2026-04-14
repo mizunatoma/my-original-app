@@ -1,8 +1,8 @@
-// /api/timeline/activities
+// /api/timeline/categories
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/_utils/prisma'
 import { getAuthUser } from '@/app/_utils/getAuthUser'
-import type { GetTimelogResponse } from '@/types/api'
+import type { GetCategoriesResponse } from '@/types/api'
 
 // ===============================
 // GET
@@ -13,7 +13,7 @@ export const GET = async () => {
     if (auth instanceof NextResponse) return auth
     const user = auth.user
 
-    const activities = await prisma.activity.findMany({
+    const categories = await prisma.activity.findMany({
       where: {
         profile: { userId: user.id },
         deletedAt: null,
@@ -25,8 +25,8 @@ export const GET = async () => {
       },
     })
 
-    return NextResponse.json<GetTimelogResponse>(
-      { activities },
+    return NextResponse.json<GetCategoriesResponse>(
+      { categories },
       { status: 200 },
     )
   } catch (e) {
