@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/_utils/prisma'
 import { getAuthUser } from '@/app/_utils/getAuthUser'
+import type { EndTimelogResponse } from '@/types/api'
 
 // ===============================
 // POST
@@ -27,12 +28,24 @@ export const POST = async (request: NextRequest) => {
     }
 
     // 見つかった timelog の id を使って終了時間を更新
-    const timeLog = await prisma.timeLog.update({
+    const timelog = await prisma.timeLog.update({
       where: { id: runningLog.id },
       data: { endAt: new Date() },
+      include: { activity: true },
     })
 
-    return NextResponse.json({ timeLog }, { status: 200 })
+    const mapped = {
+      id: timelog.id,
+      title: timelog.activity.name,
+      startAt: timelog.startAt.toISOString(),
+      endAt: timelog.endAt ? timelog.endAt.toISOString() : null,
+      category: { colorToken: timelog.activity.colorToken ?? undefined },
+    }
+
+    return NextResponse.json<EndTimelogResponse>(
+      { timelog: mapped },
+      { status: 200 },
+    )
   } catch (e) {
     console.error('POST /timeline/end error:', e)
     return NextResponse.json(

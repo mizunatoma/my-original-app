@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, Dispatch, SetStateAction } from 'react'
 import { Trash2, SquarePen } from 'lucide-react'
-import { CategoryAPI, CategoryDTO } from '@/types/api'
+import type { GetCategoryResponse } from '@/types/api'
 import CategoryModal from './CategoryModal'
 import { useFetch } from '@/app/user/_hooks/useFetch'
 
@@ -12,11 +12,11 @@ type Props = {
 export default function CategoriesListWidget({ onSelectCategory }: Props) {
   const [isOpen, setIsOpen] = useState(false)
   const [editingCategory, setEditingCategory] = useState<
-    CategoryAPI.Get.Response['category'] | null
+    GetCategoryResponse['category'] | null
   >(null)
 
   const { data, isLoading, mutate, isValidating } = useFetch<{
-    activities: CategoryDTO[]
+    activities: GetCategoryResponse
   }>('/api/timeline/activities')
 
   // categoryの追加

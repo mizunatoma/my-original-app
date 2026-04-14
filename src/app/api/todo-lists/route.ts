@@ -2,7 +2,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/_utils/prisma'
 import { getAuthUser } from '@/app/_utils/getAuthUser'
-import { TodoListsAPI } from '@/types/api'
+import type {
+  GetTodoListsResponse,
+  CreateTodoListRequest,
+  CreateTodoListResponse,
+} from '@/types/api'
 
 // ===============================
 // GET
@@ -32,7 +36,7 @@ export const GET = async (request: NextRequest) => {
       updatedAt: todoList.updatedAt.toISOString(),
     }))
 
-    return NextResponse.json<TodoListsAPI.Get.Response>(
+    return NextResponse.json<GetTodoListsResponse>(
       { todoLists },
       { status: 200 },
     )
@@ -66,7 +70,7 @@ export const POST = async (request: NextRequest) => {
         { status: 403 },
       )
     }
-    const { name } = await request.json()
+    const { name } = (await request.json()) as CreateTodoListRequest
 
     const todoList = await prisma.todoList.create({
       data: {
@@ -85,7 +89,7 @@ export const POST = async (request: NextRequest) => {
       updatedAt: todoList.updatedAt.toISOString(),
     }
 
-    return NextResponse.json<TodoListsAPI.Post.Response>(
+    return NextResponse.json<CreateTodoListResponse>(
       { todoList: mapped },
       { status: 201 },
     ) // 201=成功(新規作成)

@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import { Dispatch, SetStateAction } from 'react'
-import { TimelineAPI } from '@/types/api'
+import type { GetRunningTimelogResponse } from '@/types/api'
 import { useFetch } from '@/app/user/_hooks/useFetch'
 
 type Props = {
@@ -15,7 +15,7 @@ export default function CurrentCategoryWidget({
 }: Props) {
   const [elapsed, setElapsed] = useState(0)
   const { data, error, isLoading, mutate, isValidating } =
-    useFetch<TimelineAPI.Running.Response | null>('/api/timeline/running')
+    useFetch<GetRunningTimelogResponse | null>('/api/timeline/running')
 
   // タイムトラックの開始
   const start = async () => {

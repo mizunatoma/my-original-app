@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/_utils/prisma'
 import { getAuthUser } from '@/app/_utils/getAuthUser'
+import type { GetTimelogResponse } from '@/types/api'
 
 // ===============================
 // GET
@@ -24,7 +25,10 @@ export const GET = async () => {
       },
     })
 
-    return NextResponse.json({ activities }, { status: 200 })
+    return NextResponse.json<GetTimelogResponse>(
+      { activities },
+      { status: 200 },
+    )
   } catch (e) {
     console.error('GET /activities error:', e)
     return NextResponse.json(

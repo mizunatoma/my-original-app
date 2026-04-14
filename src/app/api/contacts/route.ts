@@ -1,7 +1,7 @@
 // /api/contacts
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/_utils/prisma'
-import { ContactRequestBody } from '@/types/api'
+import type { ContactRequestBody } from '@/types/api'
 
 // ===============================
 // POST

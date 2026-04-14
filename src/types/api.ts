@@ -32,10 +32,9 @@ export type TimelogDTO = {
 // GET /api/timeline
 export type GetTimelogResponse = { activities: TimelogDTO[] }
 // POST /api/timeline/start
-export type StartTimelogRequest = { activityId: string; startAt: string } //ISO
+export type StartTimelogRequest = { activityId: string }
 export type StartTimelogResponse = { timelog: TimelogDTO }
 // POST /api/timeline/end
-export type EndTimelogRequest = { activityId: string; endAt: string } //ISO
 export type EndTimelogResponse = { timelog: TimelogDTO }
 
 // GET /api/timeline/running
@@ -76,7 +75,7 @@ export type TodoListDTO = {
 export type GetTodoListsResponse = { todoLists: TodoListDTO[] }
 // POST /api/todo-lists
 export type CreateTodoListRequest = { name: string }
-export type CreatedoListResponse = { todoList: TodoListDTO }
+export type CreateTodoListResponse = { todoList: TodoListDTO }
 // PUT /api/todo-lists/[listId]
 export type UpdateTodoListRequest = { name: string }
 export type UpdateTodoListResponse = { todoList: TodoListDTO }

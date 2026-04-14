@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { TodoListsAPI, TodoItemsAPI } from '@/types/api'
+import type { GetTodoListsResponse, GetTodoItemsResponse } from '@/types/api'
 import { useFetch } from '@/app/user/_hooks/useFetch'
 import { Trash2, SquarePen, Check, X } from 'lucide-react'
 import { useForm } from 'react-hook-form'
@@ -26,12 +26,12 @@ export default function TodoPanel({
     data: list,
     mutate: mutateList,
     isValidating: isValidatingList,
-  } = useFetch<TodoListsAPI.Get.Response>('/api/todo-lists')
+  } = useFetch<GetTodoListsResponse>('/api/todo-lists')
   const {
     data: todos,
     mutate: mutateTodo,
     isValidating: isValidatingTodo,
-  } = useFetch<TodoItemsAPI.Get.Response>(
+  } = useFetch<GetTodoItemsResponse>(
     selectedListId ? `/api/todo-lists/${selectedListId}/todos` : null,
   )
 
