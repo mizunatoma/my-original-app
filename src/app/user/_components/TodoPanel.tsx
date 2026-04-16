@@ -106,7 +106,7 @@ export default function TodoPanel({
       const res = await fetch(`/api/todo-lists/${selectedListId}/todos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title } as CreateTodoItemRequest),
+        body: JSON.stringify({ title } as CreateTodoItemRequest), // ※型アサーションのため、実行時チェックはない
       })
       if (!res.ok) {
         console.error('todo追加失敗', await res.json())

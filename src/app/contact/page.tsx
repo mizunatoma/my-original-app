@@ -5,7 +5,7 @@ import { FormInput } from '../_components/form/FormInput'
 import { FormButton } from '../_components/form/FormButton'
 import { FormTextarea } from '../_components/form/FormTextarea'
 import Link from 'next/link'
-import { ContactBody } from '@/types/api'
+import type { ContactBody } from '@/types/api'
 
 export default function ContactPage() {
   const {

@@ -22,8 +22,6 @@ export const POST = async (request: NextRequest) => {
       data: { name, email, message },
     })
 
-    const mapped = {}
-
     return NextResponse.json({ contact }, { status: 200 })
   } catch (e) {
     console.error('POST /contact error:', e)
