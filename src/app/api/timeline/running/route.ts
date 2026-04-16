@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/_utils/prisma'
 import { getAuthUser } from '@/app/_utils/getAuthUser'
+import type { GetRunningTimelogResponse } from '@/types/api'
 
 // ===============================
 // GET
@@ -17,23 +18,20 @@ export const GET = async (request: NextRequest) => {
         endAt: null,
         activity: { profile: { userId: user.id }, deletedAt: null },
       },
-      include: {
-        activity: true,
-      },
+      include: { activity: true },
     })
-
     if (!runningLog) {
       return NextResponse.json({ running: false })
     }
 
-    return NextResponse.json({
+    return NextResponse.json<GetRunningTimelogResponse>({
       running: true,
       log: {
         id: runningLog.id,
         activityId: runningLog.activityId,
         activityName: runningLog.activity.name,
         colorToken: runningLog.activity.colorToken,
-        startAt: runningLog.startAt,
+        startAt: runningLog.startAt.toISOString(),
       },
     })
   } catch (e) {

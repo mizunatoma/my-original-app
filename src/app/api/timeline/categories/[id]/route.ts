@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/_utils/prisma'
 import { getAuthUser } from '@/app/_utils/getAuthUser'
-import type { GetCategoryResponse } from '@/types/api'
+import type { CategoryResponse, UpdateCategoryRequest } from '@/types/api'
 
 // ===============================
 // PUT
@@ -27,7 +27,7 @@ export const PUT = async (
       return NextResponse.json({ error: 'Not found' }, { status: 404 })
     }
 
-    const { name, colorToken } = await request.json()
+    const { name, colorToken } = (await request.json()) as UpdateCategoryRequest
     const updated = await prisma.activity.update({
       where: { id: params.id },
       data: {
@@ -36,7 +36,7 @@ export const PUT = async (
       },
     })
 
-    return NextResponse.json<GetCategoryResponse>(
+    return NextResponse.json<CategoryResponse>(
       { category: updated },
       { status: 201 },
     )
@@ -77,7 +77,7 @@ export const DELETE = async (
       data: { deletedAt: new Date() },
     })
 
-    return NextResponse.json<GetCategoryResponse>({ category }, { status: 200 })
+    return NextResponse.json<CategoryResponse>({ category }, { status: 200 })
   } catch (e) {
     console.error('DELETE /category/[id] error:', e)
     return NextResponse.json(

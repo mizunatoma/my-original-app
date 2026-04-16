@@ -46,7 +46,7 @@ export type GetRunningTimelogResponse =
         id: string
         activityId: string
         activityName: string
-        colorToken: string
+        colorToken: string | null
         startAt: string // ISO文字列
       }
     }
@@ -59,9 +59,17 @@ export type CategoryDTO = {
 }
 
 // GET /api/timeline/categories
-export type GetCategoriesResponse = { categories: CategoryDTO[] }
+export type CategoriesResponse = { categories: CategoryDTO[] }
 // GET /api/timeline/[id]
-export type GetCategoryResponse = { category: CategoryDTO }
+export type CategoryResponse = { category: CategoryDTO }
+// POST /api/timeline/categories
+export type CreateCategoryRequest = { name: string; colorToken: string | null }
+export type CreateCategoryResponse = { id: string }
+// PUT /api/timeline/categories
+export type UpdateCategoryRequest = {
+  name?: string
+  colorToken?: string | null
+}
 
 //===TodoList=============================================
 export type TodoListDTO = {
@@ -75,7 +83,7 @@ export type TodoListDTO = {
 
 // GET /api/todo-lists
 export type GetTodoListsResponse = { todoLists: TodoListDTO[] }
-// POST /api/todo-lists
+// POST/api/todo-lists
 export type CreateTodoListRequest = { name: string }
 export type CreateTodoListResponse = { todoList: TodoListDTO }
 // PUT /api/todo-lists/[listId]

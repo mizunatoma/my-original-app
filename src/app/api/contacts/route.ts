@@ -22,7 +22,7 @@ export const POST = async (request: NextRequest) => {
       data: { name, email, message },
     })
 
-    return NextResponse.json({ contact }, { status: 200 })
+    return NextResponse.json({ contact }, { status: 200 }) //TASK
   } catch (e) {
     console.error('POST /contact error:', e)
     return NextResponse.json(

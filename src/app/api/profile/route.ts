@@ -30,7 +30,7 @@ export const GET = async (request: NextRequest) => {
       },
     }
 
-    return NextResponse.json(response, { status: 200 })
+    return NextResponse.json(response, { status: 200 }) //TASK
   } catch (e) {
     console.error('GET /profile error:', e)
     return NextResponse.json(
@@ -64,7 +64,7 @@ export const PUT = async (request: NextRequest) => {
       },
     }
 
-    return NextResponse.json(response, { status: 200 })
+    return NextResponse.json(response, { status: 200 }) //TASK
   } catch (e) {
     console.error('PUT /profile error:', e)
     return NextResponse.json(
