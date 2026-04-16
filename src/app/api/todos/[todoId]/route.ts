@@ -2,10 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/_utils/prisma'
 import { getAuthUser } from '@/app/_utils/getAuthUser'
-import type {
-  UpdateTodoItemsRequest,
-  UpdateTodoItemsResponse,
-} from '@/types/api'
+import type { UpdateTodoItemRequest, UpdateTodoItemResponse } from '@/types/api'
 
 // ===============================
 // PUT
@@ -28,7 +25,7 @@ export const PUT = async (
     if (!todo)
       return NextResponse.json({ error: 'No list found' }, { status: 403 })
 
-    const { title, isDone } = (await request.json()) as UpdateTodoItemsRequest
+    const { title, isDone } = (await request.json()) as UpdateTodoItemRequest
     const updated = await prisma.todo.update({
       where: { id: params.todoId },
       data: {
@@ -48,7 +45,7 @@ export const PUT = async (
       updatedAt: updated.updatedAt.toISOString(),
     }
 
-    return NextResponse.json<UpdateTodoItemsResponse>(
+    return NextResponse.json<UpdateTodoItemResponse>(
       { todo: mapped },
       { status: 200 },
     )

@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, Dispatch, SetStateAction } from 'react'
 import { Trash2, SquarePen } from 'lucide-react'
-import type { GetCategoriesResponse, CategoryDTO } from '@/types/api'
+import type { CategoriesResponse, CategoryDTO } from '@/types/api'
 import CategoryModal from './CategoryModal'
 import { useFetch } from '@/app/user/_hooks/useFetch'
 
@@ -16,7 +16,7 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
   )
 
   const { data, isLoading, mutate, isValidating } =
-    useFetch<GetCategoriesResponse>('/api/timeline/categories')
+    useFetch<CategoriesResponse>('/api/timeline/categories')
 
   // categoryの追加
   const handleAddSave = async (name: string, color: string) => {

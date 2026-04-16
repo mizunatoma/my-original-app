@@ -36,9 +36,15 @@ export const PUT = async (
       },
     })
 
+    const mapped = {
+      id: updated.id,
+      name: updated.name,
+      colorToken: updated.colorToken,
+    }
+
     return NextResponse.json<CategoryResponse>(
-      { category: updated },
-      { status: 201 },
+      { category: mapped },
+      { status: 200 },
     )
   } catch (e) {
     console.error('PUT /category/[id] error:', e)
@@ -72,12 +78,21 @@ export const DELETE = async (
       return NextResponse.json({ error: 'Not found' }, { status: 404 })
     }
 
-    await prisma.activity.update({
+    const deleted = await prisma.activity.update({
       where: { id: params.id },
       data: { deletedAt: new Date() },
     })
 
-    return NextResponse.json<CategoryResponse>({ category }, { status: 200 })
+    const mapped = {
+      id: deleted.id,
+      name: deleted.name,
+      colorToken: deleted.colorToken,
+    }
+
+    return NextResponse.json<CategoryResponse>(
+      { category: mapped },
+      { status: 200 },
+    )
   } catch (e) {
     console.error('DELETE /category/[id] error:', e)
     return NextResponse.json(

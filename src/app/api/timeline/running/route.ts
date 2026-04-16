@@ -21,7 +21,7 @@ export const GET = async (request: NextRequest) => {
       include: { activity: true },
     })
     if (!runningLog) {
-      return NextResponse.json({ running: false })
+      return NextResponse.json<GetRunningTimelogResponse>({ running: false })
     }
 
     return NextResponse.json<GetRunningTimelogResponse>({

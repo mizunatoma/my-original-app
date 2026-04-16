@@ -104,11 +104,11 @@ export type TodoItemDTO = {
 // GET /api/todo-lists/[listId]/todos
 export type GetTodoItemsResponse = { todos: TodoItemDTO[] }
 // POST /api/todo-lists/[listId]/todos
-export type CreateTodoItemsRequest = { title: string }
-export type CreateTodoItemsResponse = { todo: TodoItemDTO }
+export type CreateTodoItemRequest = { title: string }
+export type CreateTodoItemResponse = { todo: TodoItemDTO }
 // PUT /api/todos/[todoId]
-export type UpdateTodoItemsRequest = { title: string; isDone: boolean }
-export type UpdateTodoItemsResponse = { todo: TodoItemDTO }
+export type UpdateTodoItemRequest = { title: string; isDone: boolean }
+export type UpdateTodoItemResponse = { todo: TodoItemDTO }
 
 //===Analytics=============================================
 

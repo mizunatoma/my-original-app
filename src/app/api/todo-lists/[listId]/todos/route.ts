@@ -4,8 +4,8 @@ import { prisma } from '@/app/_utils/prisma'
 import { getAuthUser } from '@/app/_utils/getAuthUser'
 import type {
   GetTodoItemsResponse,
-  CreateTodoItemsRequest,
-  CreateTodoItemsResponse,
+  CreateTodoItemRequest,
+  CreateTodoItemResponse,
 } from '@/types/api'
 
 // ===============================
@@ -83,7 +83,7 @@ export const POST = async (
     if (!todoList)
       return NextResponse.json({ error: 'No list found' }, { status: 403 })
 
-    const { title } = (await request.json()) as CreateTodoItemsRequest
+    const { title } = (await request.json()) as CreateTodoItemRequest
 
     const todo = await prisma.todo.create({
       data: {
@@ -102,7 +102,7 @@ export const POST = async (
       updatedAt: todo.updatedAt.toISOString(),
     }
 
-    return NextResponse.json<CreateTodoItemsResponse>(
+    return NextResponse.json<CreateTodoItemResponse>(
       { todo: mapped },
       { status: 201 },
     )
