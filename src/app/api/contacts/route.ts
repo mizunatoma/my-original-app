@@ -1,14 +1,14 @@
 // /api/contacts
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/_utils/prisma'
-import type { ContactRequestBody } from '@/types/api'
+import type { ContactBody } from '@/types/api'
 
 // ===============================
 // POST
 // ===============================
 export const POST = async (request: NextRequest) => {
   try {
-    const body = (await request.json()) as ContactRequestBody
+    const body = (await request.json()) as ContactBody
     const { name, email, message } = body
 
     if (!name || !email || !message) {
@@ -22,7 +22,9 @@ export const POST = async (request: NextRequest) => {
       data: { name, email, message },
     })
 
-    return NextResponse.json({ contact }, { status: 200 }) //TASK
+    const mapped = {}
+
+    return NextResponse.json({ contact }, { status: 200 })
   } catch (e) {
     console.error('POST /contact error:', e)
     return NextResponse.json(

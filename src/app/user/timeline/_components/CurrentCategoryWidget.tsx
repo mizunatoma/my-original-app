@@ -1,7 +1,10 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import { Dispatch, SetStateAction } from 'react'
-import type { GetRunningTimelogResponse } from '@/types/api'
+import type {
+  GetRunningTimelogResponse,
+  StartTimelogRequest,
+} from '@/types/api'
 import { useFetch } from '@/app/user/_hooks/useFetch'
 
 type Props = {
@@ -23,7 +26,9 @@ export default function CurrentCategoryWidget({
       const res = await fetch('/api/timeline/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ activityId: currentCategoryID.id }),
+        body: JSON.stringify({
+          activityId: currentCategoryID.id,
+        } as StartTimelogRequest),
       })
       if (!res.ok) {
         console.error('タイムトラックの開始失敗', await res.json())
@@ -45,9 +50,6 @@ export default function CurrentCategoryWidget({
       const res = await fetch('/api/timeline/end', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          activityId: data?.running && data.log.activityId,
-        }),
       })
       if (!res.ok) {
         console.error('タイムトラックの停止失敗', await res.json())

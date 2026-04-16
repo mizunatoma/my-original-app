@@ -1,5 +1,5 @@
 //===ContactForm=============================================
-export type ContactRequestBody = {
+export type ContactBody = {
   name: string
   email: string
   message: string
@@ -11,12 +11,10 @@ export type ProfileDTO = {
   displayName: string | null
 }
 
-// GET /api/profile
-export type GetProfileResponse = { profile: ProfileDTO }
+// GET,PUT, POST /api/profile
+export type ProfileResponse = { profile: ProfileDTO }
 // PUT /api/profile
 export type UpdateProfileRequest = { displayName: string }
-// PUT, POST /api/profile
-export type UpdateProfileResponse = { profile: ProfileDTO }
 
 //===Timelog=============================================
 export type TimelogDTO = {
@@ -86,7 +84,7 @@ export type GetTodoListsResponse = { todoLists: TodoListDTO[] }
 // POST/api/todo-lists
 export type CreateTodoListRequest = { name: string }
 export type CreateTodoListResponse = { todoList: TodoListDTO }
-// PUT /api/todo-lists/[listId]
+// PUT /api/todo-lists/[listId] （フロント未実装）
 export type UpdateTodoListRequest = { name: string }
 export type UpdateTodoListResponse = { todoList: TodoListDTO }
 

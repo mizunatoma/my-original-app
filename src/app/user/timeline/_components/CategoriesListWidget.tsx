@@ -1,7 +1,12 @@
 'use client'
 import React, { useState, Dispatch, SetStateAction } from 'react'
 import { Trash2, SquarePen } from 'lucide-react'
-import type { CategoriesResponse, CategoryDTO } from '@/types/api'
+import type {
+  CategoriesResponse,
+  CategoryDTO,
+  CreateCategoryRequest,
+  UpdateCategoryRequest,
+} from '@/types/api'
 import CategoryModal from './CategoryModal'
 import { useFetch } from '@/app/user/_hooks/useFetch'
 
@@ -24,7 +29,10 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
       const res = await fetch('/api/timeline/categories', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, colorToken: color }),
+        body: JSON.stringify({
+          name,
+          colorToken: color,
+        } as CreateCategoryRequest),
       })
       if (!res.ok) {
         console.error('category追加失敗', await res.json())
@@ -45,7 +53,10 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, colorToken: color }),
+          body: JSON.stringify({
+            name,
+            colorToken: color,
+          } as UpdateCategoryRequest),
         },
       )
       if (!res.ok) {

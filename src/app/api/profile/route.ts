@@ -2,11 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/_utils/prisma'
 import { getAuthUser } from '@/app/_utils/getAuthUser'
-import type {
-  GetProfileResponse,
-  UpdateProfileRequest,
-  UpdateProfileResponse,
-} from '@/types/api'
+import type { ProfileResponse, UpdateProfileRequest } from '@/types/api'
 
 // ===============================
 // GET
@@ -19,18 +15,15 @@ export const GET = async (request: NextRequest) => {
 
     const profile = await prisma.profile.findUnique({
       where: { userId: user.id },
+      select: {
+        id: true,
+        displayName: true,
+      },
     })
     if (!profile)
       return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
-    const response: GetProfileResponse = {
-      profile: {
-        id: profile.id,
-        displayName: profile.displayName,
-      },
-    }
-
-    return NextResponse.json(response, { status: 200 }) //TASK
+    return NextResponse.json<ProfileResponse>({ profile }, { status: 200 })
   } catch (e) {
     console.error('GET /profile error:', e)
     return NextResponse.json(
@@ -49,22 +42,19 @@ export const PUT = async (request: NextRequest) => {
     if (auth instanceof NextResponse) return auth
     const user = auth.user
 
-    const body = (await request.json()) as UpdateProfileRequest // 型アサーションのため、実行時チェックはない
+    const body = (await request.json()) as UpdateProfileRequest
     const { displayName } = body
 
     const profile = await prisma.profile.update({
       where: { userId: user.id },
       data: { displayName },
+      select: {
+        id: true,
+        displayName: true,
+      },
     })
 
-    const response: UpdateProfileResponse = {
-      profile: {
-        id: profile.id,
-        displayName: profile.displayName,
-      },
-    }
-
-    return NextResponse.json(response, { status: 200 }) //TASK
+    return NextResponse.json<ProfileResponse>({ profile }, { status: 200 })
   } catch (e) {
     console.error('PUT /profile error:', e)
     return NextResponse.json(
@@ -87,16 +77,13 @@ export const POST = async (request: NextRequest) => {
       where: { userId: user.id },
       update: {},
       create: { userId: user.id },
+      select: {
+        id: true,
+        displayName: true,
+      },
     })
 
-    const response: UpdateProfileResponse = {
-      profile: {
-        id: profile.id,
-        displayName: profile.displayName,
-      },
-    }
-
-    return NextResponse.json(response, { status: 200 })
+    return NextResponse.json<ProfileResponse>({ profile }, { status: 200 })
   } catch (e) {
     console.error('POST /profile error:', e)
     return NextResponse.json(

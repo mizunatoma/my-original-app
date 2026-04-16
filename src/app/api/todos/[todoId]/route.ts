@@ -84,7 +84,7 @@ export const DELETE = async (
       data: { deletedAt: new Date() },
     })
 
-    return NextResponse.json(null, { status: 200 }) //TASK
+    return NextResponse.json(null, { status: 200 })
   } catch (e) {
     console.error('DELETE /api/todos/[todoId]:', e)
     return NextResponse.json(
