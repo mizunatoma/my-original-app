@@ -1,5 +1,5 @@
 'use client'
-
+import { useState } from 'react'
 import { supabaseBrowser } from '@/app/_utils/supabaseBrowser'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -8,6 +8,7 @@ import { FormInput } from '../_components/form/FormInput'
 import { FormButton } from '../_components/form/FormButton'
 import AuthIllustration from '../_components/AuthIllustration'
 import Link from 'next/link'
+import OrDivider from '../_components/form/OrDivider'
 
 type LoginForm = {
   email: string
@@ -15,6 +16,7 @@ type LoginForm = {
 }
 
 export default function Page() {
+  const [loading, setLoading] = useState(false) // ゲストログイン用
   const router = useRouter()
   const {
     register,
@@ -24,19 +26,33 @@ export default function Page() {
 
   const onSubmit = async (data: LoginForm) => {
     const { email, password } = data
-
     const { error } = await supabaseBrowser.auth.signInWithPassword({
       email,
       password,
     })
-
     if (error) {
       alert('ログインに失敗しました')
       return
     }
-
     router.replace('/user/timeline')
   }
+
+  const guestLogin = async () => {
+    setLoading(true)
+    const email: string = process.env.NEXT_PUBLIC_GUEST_EMAIL!
+    const password: string = process.env.NEXT_PUBLIC_GUEST_PASSWORD!
+    const { error } = await supabaseBrowser.auth.signInWithPassword({
+      email,
+      password,
+    })
+    if (error) {
+      setLoading(false)
+      alert('ログインに失敗しました')
+      return
+    }
+    router.replace('/user/timeline')
+  }
+
   return (
     <div className="auth-container">
       <AuthIllustration />
@@ -102,11 +118,23 @@ export default function Page() {
               </Link>
             </div>
 
-            {/*  今後実装予定
             <OrDivider />
-            <FormButton variant="secondary" loading={isSubmitting} label='Googleで続行' />
-            <FormButton variant="secondary" loading={isSubmitting} label='ゲストで見る' />
+
+            {/*
+            <FormButton
+              variant="secondary"
+              loading={isSubmitting}
+              label="Googleで続行"
+            />
             */}
+
+            <FormButton
+              onClick={guestLogin}
+              loading={loading}
+              label="ゲストで見る"
+              type="button"
+              variant="secondary"
+            />
           </form>
         </div>
       </div>
