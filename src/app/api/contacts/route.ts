@@ -1,14 +1,14 @@
 // /api/contacts
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/_utils/prisma'
-import { ContactRequestBody } from '@/types/api'
+import type { ContactBody } from '@/types/api'
 
 // ===============================
 // POST
 // ===============================
 export const POST = async (request: NextRequest) => {
   try {
-    const body = (await request.json()) as ContactRequestBody
+    const body = (await request.json()) as ContactBody
     const { name, email, message } = body
 
     if (!name || !email || !message) {

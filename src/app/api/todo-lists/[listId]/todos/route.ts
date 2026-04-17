@@ -2,7 +2,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/_utils/prisma'
 import { getAuthUser } from '@/app/_utils/getAuthUser'
-import { TodoItemsAPI } from '@/types/api'
+import type {
+  GetTodoItemsResponse,
+  CreateTodoItemRequest,
+  CreateTodoItemResponse,
+} from '@/types/api'
 
 // ===============================
 // GET
@@ -43,7 +47,7 @@ export const GET = async (
       updatedAt: todo.updatedAt.toISOString(),
     }))
 
-    return NextResponse.json<TodoItemsAPI.Get.Response>(
+    return NextResponse.json<GetTodoItemsResponse>(
       { todos: mapped },
       { status: 200 },
     )
@@ -79,7 +83,7 @@ export const POST = async (
     if (!todoList)
       return NextResponse.json({ error: 'No list found' }, { status: 403 })
 
-    const { title } = await request.json()
+    const { title } = (await request.json()) as CreateTodoItemRequest
 
     const todo = await prisma.todo.create({
       data: {
@@ -98,7 +102,7 @@ export const POST = async (
       updatedAt: todo.updatedAt.toISOString(),
     }
 
-    return NextResponse.json<TodoItemsAPI.Post.Response>(
+    return NextResponse.json<CreateTodoItemResponse>(
       { todo: mapped },
       { status: 201 },
     )

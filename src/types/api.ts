@@ -1,39 +1,75 @@
-// APIレスポンス用 共通DTO
-export type ContactRequestBody = {
+//===ContactForm=============================================
+export type ContactBody = {
   name: string
   email: string
   message: string
 }
 
+//===Profile=============================================
 export type ProfileDTO = {
   id: string
-  displayName: string
+  displayName: string | null
 }
 
+// GET,PUT, POST /api/profile
+export type ProfileResponse = { profile: ProfileDTO }
+// PUT /api/profile
+export type UpdateProfileRequest = { displayName: string }
+
+//===Timelog=============================================
 export type TimelogDTO = {
   id: string
   title: string
   startAt: string // ISO文字列
   endAt: string | null
   category: {
-    colorToken?: string
+    colorToken: string | null
   }
 }
 
-export type RunningTimelogDTO = {
-  id: string
-  activityId: string
-  activityName: string
-  colorToken: string
-  startAt: string // ISO文字列
-}
+// GET /api/timeline
+export type GetTimelogResponse = { activities: TimelogDTO[] }
+// POST /api/timeline/start
+export type StartTimelogRequest = { activityId: string }
+export type StartTimelogResponse = { timelog: TimelogDTO }
+// POST /api/timeline/end
+export type EndTimelogResponse = { timelog: TimelogDTO }
 
+// GET /api/timeline/running
+export type GetRunningTimelogResponse =
+  | { running: false }
+  | {
+      running: true
+      log: {
+        id: string
+        activityId: string
+        activityName: string
+        colorToken: string | null
+        startAt: string // ISO文字列
+      }
+    }
+
+//===Category=============================================
 export type CategoryDTO = {
   id: string
   name: string
-  colorToken?: string
+  colorToken: string | null
 }
 
+// GET /api/timeline/categories
+export type CategoriesResponse = { categories: CategoryDTO[] }
+// GET /api/timeline/[id]
+export type CategoryResponse = { category: CategoryDTO }
+// POST /api/timeline/categories
+export type CreateCategoryRequest = { name: string; colorToken: string | null }
+export type CreateCategoryResponse = { id: string }
+// PUT /api/timeline/categories
+export type UpdateCategoryRequest = {
+  name?: string
+  colorToken?: string | null
+}
+
+//===TodoList=============================================
 export type TodoListDTO = {
   id: string
   profileId: string
@@ -43,6 +79,16 @@ export type TodoListDTO = {
   updatedAt: string
 }
 
+// GET /api/todo-lists
+export type GetTodoListsResponse = { todoLists: TodoListDTO[] }
+// POST/api/todo-lists
+export type CreateTodoListRequest = { name: string }
+export type CreateTodoListResponse = { todoList: TodoListDTO }
+// PUT /api/todo-lists/[listId] （フロント未実装）
+export type UpdateTodoListRequest = { name: string }
+export type UpdateTodoListResponse = { todoList: TodoListDTO }
+
+//===TodoItem=============================================
 export type TodoItemDTO = {
   id: string
   todoListId: string
@@ -53,110 +99,23 @@ export type TodoItemDTO = {
   updatedAt: string
 }
 
-//================================================
+// GET /api/todo-lists/[listId]/todos
+export type GetTodoItemsResponse = { todos: TodoItemDTO[] }
+// POST /api/todo-lists/[listId]/todos
+export type CreateTodoItemRequest = { title: string }
+export type CreateTodoItemResponse = { todo: TodoItemDTO }
+// PUT /api/todos/[todoId]
+export type UpdateTodoItemRequest = { title: string; isDone: boolean }
+export type UpdateTodoItemResponse = { todo: TodoItemDTO }
 
-// プロフィール系 (Get/Put)
-export namespace ProfileAPI {
-  // GET /api/profile
-  export namespace Get {
-    export type Response = { profile: ProfileDTO }
-  }
-  // PUT /api/profile
-  export namespace Put {
-    export type Request = { displayName: string }
-    export type Response = { profile: ProfileDTO }
-  }
-}
+//===Analytics=============================================
 
-// タイムログ系 (Get/Start/End)
-export namespace TimelineAPI {
-  // GET /api/timeline
-  export namespace Get {
-    export type Response = { activities: TimelogDTO[] }
-  }
-  // POST /api/timeline/start
-  export namespace Start {
-    export type Request = {
-      activityId: string
-      startAt: string //ISO
-    }
-    export type Response = { timelog: TimelogDTO }
-  }
-  // GET /api/timeline/running
-  export namespace Running {
-    export type Response =
-      | { running: false }
-      | {
-          running: true
-          log: RunningTimelogDTO
-        }
-  }
-  // POST /api/timeline/end
-  export namespace End {
-    export type Request = {
-      activityId: string
-      endAt: string //ISO
-    }
-    export type Response = { timelog: TimelogDTO }
-  }
+// GET /api/analytics?from=YYYY-MM-DD&to=YYYY-MM-DD
+export type GetAnalyticsResponse = {
+  byCategory: {
+    id: string
+    name: string
+    colorToken: string | null
+    totalMinutes: number
+  }[]
 }
-
-// カテゴリ系 (Get)
-export namespace CategoryAPI {
-  // GET /api/timeline/[id]
-  export namespace Get {
-    export type Response = { category: CategoryDTO }
-  }
-}
-
-// TodoList (Get/Post/Put)
-export namespace TodoListsAPI {
-  // GET /api/todo-lists
-  export namespace Get {
-    export type Response = { todoLists: TodoListDTO[] }
-  }
-  // POST /api/todo-lists
-  export namespace Post {
-    export type Request = { name: string }
-    export type Response = { todoList: TodoListDTO }
-  }
-  // PUT /api/todo-lists/[listId]
-  export namespace Put {
-    export type Request = { name: string }
-    export type Response = { todoList: TodoListDTO }
-  }
-}
-
-// TodoItem (Get/Post/Put)
-export namespace TodoItemsAPI {
-  // GET /api/todo-lists/[listId]/todos
-  export namespace Get {
-    export type Response = { todos: TodoItemDTO[] }
-  }
-  // POST /api/todo-lists/[listId]/todos
-  export namespace Post {
-    export type Request = { title: string }
-    export type Response = { todo: TodoItemDTO }
-  }
-  // PUT /api/todos/[todoId]
-  export namespace Put {
-    export type Request = { title: string; isDone: boolean }
-    export type Response = { todo: TodoItemDTO }
-  }
-}
-
-// analytics (Get)
-export namespace AnalyticsAPI {
-  // GET /api/analytics?from=YYYY-MM-DD&to=YYYY-MM-DD
-  export namespace Get {
-    export type Response = {
-      byCategory: {
-        id: string
-        name: string
-        colorToken: string | null
-        totalMinutes: number
-      }[]
-    }
-  }
-}
-// TODO：次回PRにて、型定義とフロント＆バックの共用について、全体的な見直し

@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/_utils/prisma'
 import { getAuthUser } from '@/app/_utils/getAuthUser'
-import { TodoListsAPI } from '@/types/api'
+import type { UpdateTodoListResponse, UpdateTodoListRequest } from '@/types/api'
 
 // ===============================
 // PUT
@@ -25,7 +25,7 @@ export const PUT = async (
     if (!todoList)
       return NextResponse.json({ error: 'No list found' }, { status: 403 })
 
-    const { name } = await request.json()
+    const { name } = (await request.json()) as UpdateTodoListRequest
     const updated = await prisma.todoList.update({
       where: { id: params.listId },
       data: { name },
@@ -40,7 +40,7 @@ export const PUT = async (
       updatedAt: updated.updatedAt.toISOString(),
     }
 
-    return NextResponse.json<TodoListsAPI.Put.Response>(
+    return NextResponse.json<UpdateTodoListResponse>(
       { todoList: mapped },
       { status: 200 },
     )

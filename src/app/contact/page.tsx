@@ -5,7 +5,7 @@ import { FormInput } from '../_components/form/FormInput'
 import { FormButton } from '../_components/form/FormButton'
 import { FormTextarea } from '../_components/form/FormTextarea'
 import Link from 'next/link'
-import { ContactRequestBody } from '@/types/api'
+import type { ContactBody } from '@/types/api'
 
 export default function ContactPage() {
   const {
@@ -13,9 +13,9 @@ export default function ContactPage() {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<ContactRequestBody>()
+  } = useForm<ContactBody>()
 
-  const onSubmit = async (data: ContactRequestBody) => {
+  const onSubmit = async (data: ContactBody) => {
     try {
       const res = await fetch('/api/contacts', {
         method: 'POST',

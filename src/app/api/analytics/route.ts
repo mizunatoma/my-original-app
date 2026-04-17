@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/_utils/prisma'
 import { getAuthUser } from '@/app/_utils/getAuthUser'
-import { AnalyticsAPI } from '@/types/api'
+import type { GetAnalyticsResponse } from '@/types/api'
 
 // ===============================
 // GET
@@ -47,7 +47,8 @@ export const GET = async (request: NextRequest) => {
     // logs をループして activityId ごとに分数を合計する
     for (const log of logs) {
       const minutes = Math.floor(
-        (new Date(log.endAt) - new Date(log.startAt)) / 60000,
+        (new Date(log.endAt!).getTime() - new Date(log.startAt!).getTime()) /
+          60000,
       )
       if (!totals[log.activityId]) {
         // 初回：オブジェクトを作る
@@ -69,7 +70,7 @@ export const GET = async (request: NextRequest) => {
       totalMinutes: value.totalMinutes,
     }))
 
-    return NextResponse.json<AnalyticsAPI.Get.Response>(
+    return NextResponse.json<GetAnalyticsResponse>(
       { byCategory },
       { status: 200 },
     )

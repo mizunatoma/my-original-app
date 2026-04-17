@@ -1,7 +1,10 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import { Dispatch, SetStateAction } from 'react'
-import { TimelineAPI } from '@/types/api'
+import type {
+  GetRunningTimelogResponse,
+  StartTimelogRequest,
+} from '@/types/api'
 import { useFetch } from '@/app/user/_hooks/useFetch'
 
 type Props = {
@@ -15,7 +18,7 @@ export default function CurrentCategoryWidget({
 }: Props) {
   const [elapsed, setElapsed] = useState(0)
   const { data, error, isLoading, mutate, isValidating } =
-    useFetch<TimelineAPI.Running.Response | null>('/api/timeline/running')
+    useFetch<GetRunningTimelogResponse | null>('/api/timeline/running')
 
   // タイムトラックの開始
   const start = async () => {
@@ -23,7 +26,9 @@ export default function CurrentCategoryWidget({
       const res = await fetch('/api/timeline/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ activityId: currentCategoryID.id }),
+        body: JSON.stringify({
+          activityId: currentCategoryID.id,
+        } as StartTimelogRequest),
       })
       if (!res.ok) {
         console.error('タイムトラックの開始失敗', await res.json())
@@ -45,9 +50,6 @@ export default function CurrentCategoryWidget({
       const res = await fetch('/api/timeline/end', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          activityId: data?.running && data.log.activityId,
-        }),
       })
       if (!res.ok) {
         console.error('タイムトラックの停止失敗', await res.json())
@@ -67,7 +69,7 @@ export default function CurrentCategoryWidget({
     const timer = setInterval(() => {
       const now = new Date()
       const start = new Date(data.log.startAt)
-      const minutes = Math.floor((now - start) / 60000)
+      const minutes = Math.floor((now.getTime() - start.getTime()) / 60000) // getTime()でDate型をnumberに変換
       setElapsed(minutes)
     }, 60000) // 1分ごと
 

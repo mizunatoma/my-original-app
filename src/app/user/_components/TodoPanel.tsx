@@ -1,6 +1,12 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { TodoListsAPI, TodoItemsAPI } from '@/types/api'
+import type {
+  GetTodoListsResponse,
+  GetTodoItemsResponse,
+  CreateTodoListRequest,
+  CreateTodoItemRequest,
+  UpdateTodoItemRequest,
+} from '@/types/api'
 import { useFetch } from '@/app/user/_hooks/useFetch'
 import { Trash2, SquarePen, Check, X } from 'lucide-react'
 import { useForm } from 'react-hook-form'
@@ -26,12 +32,12 @@ export default function TodoPanel({
     data: list,
     mutate: mutateList,
     isValidating: isValidatingList,
-  } = useFetch<TodoListsAPI.Get.Response>('/api/todo-lists')
+  } = useFetch<GetTodoListsResponse>('/api/todo-lists')
   const {
     data: todos,
     mutate: mutateTodo,
     isValidating: isValidatingTodo,
-  } = useFetch<TodoItemsAPI.Get.Response>(
+  } = useFetch<GetTodoItemsResponse>(
     selectedListId ? `/api/todo-lists/${selectedListId}/todos` : null,
   )
 
@@ -64,7 +70,7 @@ export default function TodoPanel({
       const res = await fetch(`/api/todo-lists`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name }),
+        body: JSON.stringify({ name } as CreateTodoListRequest),
       })
       if (!res.ok) {
         console.error('リスト追加失敗', await res.json())
@@ -100,7 +106,7 @@ export default function TodoPanel({
       const res = await fetch(`/api/todo-lists/${selectedListId}/todos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title }),
+        body: JSON.stringify({ title } as CreateTodoItemRequest), // ※型アサーションのため、実行時チェックはない
       })
       if (!res.ok) {
         console.error('todo追加失敗', await res.json())
@@ -122,7 +128,7 @@ export default function TodoPanel({
       const res = await fetch(`/api/todos/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, isDone }),
+        body: JSON.stringify({ title, isDone } as UpdateTodoItemRequest),
       })
       if (!res.ok) {
         console.error('todo編集失敗', await res.json())

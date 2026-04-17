@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useFetch } from '@/app/user/_hooks/useFetch'
-import { AnalyticsAPI } from '@/types/api'
+import type { GetAnalyticsResponse } from '@/types/api'
 import {
   BarChart,
   Bar,
@@ -78,7 +78,7 @@ export default function Page() {
   const dateTo = toJstParts(
     new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0),
   ) //dateToの末尾「,0」 => 次の月の0日目 => 今月の最終日
-  const { data, error, isLoading } = useFetch<AnalyticsAPI.Get.Response>(
+  const { data, error, isLoading } = useFetch<GetAnalyticsResponse>(
     `/api/analytics?from=${dateFrom}&to=${dateTo}`,
   )
 
@@ -167,7 +167,10 @@ export default function Page() {
                 <XAxis dataKey="name" />
                 <YAxis tickFormatter={formatMinutes} ticks={yAxisTicks} />
                 <Tooltip
-                  formatter={(value) => [formatMinutes(value), '合計時間']}
+                  formatter={(value) => [
+                    typeof value === 'number' ? formatMinutes(value) : value, // typeofで型チェック
+                    '合計時間',
+                  ]}
                 />
                 <CartesianGrid />
               </BarChart>
