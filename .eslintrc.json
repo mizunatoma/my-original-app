@@ -5,17 +5,8 @@
     "plugin:tailwindcss/recommended",
     "prettier"
   ],
-  "ignorePatterns": [
-    "*.config.js"
-  ],
+  "ignorePatterns": ["*.config.js"],
   "rules": {
-    "import/order": [
-      "error",
-      {
-        "alphabetize": {
-          "order": "asc"
-        }
-      }
-    ]
+    "import/order": "off"
   }
 }

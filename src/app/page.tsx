@@ -1,14 +1,14 @@
 'use client'
 
-import Link from 'next/link'
-import Image from 'next/image' // 自動で最適化・遅延読み込み。 width と height が必須
 import {
-  TimerReset,
-  Sparkles,
-  Layers,
   BarChart2,
   CircleCheckBig,
+  Layers,
+  Sparkles,
+  TimerReset,
 } from 'lucide-react'
+import Image from 'next/image' // 自動で最適化・遅延読み込み。 width と height が必須
+import Link from 'next/link'
 
 const forPeople = [
   {
@@ -194,13 +194,10 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="container mx-auto mb-16 flex w-full max-w-4xl flex-col items-center justify-center gap-8 rounded-lg bg-[#7D9C88] p-8 shadow-lg shadow-black/20">
-          <h1 className="font-sans text-4xl text-[#173324]">
-            あなたの時間を、もっと自由に。
-          </h1>
+        <section className="container mx-auto mb-16 flex w-full max-w-4xl flex-col items-center justify-center p-8">
           <Link
             href="/login"
-            className="rounded-full bg-[#173324] px-6 py-4 text-[#7D9C88] transition-all duration-300 hover:bg-[#173324]/50"
+            className="rounded-full bg-[#5A8B7D] px-6 py-4 text-white transition-all duration-300 hover:bg-[#5A8B7D]/50"
           >
             ゲストログインで 試してみる
           </Link>

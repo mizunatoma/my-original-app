@@ -1,7 +1,7 @@
 //ログイン状態をチェックするためのカスタムhook
 import { supabaseBrowser } from '@/app/_utils/supabaseBrowser'
 import { Session } from '@supabase/supabase-js'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export const useSupabaseSession = () => {
   // undefined: ログイン状態ロード中, null: ログインしていない, Session: ログインしている

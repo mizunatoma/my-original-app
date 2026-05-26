@@ -1,7 +1,7 @@
 // /api/analytics?from=YYYY-MM-DD&to=YYYY-MM-DD
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/app/_utils/prisma'
 import { getAuthUser } from '@/app/_utils/getAuthUser'
+import { prisma } from '@/app/_utils/prisma'
 import type { GetAnalyticsResponse } from '@/types/api'
 
 // ===============================
