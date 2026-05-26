@@ -5,19 +5,25 @@ import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
 export const supabaseServerClient = async () => {
-  const cookieStore = cookies()
+  const cookieStore = await cookies()
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        // (以下の方式は旧式)
-        get: (name) => cookieStore.get(name)?.value,
-        set: (name, value, options) =>
-          cookieStore.set({ name, value, ...options }),
-        remove: (name, options) =>
-          cookieStore.set({ name, value: '', ...options }),
+        getAll() {
+          return cookieStore.getAll()
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options),
+            )
+          } catch {
+            // Server Componentから呼ばれた場合は無視してOK
+          }
+        },
       },
     },
   )
