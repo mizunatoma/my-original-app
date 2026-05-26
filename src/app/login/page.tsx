@@ -1,13 +1,13 @@
 'use client'
-import { useState } from 'react'
 import { supabaseBrowser } from '@/app/_utils/supabaseBrowser'
-import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
-import { FormLabel } from '../_components/form/FormLabel'
-import { FormInput } from '../_components/form/FormInput'
-import { FormButton } from '../_components/form/FormButton'
-import AuthIllustration from '../_components/AuthIllustration'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import AuthIllustration from '../_components/AuthIllustration'
+import { FormButton } from '../_components/form/FormButton'
+import { FormInput } from '../_components/form/FormInput'
+import { FormLabel } from '../_components/form/FormLabel'
 import OrDivider from '../_components/form/OrDivider'
 
 type LoginForm = {
@@ -17,6 +17,7 @@ type LoginForm = {
 
 export default function Page() {
   const [loading, setLoading] = useState(false) // ゲストログイン用
+
   const router = useRouter()
   const {
     register,
@@ -39,18 +40,21 @@ export default function Page() {
 
   const guestLogin = async () => {
     setLoading(true)
-    const email: string = process.env.NEXT_PUBLIC_GUEST_EMAIL!
-    const password: string = process.env.NEXT_PUBLIC_GUEST_PASSWORD!
-    const { error } = await supabaseBrowser.auth.signInWithPassword({
-      email,
-      password,
-    })
-    if (error) {
+    try {
+      const res = await fetch('/api/guest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      })
+      if (!res.ok) {
+        alert('ログインに失敗しました')
+        return
+      }
+      router.replace('/user/timeline')
+    } catch (error) {
+      console.log(error)
+    } finally {
       setLoading(false)
-      alert('ログインに失敗しました')
-      return
     }
-    router.replace('/user/timeline')
   }
 
   return (
