@@ -1,21 +1,25 @@
 'use client'
+import { BarChart2, ClipboardList, LucideIcon, Timer } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Timer, BarChart2, ClipboardList, RefreshCw } from 'lucide-react'
 
 const MENU_ITEMS = [
   { href: '/user/timeline', icon: Timer, label: 'Timeline' },
   { href: '/user/analytics', icon: BarChart2, label: 'Analytics' },
 ]
 
-interface UserSidebarProps {
+interface Props {
   isCollapsed: boolean
   toggleTodoPanel: () => void
   isTodoPanelOpen: boolean
+  href: string
+  icon: LucideIcon
+  label: string
+  isSelected: boolean
 }
 
 // リンク部分を共通化
-function SidebarLink({ href, icon, label, isSelected, isCollapsed }: any) {
+function SidebarLink({ href, icon, label, isSelected, isCollapsed }: Props) {
   const Icon = icon
   return (
     <Link
@@ -42,7 +46,7 @@ export default function UserSidebar({
   isCollapsed,
   toggleTodoPanel,
   isTodoPanelOpen,
-}: UserSidebarProps) {
+}: Props) {
   const pathname = usePathname()
   const isSelected = (href: string) => pathname === href
 

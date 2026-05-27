@@ -1,9 +1,9 @@
 // /api/guest
 
 import { supabaseServerClient } from '@/app/_utils/supabaseServerClient'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 
-export const POST = async (request: NextRequest) => {
+export const POST = async () => {
   try {
     const email: string = process.env.GUEST_EMAIL!
     const password: string = process.env.GUEST_PASSWORD!

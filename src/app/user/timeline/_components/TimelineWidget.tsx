@@ -1,8 +1,8 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import { useFetch } from '@/app/user/_hooks/useFetch'
 import type { GetTimelogResponse } from '@/types/api'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useFetch } from '@/app/user/_hooks/useFetch'
+import { useEffect, useState } from 'react'
 
 type Props = {
   timelineKey: { count: number }
@@ -17,8 +17,9 @@ export default function TimelogWidget({ timelineKey }: Props) {
   const hours = Array.from({ length: 24 }, (_, i) => i) // [0, 1, 2, ... 23]
   const [date, setDate] = useState(toJstDateString(new Date()))
 
-  const { data, error, isLoading, mutate } =
-    useFetch<GetTimelogResponse | null>(`/api/timeline?date=${date}`)
+  const { data, mutate } = useFetch<GetTimelogResponse | null>(
+    `/api/timeline?date=${date}`,
+  )
 
   useEffect(() => {
     mutate()

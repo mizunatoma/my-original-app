@@ -1,11 +1,10 @@
 'use client'
-import React, { useState, useEffect } from 'react'
-import { Dispatch, SetStateAction } from 'react'
+import { useFetch } from '@/app/user/_hooks/useFetch'
 import type {
   GetRunningTimelogResponse,
   StartTimelogRequest,
 } from '@/types/api'
-import { useFetch } from '@/app/user/_hooks/useFetch'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
 type Props = {
   currentCategoryID: { id: string; count: number }
@@ -17,7 +16,7 @@ export default function CurrentCategoryWidget({
   onPressStopButton,
 }: Props) {
   const [elapsed, setElapsed] = useState(0)
-  const { data, error, isLoading, mutate, isValidating } =
+  const { data, isLoading, mutate, isValidating } =
     useFetch<GetRunningTimelogResponse | null>('/api/timeline/running')
 
   // タイムトラックの開始

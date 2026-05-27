@@ -1,15 +1,15 @@
-import { ReactNode } from 'react';
+import { ReactNode } from 'react'
 
 type Props = {
-  htmlFor: string    // <label>
+  htmlFor: string // <label>
   children: ReactNode // <FormLabel>
 }
 
 export const FormLabel = ({ htmlFor, children }: Props) => (
   <label
     htmlFor={htmlFor}
-    className="block mb-2 text-sm font-medium text-gray-600 text-xs"
+    className="mb-2 block text-sm font-medium text-gray-600"
   >
     {children}
-  </label >
+  </label>
 )

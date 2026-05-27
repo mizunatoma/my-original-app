@@ -1,13 +1,13 @@
 // /api/profile
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/app/_utils/prisma'
 import { getAuthUser } from '@/app/_utils/getAuthUser'
+import { prisma } from '@/app/_utils/prisma'
 import type { ProfileResponse, UpdateProfileRequest } from '@/types/api'
+import { NextRequest, NextResponse } from 'next/server'
 
 // ===============================
 // GET
 // ===============================
-export const GET = async (request: NextRequest) => {
+export const GET = async () => {
   try {
     const auth = await getAuthUser()
     if (auth instanceof NextResponse) return auth
@@ -67,7 +67,7 @@ export const PUT = async (request: NextRequest) => {
 // ===============================
 // POST
 // ===============================
-export const POST = async (request: NextRequest) => {
+export const POST = async () => {
   const auth = await getAuthUser()
   if (auth instanceof NextResponse) return auth
   const user = auth.user

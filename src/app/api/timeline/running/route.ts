@@ -1,13 +1,13 @@
 // /api/timeline/running
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/app/_utils/prisma'
 import { getAuthUser } from '@/app/_utils/getAuthUser'
+import { prisma } from '@/app/_utils/prisma'
 import type { GetRunningTimelogResponse } from '@/types/api'
+import { NextResponse } from 'next/server'
 
 // ===============================
 // GET
 // ===============================
-export const GET = async (request: NextRequest) => {
+export const GET = async () => {
   try {
     const auth = await getAuthUser()
     if (auth instanceof NextResponse) return auth
