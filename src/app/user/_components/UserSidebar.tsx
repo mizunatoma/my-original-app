@@ -8,18 +8,28 @@ const MENU_ITEMS = [
   { href: '/user/analytics', icon: BarChart2, label: 'Analytics' },
 ]
 
-interface Props {
+interface SidebarLinkProps {
   isCollapsed: boolean
-  toggleTodoPanel: () => void
-  isTodoPanelOpen: boolean
   href: string
   icon: LucideIcon
   label: string
   isSelected: boolean
 }
 
+interface SidebarProps {
+  isCollapsed: boolean
+  toggleTodoPanel: () => void
+  isTodoPanelOpen: boolean
+}
+
 // リンク部分を共通化
-function SidebarLink({ href, icon, label, isSelected, isCollapsed }: Props) {
+function SidebarLink({
+  href,
+  icon,
+  label,
+  isSelected,
+  isCollapsed,
+}: SidebarLinkProps) {
   const Icon = icon
   return (
     <Link
@@ -46,7 +56,7 @@ export default function UserSidebar({
   isCollapsed,
   toggleTodoPanel,
   isTodoPanelOpen,
-}: Props) {
+}: SidebarProps) {
   const pathname = usePathname()
   const isSelected = (href: string) => pathname === href
 
