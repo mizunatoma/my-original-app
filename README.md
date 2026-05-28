@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+ ## Time Track Log 🕰️
 
-## Getting Started
+資格勉強の際、一番使用していたモバイルアプリが、タイムログアプリでした。
+PCでも使用できる、シンプルなタイムトラックツールが欲しいと思い作成しました。
 
-First, run the development server:
+ ## デモ・スクリーンショット
+[➡️ デプロイリンク](https://my-original-946wi5kzv-tomiiii-coders-projects.vercel.app/)　ゲストログインで試せます！
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+ログイン画面
+![alt text](image.png)
+タイムログ画面
+![alt text](image-1.png)
+認証・記録デモ：https://www.loom.com/share/503c9dd329774a62add25db48cf0e61e
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Todoメモ（サイドバー)
+![alt text](image-3.png)
+操作デモ：https://www.loom.com/share/d71667f6e03240459a9c1ab7fa6e0306
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+アナリティクス画面
+![alt text](image-2.png)
+操作デモ：https://www.loom.com/share/b180f90524f74925a680b1db5c0332af
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+ ## 機能・特徴
+  - 📝 **タイムログ**と**Todoリスト**を併せた、シンプルな構成
+  - 👀 **月次アナリティクス**で、合計時間を可視化
+  - ✅ カテゴリ別に Todoを管理
 
-## Learn More
+ ## 技術スタック
 
-To learn more about Next.js, take a look at the following resources:
+| カテゴリ | 技術 |
+|---|---|
+| フレームワーク | Next.js 14 (App Router) |
+| 言語 | TypeScript 5 |
+| UI | React 18 |
+| スタイリング | Tailwind CSS 3 |
+| アイコン | Lucide React |
+| 認証・BaaS | Supabase |
+| ORM | Prisma 6 |
+| DB | PostgreSQL |
+| フォーム | React Hook Form + Zod |
+| データフェッチ | SWR |
+| グラフ | Recharts |
+| デプロイ | Vercel |
+ 
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+  [画面遷移図(Figma)](https://www.figma.com/design/YJQt8LYCqSwFhkYdEs2MHG/%E3%82%AA%E3%83%AA%E3%82%B8%E3%83%8A%E3%83%AB%E3%82%A2%E3%83%97%E3%83%AA?node-id=0-1&t=l5ccdrvYg4QZij3C-1)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+  [ER図(Miro)](https://miro.com/app/live-embed/uXjVHNQ2Yso=/?embedMode=view_only_without_ui&moveToViewport=-854%2C-893%2C1548%2C1388&embedId=575390242521)

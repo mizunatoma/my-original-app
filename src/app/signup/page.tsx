@@ -28,6 +28,9 @@ export default function Page() {
     const { error } = await supabaseBrowser.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo: `http://localhost:3000/login`,
+      },
     })
 
     if (error) {
