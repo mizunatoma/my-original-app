@@ -1,7 +1,6 @@
 'use client'
-import React from 'react'
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 type Props = {
@@ -75,7 +74,7 @@ export default function CategoryModal({
               return (
                 <div
                   key={c}
-                  className={`${c} h-6 w-6 rounded-full ${c === selectedColor ? 'border-2 border-gray-500' : ''}`}
+                  className={`${c} size-6 rounded-full ${c === selectedColor ? 'border-2 border-gray-500' : ''}`}
                   onClick={() => {
                     setValue('color', c)
                   }}

@@ -1,12 +1,12 @@
 'use client'
 
 import { supabaseBrowser } from '@/app/_utils/supabaseBrowser'
-import { useForm } from 'react-hook-form'
-import { FormLabel } from '../_components/form/FormLabel'
-import { FormInput } from '../_components/form/FormInput'
-import { FormButton } from '../_components/form/FormButton'
-import AuthIllustration from '../_components/AuthIllustration'
 import Link from 'next/link'
+import { useForm } from 'react-hook-form'
+import AuthIllustration from '../_components/AuthIllustration'
+import { FormButton } from '../_components/form/FormButton'
+import { FormInput } from '../_components/form/FormInput'
+import { FormLabel } from '../_components/form/FormLabel'
 
 type LoginForm = {
   email: string
@@ -29,7 +29,7 @@ export default function Page() {
       email,
       password,
       options: {
-        emailRedirectTo: `http://localhost:3000/login`,
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/login`,
       },
     })
 

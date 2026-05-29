@@ -1,11 +1,11 @@
 'use client'
-import { useForm } from 'react-hook-form'
-import { FormLabel } from '../_components/form/FormLabel'
-import { FormInput } from '../_components/form/FormInput'
-import { FormButton } from '../_components/form/FormButton'
-import { FormTextarea } from '../_components/form/FormTextarea'
-import Link from 'next/link'
 import type { ContactBody } from '@/types/api'
+import Link from 'next/link'
+import { useForm } from 'react-hook-form'
+import { FormButton } from '../_components/form/FormButton'
+import { FormInput } from '../_components/form/FormInput'
+import { FormLabel } from '../_components/form/FormLabel'
+import { FormTextarea } from '../_components/form/FormTextarea'
 
 export default function ContactPage() {
   const {
@@ -44,7 +44,6 @@ export default function ContactPage() {
             <FormLabel htmlFor="name">お名前</FormLabel>
             <FormInput
               loading={isSubmitting}
-              className="focus-ring"
               {...register('name', {
                 required: '名前は必須です',
                 maxLength: {
@@ -61,7 +60,6 @@ export default function ContactPage() {
             <FormLabel htmlFor="email">メールアドレス</FormLabel>
             <FormInput
               loading={isSubmitting}
-              className="focus-ring"
               {...register('email', {
                 required: 'メールアドレスは必須です',
                 pattern: {
@@ -81,7 +79,6 @@ export default function ContactPage() {
             <FormTextarea
               rows={5}
               loading={isSubmitting}
-              className="focus-ring"
               {...register('message', { required: '本文は必須です' })}
             />
             {errors.message && (
