@@ -27,6 +27,7 @@ export default function CurrentCategoryWidget({
 
   // タイムトラックの開始
   const start = useCallback(async () => {
+    // useCallback: 関数をメモ化して無限ループを防ぐ
     try {
       const res = await fetch('/api/timeline/start', {
         method: 'POST',
