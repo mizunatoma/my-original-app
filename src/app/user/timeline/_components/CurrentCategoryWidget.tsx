@@ -4,7 +4,13 @@ import type {
   GetRunningTimelogResponse,
   StartTimelogRequest,
 } from '@/types/api'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 
 type Props = {
   currentCategoryID: { id: string; count: number }
@@ -20,7 +26,8 @@ export default function CurrentCategoryWidget({
     useFetch<GetRunningTimelogResponse | null>('/api/timeline/running')
 
   // タイムトラックの開始
-  const start = async () => {
+  const start = useCallback(async () => {
+    // useCallback: 関数をメモ化して無限ループを防ぐ
     try {
       const res = await fetch('/api/timeline/start', {
         method: 'POST',
@@ -37,11 +44,12 @@ export default function CurrentCategoryWidget({
     } catch (e) {
       console.error('タイムトラックの開始エラー：', e)
     }
-  }
+  }, [currentCategoryID, mutate])
+
   useEffect(() => {
     if (!currentCategoryID.id) return // 選択されていなければなにもしない
     start()
-  }, [currentCategoryID])
+  }, [currentCategoryID, start])
 
   // タイムトラックの停止
   const handleStop = async () => {
@@ -87,7 +95,7 @@ export default function CurrentCategoryWidget({
                   <div>
                     <div className="flex items-center gap-2">
                       <div
-                        className={`h-3 w-3 flex-shrink-0 rounded-full shadow-sm ${data.log.colorToken}`}
+                        className={`size-3 shrink-0 rounded-full shadow-sm ${data.log.colorToken}`}
                       />
                       <span>{data.log.activityName}</span>
                     </div>

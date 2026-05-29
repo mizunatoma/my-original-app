@@ -94,7 +94,7 @@ export default function Home() {
                 </h1>
                 <p>複雑な設定は不要。時間を可視化し、一日を振り返る。</p>
               </div>
-              <div className="md:justify-left flex gap-4">
+              <div className="flex gap-4">
                 <Link
                   href="/signup"
                   className="rounded-full bg-[#5A8B7D] px-6 py-4 text-white transition-all duration-300 hover:bg-[#5A8B7D]/50"

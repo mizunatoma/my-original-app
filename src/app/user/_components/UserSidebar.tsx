@@ -34,14 +34,14 @@ function SidebarLink({
   return (
     <Link
       href={href}
-      className={`flex h-12 items-center gap-3 rounded-xl transition-all ${isCollapsed ? 'w-13 justify-center' : 'px-3'} ${
+      className={`flex h-12 items-center gap-3 rounded-xl transition-all ${isCollapsed ? 'justify-center' : 'px-3'} ${
         isSelected
           ? 'bg-[#5D866C]/50 text-gray-800 shadow-sm'
           : 'text-gray-500 hover:bg-[#5D866C]/30'
       }`}
     >
       <div
-        className={`flex h-7 w-7 items-center justify-center rounded-xl ${
+        className={`flex size-7 items-center justify-center rounded-xl ${
           isSelected ? 'bg-white/50' : 'bg-transparent'
         }`}
       >
@@ -62,7 +62,7 @@ export default function UserSidebar({
 
   return (
     <aside
-      className={`fixed bottom-0 left-0 top-0 z-20 overflow-hidden border-r border-[#EFEDE6] bg-[#FCFAF7] px-2 py-3 ${isCollapsed ? 'w-[80px]' : 'w-[160px]'}`}
+      className={`fixed inset-y-0 left-0 z-20 overflow-hidden border-r border-[#EFEDE6] bg-[#FCFAF7] px-2 py-3 ${isCollapsed ? 'w-[80px]' : 'w-[160px]'}`}
     >
       <nav className="flex flex-col gap-1">
         {MENU_ITEMS.map((item) => (
@@ -76,14 +76,14 @@ export default function UserSidebar({
 
         <button
           onClick={toggleTodoPanel}
-          className={`flex h-12 items-center gap-3 rounded-xl transition-all ${isCollapsed ? 'w-13 justify-center' : 'px-3'} ${
+          className={`flex h-12 items-center gap-3 rounded-xl transition-all ${isCollapsed ? 'justify-center' : 'px-3'} ${
             isTodoPanelOpen
               ? 'bg-[#5D866C]/50 text-gray-800 shadow-sm'
               : 'text-gray-500 hover:bg-[#5D866C]/30'
           }`}
         >
           <div
-            className={`flex h-7 w-7 items-center justify-center rounded-xl ${
+            className={`flex size-7 items-center justify-center rounded-xl ${
               isTodoPanelOpen ? 'bg-white/50' : 'bg-transparent'
             }`}
           >

@@ -1,10 +1,9 @@
 'use client'
 
-import Link from 'next/link'
-import React from 'react'
-import { useSupabaseSession } from '../../_hooks/useSupabaseSession'
 import { supabaseBrowser } from '@/app/_utils/supabaseBrowser'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useSupabaseSession } from '../../_hooks/useSupabaseSession'
 
 interface UserHeaderProps {
   toggleSidebar: () => void // ＝引数なし、戻り値なしの関数
@@ -39,7 +38,7 @@ export default function UserHeader({
       <div className="flex items-center gap-4">
         <button
           onClick={toggleSidebar}
-          className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#5D866C]/30 text-gray-700 transition-colors hover:bg-[#5D866C]/60"
+          className="flex size-8 items-center justify-center rounded-lg bg-[#5D866C]/30 text-gray-700 transition-colors hover:bg-[#5D866C]/60"
         >
           ☰
         </button>

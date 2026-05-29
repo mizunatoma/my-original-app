@@ -1,14 +1,14 @@
 'use client'
-import React, { useState, Dispatch, SetStateAction } from 'react'
-import { Trash2, SquarePen } from 'lucide-react'
+import { useFetch } from '@/app/user/_hooks/useFetch'
 import type {
   CategoriesResponse,
   CategoryDTO,
   CreateCategoryRequest,
   UpdateCategoryRequest,
 } from '@/types/api'
+import { SquarePen, Trash2 } from 'lucide-react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import CategoryModal from './CategoryModal'
-import { useFetch } from '@/app/user/_hooks/useFetch'
 
 type Props = {
   onSelectCategory: Dispatch<SetStateAction<{ id: string; count: number }>>
@@ -120,7 +120,7 @@ export default function CategoriesListWidget({ onSelectCategory }: Props) {
               <div className="flex w-full justify-between p-4">
                 <div className="flex items-center gap-2">
                   <div
-                    className={`h-3 w-3 shrink-0 rounded-full ${category.colorToken}`}
+                    className={`size-3 shrink-0 rounded-full ${category.colorToken}`}
                   ></div>
                   <span className="text">{category.name}</span>
                 </div>

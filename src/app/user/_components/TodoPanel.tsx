@@ -1,16 +1,16 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useFetch } from '@/app/user/_hooks/useFetch'
 import type {
-  GetTodoListsResponse,
-  GetTodoItemsResponse,
-  CreateTodoListRequest,
   CreateTodoItemRequest,
+  CreateTodoListRequest,
+  GetTodoItemsResponse,
+  GetTodoListsResponse,
   UpdateTodoItemRequest,
 } from '@/types/api'
-import { useFetch } from '@/app/user/_hooks/useFetch'
-import { Trash2, SquarePen, Check, X } from 'lucide-react'
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Check, SquarePen, Trash2, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 interface TodoPanelProps {
@@ -167,11 +167,11 @@ export default function TodoPanel({
       // Listはあるが未選択の場合、先頭のListを表示する
       setSelectedListId(list.todoLists[0].id)
     } // Listを選択中であれば、そのまま
-  }, [list])
+  }, [list, selectedListId])
 
   return (
     <aside
-      className={`fixed bottom-0 top-0 z-20 space-y-2 overflow-auto bg-[#FCFAF7] transition-all duration-300 ${isCollapsed ? 'left-[80px]' : 'left-[160px]'} ${isTodoPanelOpen ? 'w-[300px] border border-[#e9e3cc] p-4' : 'w-[0px]'}`}
+      className={`fixed inset-y-0 z-20 space-y-2 overflow-auto bg-[#FCFAF7] transition-all duration-300 ${isCollapsed ? 'left-[80px]' : 'left-[160px]'} ${isTodoPanelOpen ? 'w-[300px] border border-[#e9e3cc] p-4' : 'w-0'}`}
     >
       {/*listチップ一覧*/}
       <div className="flex flex-wrap gap-1">

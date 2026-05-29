@@ -23,7 +23,7 @@ export default function TimelogWidget({ timelineKey }: Props) {
 
   useEffect(() => {
     mutate()
-  }, [timelineKey])
+  }, [timelineKey, mutate])
 
   return (
     <div className="widget-card flex h-[calc(100vh-140px)] flex-col">
@@ -71,7 +71,7 @@ export default function TimelogWidget({ timelineKey }: Props) {
           return (
             <div
               key={activity.id}
-              className={`bg-100 absolute left-16 right-0 top-0 mb-1 h-full truncate rounded-md p-1 text-xs ${activity.category.colorToken}`}
+              className={`absolute left-16 right-0 top-0 mb-1 h-full truncate rounded-md p-1 text-xs ${activity.category.colorToken}`}
               style={{ top: `${startMinutes}px`, height: `${height}px` }}
             >
               {activity.title}
