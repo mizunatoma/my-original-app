@@ -1,5 +1,4 @@
 'use client'
-import { supabaseBrowser } from '@/app/_utils/supabaseBrowser'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -17,7 +16,6 @@ type LoginForm = {
 
 export default function Page() {
   const [loading, setLoading] = useState(false) // ゲストログイン用
-
   const router = useRouter()
   const {
     register,
@@ -26,16 +24,21 @@ export default function Page() {
   } = useForm<LoginForm>()
 
   const onSubmit = async (data: LoginForm) => {
-    const { email, password } = data
-    const { error } = await supabaseBrowser.auth.signInWithPassword({
-      email,
-      password,
-    })
-    if (error) {
-      alert('ログインに失敗しました')
-      return
+    try {
+      const { email, password } = data
+      const res = await fetch('/api/auth/signin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
+      if (!res.ok) {
+        alert('ログインに失敗しました')
+        return
+      }
+      router.replace('/user/timeline')
+    } catch (error) {
+      console.log(error)
     }
-    router.replace('/user/timeline')
   }
 
   const guestLogin = async () => {

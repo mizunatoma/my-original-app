@@ -1,9 +1,6 @@
 'use client'
-
-import { supabaseBrowser } from '@/app/_utils/supabaseBrowser'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useSupabaseSession } from '../../_hooks/useSupabaseSession'
 
 interface UserHeaderProps {
   toggleSidebar: () => void // ＝引数なし、戻り値なしの関数
@@ -17,7 +14,6 @@ export default function UserHeader({
   isTodoPanelOpen,
 }: UserHeaderProps) {
   const router = useRouter()
-  const { session, isLoading } = useSupabaseSession()
 
   // ４段階のヘッダー幅調整
   const mainWidth = isCollapsed ? 80 : 160
@@ -25,8 +21,8 @@ export default function UserHeader({
   const totalLeft = mainWidth + subWidth // 80, 160, 380, 460 のいずれかになる
 
   const handleLogout = async () => {
-    await supabaseBrowser.auth.signOut()
-    await router.replace('/')
+    await fetch('/api/auth/signout', { method: 'POST' })
+    router.replace('/')
   }
 
   return (
@@ -46,26 +42,18 @@ export default function UserHeader({
       </div>
 
       {/*右：ユーザアイコン*/}
-      {!isLoading && (
-        <div className="flex items-center gap-4">
-          {session && (
-            <>
-              <Link
-                href="/contact"
-                className="text-sm text-gray-600 hover:underline"
-              >
-                お問い合わせ
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="text-sm text-gray-600 hover:underline"
-              >
-                ログアウト
-              </button>
-            </>
-          )}
-        </div>
-      )}
+
+      <div className="flex items-center gap-4">
+        <Link href="/contact" className="text-sm text-gray-600 hover:underline">
+          お問い合わせ
+        </Link>
+        <button
+          onClick={handleLogout}
+          className="text-sm text-gray-600 hover:underline"
+        >
+          ログアウト
+        </button>
+      </div>
     </header>
   )
 }
