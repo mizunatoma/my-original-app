@@ -44,7 +44,7 @@ export default function Page() {
   const guestLogin = async () => {
     setLoading(true)
     try {
-      const res = await fetch('/api/guest', {
+      const res = await fetch('/api/auth/guest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       })

@@ -3,7 +3,7 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { COOKIE_OPTIONS } from './app/_lib/supabase/cookieOptions'
 
 // ホワイトリスト定義
-const PUBLIC_PATH = ['/sign_in', 'sign_up']
+const PUBLIC_PATH = ['/login', '/signup', '/api/auth/guest']
 
 export const middleware = async (request: NextRequest) => {
   const ref = { response: NextResponse.next({ request }) }
@@ -38,7 +38,7 @@ export const middleware = async (request: NextRequest) => {
     !PUBLIC_PATH.some((path) => request.nextUrl.pathname.startsWith(path))
   ) {
     const url = request.nextUrl.clone()
-    url.pathname = '/sign_in'
+    url.pathname = '/login'
     ref.response = NextResponse.redirect(url)
   }
   return ref.response
