@@ -1,4 +1,5 @@
 // /api/timeline/running
+export const dynamic = 'force-dynamic'
 import { getAuthUser } from '@/app/_utils/getAuthUser'
 import { prisma } from '@/app/_utils/prisma'
 import type { GetRunningTimelogResponse } from '@/types/api'
