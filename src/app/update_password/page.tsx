@@ -1,13 +1,12 @@
 'use client'
 
-import { supabaseBrowser } from '@/app/_utils/supabaseBrowser'
-import { useForm } from 'react-hook-form'
-import { FormLabel } from '../_components/form/FormLabel'
-import { FormInput } from '../_components/form/FormInput'
-import { FormButton } from '../_components/form/FormButton'
-import AuthIllustration from '../_components/AuthIllustration'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import AuthIllustration from '../_components/AuthIllustration'
+import { FormButton } from '../_components/form/FormButton'
+import { FormInput } from '../_components/form/FormInput'
+import { FormLabel } from '../_components/form/FormLabel'
 
 type Form = {
   password: string
@@ -24,25 +23,27 @@ export default function Page() {
   } = useForm<Form>()
 
   const onSubmit = async (data: Form) => {
-    const { password, confirmPassword } = data
-
-    if (password !== confirmPassword) {
-      alert('パスワードが一致しません')
-      return
+    try {
+      const { password, confirmPassword } = data
+      if (password !== confirmPassword) {
+        alert('パスワードが一致しません')
+        return
+      }
+      const res = await fetch('/api/auth/update-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      })
+      if (!res.ok) {
+        alert('パスワードの更新に失敗しました')
+        return
+      }
+      reset()
+      alert('パスワードを更新しました')
+      router.replace('/user/timeline')
+    } catch (error) {
+      console.log(error)
     }
-
-    const { error } = await supabaseBrowser.auth.updateUser({
-      password,
-    })
-
-    if (error) {
-      alert('パスワードの更新に失敗しました')
-      return
-    }
-
-    reset()
-    alert('パスワードを更新しました')
-    router.replace('/user/timeline')
   }
 
   return (

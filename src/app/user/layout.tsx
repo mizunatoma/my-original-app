@@ -1,17 +1,14 @@
 'use client'
 import { useState } from 'react'
-import { useRouteGuard } from './_hooks/useRouteGuard'
-import UserSidebar from './_components/UserSidebar'
-import UserHeader from './_components/UserHeader'
 import TodoPanel from './_components/TodoPanel'
+import UserHeader from './_components/UserHeader'
+import UserSidebar from './_components/UserSidebar'
 
 export default function UserLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  useRouteGuard()
-
   const [isCollapsed, setIsCollapsed] = useState(false)
   const toggleSidebar = () => setIsCollapsed(!isCollapsed)
 

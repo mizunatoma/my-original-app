@@ -1,12 +1,10 @@
 'use client'
-
-import { supabaseBrowser } from '@/app/_utils/supabaseBrowser'
-import { useForm } from 'react-hook-form'
-import { FormLabel } from '../_components/form/FormLabel'
-import { FormInput } from '../_components/form/FormInput'
-import { FormButton } from '../_components/form/FormButton'
-import AuthIllustration from '../_components/AuthIllustration'
 import Link from 'next/link'
+import { useForm } from 'react-hook-form'
+import AuthIllustration from '../_components/AuthIllustration'
+import { FormButton } from '../_components/form/FormButton'
+import { FormInput } from '../_components/form/FormInput'
+import { FormLabel } from '../_components/form/FormLabel'
 
 type ResetPasswordForm = {
   email: string
@@ -21,22 +19,24 @@ export default function Page() {
   } = useForm<ResetPasswordForm>()
 
   const onSubmit = async (data: ResetPasswordForm) => {
-    const { email } = data
-
-    const { error } = await supabaseBrowser.auth.resetPasswordForEmail(email, {
-      redirectTo: location.origin + '/update_password', // email記載リンクから、飛ぶリンク先を指定
-    })
-
-    if (error) {
-      console.error(error)
-      alert('リセットメールの送信に失敗しました')
-      return
+    try {
+      const { email } = data
+      const res = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+      if (!res.ok) {
+        alert('リセットメールの送信に失敗しました')
+        return
+      }
+      reset()
+      alert(
+        'パスワード再設定用のメールを送信しました。\nメールボックスを確認してください。',
+      )
+    } catch (error) {
+      console.log(error)
     }
-
-    reset()
-    alert(
-      'パスワード再設定用のメールを送信しました。\nメールボックスを確認してください。',
-    )
   }
 
   return (

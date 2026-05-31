@@ -1,29 +1,47 @@
 import { createServerClient } from '@supabase/ssr'
-import { NextRequest, NextResponse } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
+import { COOKIE_OPTIONS } from './app/_lib/supabase/cookieOptions'
 
-export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({ request })
+// ホワイトリスト定義
+const PUBLIC_PATH = ['/login', '/signup', '/api/auth/guest']
+
+export const middleware = async (request: NextRequest) => {
+  const ref = { response: NextResponse.next({ request }) }
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_ANON_KEY!,
     {
       cookies: {
         // ブラウザから届いたcookieを取り出す
         getAll: () => request.cookies.getAll(),
         // 新しいcookieをレスポンスに乗せてブラウザに返す
-        setAll(cookiesToSet) {
-          response = NextResponse.next({ request })
+        setAll: (cookiesToSet) => {
+          ref.response = NextResponse.next({ request })
           cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options),
+            ref.response.cookies.set(name, value, {
+              ...options,
+              ...COOKIE_OPTIONS,
+            }),
           )
         },
       },
     },
   )
 
-  await supabase.auth.getUser()
-  return response
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (
+    !user &&
+    !PUBLIC_PATH.some((path) => request.nextUrl.pathname.startsWith(path))
+  ) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    ref.response = NextResponse.redirect(url)
+  }
+  return ref.response
 }
 
 export const config = {

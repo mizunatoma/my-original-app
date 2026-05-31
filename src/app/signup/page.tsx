@@ -1,6 +1,4 @@
 'use client'
-
-import { supabaseBrowser } from '@/app/_utils/supabaseBrowser'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import AuthIllustration from '../_components/AuthIllustration'
@@ -23,23 +21,22 @@ export default function Page() {
   } = useForm<LoginForm>()
 
   const onSubmit = async (data: LoginForm) => {
-    const { email, password } = data
-
-    const { error } = await supabaseBrowser.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/login`,
-      },
-    })
-
-    if (error) {
-      alert('登録に失敗しました')
-      return
+    try {
+      const { email, password } = data
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
+      if (!res.ok) {
+        alert('登録に失敗しました')
+        return
+      }
+      reset()
+      alert('確認メールを送信しました')
+    } catch (error) {
+      console.log(error)
     }
-
-    reset()
-    alert('確認メールを送信しました')
   }
 
   return (
